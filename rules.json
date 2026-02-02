@@ -1,0 +1,56 @@
+{
+  "file": "rules.json",
+  "version": "0.1.0",
+  "core": {
+    "handSize": 10,
+    "exchangeMax": 5,
+    "requireAtLeastOneRuleRowToRoll": true,
+    "preventRollUnlessAllRowsValid": true,
+    "rowsExecuteSequentially": true,
+    "activeRowOnly": true,
+    "oneActionPerLoop": true,
+    "actionConsumesLoopEvenIfFails": true,
+    "noDefaultActionIfConditionTrue": true,
+    "elseRowContained": true,
+    "operatorPrecedence": [
+      "NOT",
+      "AND",
+      "OR"
+    ],
+    "trapsNoInstantKill": true,
+    "trapsLethalWhenIntroduced": true
+  },
+  "retry": {
+    "livesPerLevel": 3,
+    "onDeathRewindTo": "turn_start",
+    "sameDealSameRngOnRetry": true,
+    "onLivesZero": "restart_level"
+  },
+  "threatPressure": {
+    "typeBase": {
+      "sensor": 1,
+      "action": 2,
+      "operator": 3,
+      "hero_action": 3
+    },
+    "rarityBonus": {
+      "common": 0,
+      "uncommon": 1,
+      "rare": 2,
+      "epic": 3,
+      "legendary": 4
+    },
+    "threatCountsOnly": "unplaced_cards_remaining_in_hand",
+    "exchangeDiscardsCountForThreat": false,
+    "pressureCarriesOverBetweenTurns": true,
+    "pressureRewindsOnDeathRetry": true,
+    "pressureSpendCapDefaultFormula": "6 + levelNumber",
+    "pressureAlwaysManifests": {
+      "enabled": true,
+      "ifPressurePositiveButCannotAffordCheapestSpawn": {
+        "spawnFrom": "nuisancePool",
+        "pressureCost": 1
+      }
+    }
+  }
+}

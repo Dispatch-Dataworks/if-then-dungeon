@@ -1,0 +1,522 @@
+{
+  "file": "levels.json",
+  "version": "0.1.0",
+  "campaign": {
+    "levelCount": 24,
+    "themes": [
+      { "id": "ruined_keep", "levels": [1, 2, 3] },
+      { "id": "sewer_vermin", "levels": [4, 5, 6] },
+      { "id": "ash_foundry", "levels": [7, 8, 9] },
+      { "id": "catacombs", "levels": [10, 11, 12] },
+      { "id": "cursed_chapel", "levels": [13, 14, 15] },
+      { "id": "blood_arena", "levels": [16, 17, 18] },
+      { "id": "rotwood", "levels": [19, 20, 21] },
+      { "id": "mirror_halls", "levels": [22, 23, 24] }
+    ],
+    "modifierOrder": ["plague", "ashen", "hollow", "cursed", "iron", "blood"]
+  },
+  "enemies": {
+    "modifierCostAdders": {
+      "hollow": 1,
+      "mutant": 2,
+      "iron": 2,
+      "ashen": 1,
+      "blood": 2,
+      "plague": 1,
+      "cursed": 2,
+      "lantern": 1
+    },
+    "spawnCostsBase": {
+      "E_GOBLIN_SCOUT": 2,
+      "E_RAT_SWARM": 2,
+      "E_GOBLIN_ARCHER": 4,
+      "E_GOBLIN_KNIGHT": 4,
+      "E_SKELETON_GUARD": 4,
+      "E_CULTIST": 4,
+      "E_SPIDER": 4,
+      "E_HOUND": 4,
+      "E_ORC_BRUTE": 5,
+      "E_GOBLIN_SHAMAN": 7,
+      "E_ORC_WARDEN": 7,
+      "E_GHOUL": 7,
+      "E_WRAITH_STALKER": 10
+    }
+  },
+  "content": {
+    "traps": {
+      "T_SPIKES": { "damage": 3 },
+      "T_PIT": { "damage": 4 },
+      "T_POISON_FOG": { "damagePerLoop": 1 },
+      "T_SMOKE_VENTS": { "damagePerLoop": 1, "visibilityPenalty": 1 },
+      "T_BONE_SPIKES": { "damage": 3 },
+      "T_CURSE_SIGIL": { "damage": 2, "appliesStatus": ["cursed"] },
+      "T_WHISPER_TILES": { "damage": 1, "appliesStatus": ["fear"] },
+      "T_BLEED_VINES": { "damage": 2, "appliesStatus": ["bleed"] },
+      "T_SNARE_ROOTS": { "damage": 1, "appliesStatus": ["snare_root"] },
+      "T_ILLUSION_WALL": { "damageOnImpact": 2 }
+    },
+    "mechanics": {
+      "M_TIMED_VENTS": { "cycle": [2, 2] },
+      "M_CONVEYOR": { "forcedMove": 1 },
+      "M_PUSH_PLATES": { "pushTiles": 1 }
+    }
+  },
+  "decks": {
+    "baseDeck_L1": {
+      "id": "baseDeck_L1",
+      "cards": [
+        { "id": "A_MOVE_FWD", "count": 14 },
+        { "id": "A_TURN_L", "count": 8 },
+        { "id": "A_TURN_R", "count": 8 },
+        { "id": "A_WAIT", "count": 6 },
+        { "id": "A_HERO_ATTACK", "count": 6 },
+
+        { "id": "S_WALL_AHEAD", "count": 8 },
+        { "id": "S_BLOCKED_AHEAD", "count": 6 },
+        { "id": "S_ENEMY_AHEAD", "count": 6 },
+        { "id": "S_ENEMY_ADJACENT", "count": 4 },
+        { "id": "S_ENEMY_VISIBLE", "count": 6 }
+      ],
+      "note": "Persistent finite deck. Shuffle once at level start."
+    }
+  },
+  "levels": [
+    {
+      "levelId": 1,
+      "themeId": "ruined_keep",
+      "introduces": ["E_GOBLIN_SCOUT", "A_MOVE_FWD", "A_TURN_L", "A_TURN_R", "A_WAIT", "A_HERO_ATTACK", "S_WALL_AHEAD", "S_BLOCKED_AHEAD", "S_ENEMY_AHEAD", "S_ENEMY_ADJACENT", "S_ENEMY_VISIBLE"],
+      "deck": { "baseDeckId": "baseDeck_L1", "adjustments": [] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 2,
+      "enemyPool": ["E_GOBLIN_SCOUT"],
+      "nuisancePool": ["E_GOBLIN_SCOUT"],
+      "modifiersAllowed": [],
+      "traps": [],
+      "mechanics": [],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C"]
+    },
+    {
+      "levelId": 2,
+      "themeId": "ruined_keep",
+      "introduces": ["T_SPIKES", "E_GOBLIN_KNIGHT", "S_SPIKES_AHEAD", "S_SPIKES_HERE", "A_TURN_AROUND"],
+      "deck": {
+        "baseDeckId": "baseDeck_L1",
+        "adjustments": [
+          { "id": "S_SPIKES_AHEAD", "add": 4 },
+          { "id": "S_SPIKES_HERE", "add": 2 },
+          { "id": "A_TURN_AROUND", "add": 2 }
+        ]
+      },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 2,
+      "enemyPool": ["E_GOBLIN_SCOUT", "E_GOBLIN_KNIGHT"],
+      "nuisancePool": ["E_GOBLIN_SCOUT"],
+      "modifiersAllowed": [],
+      "traps": ["T_SPIKES"],
+      "mechanics": [],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C"]
+    },
+    {
+      "levelId": 3,
+      "themeId": "ruined_keep",
+      "introduces": ["T_PIT", "E_GOBLIN_ARCHER", "S_PIT_AHEAD", "A_JUMP_FWD", "S_RANGED_THREAT_VISIBLE"],
+      "deck": {
+        "baseDeckId": "baseDeck_L1",
+        "adjustments": [
+          { "id": "S_SPIKES_AHEAD", "add": 4 },
+          { "id": "S_SPIKES_HERE", "add": 2 },
+          { "id": "A_TURN_AROUND", "add": 2 },
+
+          { "id": "S_PIT_AHEAD", "add": 4 },
+          { "id": "A_JUMP_FWD", "add": 4 },
+          { "id": "S_RANGED_THREAT_VISIBLE", "add": 2 }
+        ]
+      },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 2,
+      "enemyPool": ["E_GOBLIN_SCOUT", "E_GOBLIN_KNIGHT", "E_GOBLIN_ARCHER"],
+      "nuisancePool": ["E_GOBLIN_SCOUT"],
+      "modifiersAllowed": [],
+      "traps": ["T_SPIKES", "T_PIT"],
+      "mechanics": [],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C"]
+    },
+
+    {
+      "levelId": 4,
+      "themeId": "sewer_vermin",
+      "introduces": ["E_RAT_SWARM", "T_POISON_FOG", "S_FOG_AHEAD", "S_IN_FOG", "A_RETREAT"],
+      "deck": {
+        "baseDeckId": "baseDeck_L1",
+        "adjustments": [
+          { "id": "S_SPIKES_AHEAD", "add": 4 },
+          { "id": "S_SPIKES_HERE", "add": 2 },
+          { "id": "A_TURN_AROUND", "add": 2 },
+          { "id": "S_PIT_AHEAD", "add": 4 },
+          { "id": "A_JUMP_FWD", "add": 4 },
+          { "id": "S_RANGED_THREAT_VISIBLE", "add": 2 },
+
+          { "id": "S_FOG_AHEAD", "add": 4 },
+          { "id": "S_IN_FOG", "add": 2 },
+          { "id": "A_RETREAT", "add": 2 }
+        ]
+      },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 2,
+      "enemyPool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": [],
+      "traps": ["T_SPIKES", "T_POISON_FOG"],
+      "mechanics": [],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+    },
+    {
+      "levelId": 5,
+      "themeId": "sewer_vermin",
+      "introduces": ["E_HOUND", "M_TIMED_VENTS", "S_VENT_ACTIVE_AHEAD", "S_VENT_ACTIVE_HERE", "S_ENEMY_NEAR_2", "S_CROWDED_AHEAD"],
+      "deck": {
+        "baseDeckId": "baseDeck_L1",
+        "adjustments": [
+          { "id": "S_SPIKES_AHEAD", "add": 4 },
+          { "id": "S_SPIKES_HERE", "add": 2 },
+          { "id": "A_TURN_AROUND", "add": 2 },
+          { "id": "S_PIT_AHEAD", "add": 4 },
+          { "id": "A_JUMP_FWD", "add": 4 },
+          { "id": "S_RANGED_THREAT_VISIBLE", "add": 2 },
+          { "id": "S_FOG_AHEAD", "add": 4 },
+          { "id": "S_IN_FOG", "add": 2 },
+          { "id": "A_RETREAT", "add": 2 },
+
+          { "id": "S_VENT_ACTIVE_AHEAD", "add": 4 },
+          { "id": "S_VENT_ACTIVE_HERE", "add": 2 },
+          { "id": "S_ENEMY_NEAR_2", "add": 2 },
+          { "id": "S_CROWDED_AHEAD", "add": 2 }
+        ]
+      },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 2,
+      "enemyPool": ["E_RAT_SWARM", "E_HOUND"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": [],
+      "traps": ["T_POISON_FOG"],
+      "mechanics": ["M_TIMED_VENTS"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+    },
+    {
+      "levelId": 6,
+      "themeId": "sewer_vermin",
+      "introduces": ["plague", "E_GOBLIN_SHAMAN", "A_SHAKE_IT_OFF"],
+      "deck": {
+        "baseDeckId": "baseDeck_L1",
+        "adjustments": [
+          { "id": "S_SPIKES_AHEAD", "add": 4 },
+          { "id": "S_SPIKES_HERE", "add": 2 },
+          { "id": "A_TURN_AROUND", "add": 2 },
+          { "id": "S_PIT_AHEAD", "add": 4 },
+          { "id": "A_JUMP_FWD", "add": 4 },
+          { "id": "S_RANGED_THREAT_VISIBLE", "add": 2 },
+          { "id": "S_FOG_AHEAD", "add": 4 },
+          { "id": "S_IN_FOG", "add": 2 },
+          { "id": "A_RETREAT", "add": 2 },
+          { "id": "S_VENT_ACTIVE_AHEAD", "add": 4 },
+          { "id": "S_VENT_ACTIVE_HERE", "add": 2 },
+          { "id": "S_ENEMY_NEAR_2", "add": 2 },
+          { "id": "S_CROWDED_AHEAD", "add": 2 },
+
+          { "id": "A_SHAKE_IT_OFF", "add": 4 }
+        ]
+      },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 2,
+      "enemyPool": ["E_RAT_SWARM", "E_GOBLIN_SHAMAN"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague"],
+      "traps": ["T_POISON_FOG"],
+      "mechanics": ["M_TIMED_VENTS"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+    },
+
+    {
+      "levelId": 7,
+      "themeId": "ash_foundry",
+      "introduces": ["OP_ELSE", "S_HAZARD_AHEAD", "A_STEP_ASIDE", "T_SMOKE_VENTS", "M_CONVEYOR"],
+      "deck": { "fromPrevLevel": 6, "adjustments": [{ "id": "OP_ELSE", "add": 10 }, { "id": "S_HAZARD_AHEAD", "add": 6 }, { "id": "A_STEP_ASIDE", "add": 6 }] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 3,
+      "enemyPool": ["E_GOBLIN_ARCHER", "E_GOBLIN_SCOUT"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague"],
+      "traps": ["T_SMOKE_VENTS"],
+      "mechanics": ["M_CONVEYOR"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+    },
+    {
+      "levelId": 8,
+      "themeId": "ash_foundry",
+      "introduces": ["E_ORC_BRUTE", "E_ORC_WARDEN", "S_SMOKE_AHEAD", "S_IN_SMOKE", "A_HOLD"],
+      "deck": { "fromPrevLevel": 7, "adjustments": [{ "id": "S_SMOKE_AHEAD", "add": 4 }, { "id": "S_IN_SMOKE", "add": 4 }, { "id": "A_HOLD", "add": 4 }] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 3,
+      "enemyPool": ["E_ORC_BRUTE", "E_ORC_WARDEN", "E_GOBLIN_ARCHER"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague"],
+      "traps": ["T_SMOKE_VENTS"],
+      "mechanics": ["M_CONVEYOR"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D", "SP_E"]
+    },
+    {
+      "levelId": 9,
+      "themeId": "ash_foundry",
+      "introduces": ["ashen", "A_RAISE_SHIELD", "A_SPRINT"],
+      "deck": { "fromPrevLevel": 8, "adjustments": [{ "id": "A_RAISE_SHIELD", "add": 4 }, { "id": "A_SPRINT", "add": 4 }] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 3,
+      "enemyPool": ["E_ORC_WARDEN", "E_GOBLIN_ARCHER", "E_ORC_BRUTE"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague", "ashen"],
+      "traps": ["T_SMOKE_VENTS"],
+      "mechanics": ["M_CONVEYOR"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D", "SP_E"]
+    },
+
+    {
+      "levelId": 10,
+      "themeId": "catacombs",
+      "introduces": ["OP_NOT", "S_SAFE_AHEAD", "A_BACKSTEP", "E_SKELETON_GUARD", "T_BONE_SPIKES"],
+      "deck": { "fromPrevLevel": 9, "adjustments": [{ "id": "OP_NOT", "add": 10 }, { "id": "S_SAFE_AHEAD", "add": 6 }, { "id": "A_BACKSTEP", "add": 4 }] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 3,
+      "enemyPool": ["E_SKELETON_GUARD", "E_ORC_BRUTE"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague", "ashen"],
+      "traps": ["T_BONE_SPIKES"],
+      "mechanics": [],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+    },
+    {
+      "levelId": 11,
+      "themeId": "catacombs",
+      "introduces": ["E_GHOUL", "S_CORPSE_NEARBY", "S_GHOUL_VISIBLE", "A_STOMP"],
+      "deck": { "fromPrevLevel": 10, "adjustments": [{ "id": "S_CORPSE_NEARBY", "add": 4 }, { "id": "S_GHOUL_VISIBLE", "add": 2 }, { "id": "A_STOMP", "add": 4 }] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 3,
+      "enemyPool": ["E_SKELETON_GUARD", "E_GHOUL"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague", "ashen"],
+      "traps": ["T_BONE_SPIKES"],
+      "mechanics": [],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+    },
+    {
+      "levelId": 12,
+      "themeId": "catacombs",
+      "introduces": ["hollow", "S_RESURRECTION_PENDING", "S_ENEMY_COUNT_HIGH", "A_WARD"],
+      "deck": { "fromPrevLevel": 11, "adjustments": [{ "id": "S_RESURRECTION_PENDING", "add": 2 }, { "id": "S_ENEMY_COUNT_HIGH", "add": 2 }, { "id": "A_WARD", "add": 2 }] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 3,
+      "enemyPool": ["E_SKELETON_GUARD", "E_GHOUL"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague", "ashen", "hollow"],
+      "traps": ["T_BONE_SPIKES"],
+      "mechanics": [],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+    },
+
+    {
+      "levelId": 13,
+      "themeId": "cursed_chapel",
+      "introduces": ["OP_AND", "S_LOW_HP", "S_CURSED_STATUS", "A_FOCUS", "E_CULTIST", "T_CURSE_SIGIL"],
+      "deck": { "fromPrevLevel": 12, "adjustments": [{ "id": "OP_AND", "add": 10 }, { "id": "S_LOW_HP", "add": 4 }, { "id": "S_CURSED_STATUS", "add": 2 }, { "id": "A_FOCUS", "add": 2 }, { "id": "S_CURSE_SIGIL_AHEAD", "add": 2 }] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 3,
+      "enemyPool": ["E_CULTIST", "E_SKELETON_GUARD"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague", "ashen", "hollow"],
+      "traps": ["T_CURSE_SIGIL"],
+      "mechanics": [],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C"]
+    },
+    {
+      "levelId": 14,
+      "themeId": "cursed_chapel",
+      "introduces": ["E_WRAITH_STALKER", "T_WHISPER_TILES", "S_PHASE_THREAT", "S_WHISPER_AHEAD", "A_ILLUMINATE"],
+      "deck": { "fromPrevLevel": 13, "adjustments": [{ "id": "S_PHASE_THREAT", "add": 3 }, { "id": "S_WHISPER_AHEAD", "add": 3 }, { "id": "A_ILLUMINATE", "add": 2 }] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 3,
+      "enemyPool": ["E_WRAITH_STALKER", "E_CULTIST"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague", "ashen", "hollow"],
+      "traps": ["T_CURSE_SIGIL", "T_WHISPER_TILES"],
+      "mechanics": [],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C"]
+    },
+    {
+      "levelId": 15,
+      "themeId": "cursed_chapel",
+      "introduces": ["cursed", "S_FEAR_STATUS", "A_STEEL_NERVES", "S_SUPPORT_ENEMY_VISIBLE"],
+      "deck": { "fromPrevLevel": 14, "adjustments": [{ "id": "S_FEAR_STATUS", "add": 2 }, { "id": "A_STEEL_NERVES", "add": 2 }, { "id": "S_SUPPORT_ENEMY_VISIBLE", "add": 2 }] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 3,
+      "enemyPool": ["E_WRAITH_STALKER", "E_CULTIST"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague", "ashen", "hollow", "cursed"],
+      "traps": ["T_CURSE_SIGIL", "T_WHISPER_TILES"],
+      "mechanics": [],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C"]
+    },
+
+    {
+      "levelId": 16,
+      "themeId": "blood_arena",
+      "introduces": ["OP_OR", "S_TRAP_AHEAD", "S_ENEMY_LEFT", "S_ENEMY_RIGHT", "M_PUSH_PLATES", "T_BLEED_VINES", "A_BRACE"],
+      "deck": { "fromPrevLevel": 15, "adjustments": [{ "id": "OP_OR", "add": 10 }, { "id": "S_TRAP_AHEAD", "add": 4 }, { "id": "S_ENEMY_LEFT", "add": 2 }, { "id": "S_ENEMY_RIGHT", "add": 2 }, { "id": "A_BRACE", "add": 2 }] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 4,
+      "enemyPool": ["E_ORC_BRUTE", "E_GOBLIN_KNIGHT"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague", "ashen", "hollow", "cursed"],
+      "traps": ["T_BLEED_VINES"],
+      "mechanics": ["M_PUSH_PLATES"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+    },
+    {
+      "levelId": 17,
+      "themeId": "blood_arena",
+      "introduces": ["S_ENEMY_ENRAGED", "A_BAIT"],
+      "deck": { "fromPrevLevel": 16, "adjustments": [{ "id": "S_ENEMY_ENRAGED", "add": 3 }, { "id": "A_BAIT", "add": 2 }] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 4,
+      "enemyPool": ["E_ORC_BRUTE"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague", "ashen", "hollow", "cursed"],
+      "traps": ["T_BLEED_VINES"],
+      "mechanics": ["M_PUSH_PLATES"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+    },
+    {
+      "levelId": 18,
+      "themeId": "blood_arena",
+      "introduces": ["iron", "S_ARMORED_ENEMY_VISIBLE", "A_PIERCE"],
+      "deck": { "fromPrevLevel": 17, "adjustments": [{ "id": "S_ARMORED_ENEMY_VISIBLE", "add": 3 }, { "id": "A_PIERCE", "add": 3 }] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 4,
+      "enemyPool": ["E_ORC_BRUTE"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague", "ashen", "hollow", "cursed", "iron"],
+      "traps": ["T_BLEED_VINES"],
+      "mechanics": ["M_PUSH_PLATES"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+    },
+
+    {
+      "levelId": 19,
+      "themeId": "rotwood",
+      "introduces": ["E_SPIDER", "T_SNARE_ROOTS", "S_SNARE_AHEAD", "S_IN_ROOTS", "A_CUT_FREE"],
+      "deck": { "fromPrevLevel": 18, "adjustments": [{ "id": "S_SNARE_AHEAD", "add": 4 }, { "id": "S_IN_ROOTS", "add": 2 }, { "id": "A_CUT_FREE", "add": 3 }] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 4,
+      "enemyPool": ["E_SPIDER", "E_HOUND"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague", "ashen", "hollow", "cursed", "iron"],
+      "traps": ["T_SNARE_ROOTS", "T_BLEED_VINES"],
+      "mechanics": [],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C"]
+    },
+    {
+      "levelId": 20,
+      "themeId": "rotwood",
+      "introduces": ["T_ILLUSION_WALL", "S_ILLUSION_AHEAD", "A_PROBE"],
+      "deck": { "fromPrevLevel": 19, "adjustments": [{ "id": "S_ILLUSION_AHEAD", "add": 4 }, { "id": "A_PROBE", "add": 4 }] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 4,
+      "enemyPool": ["E_SPIDER", "E_CULTIST"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague", "ashen", "hollow", "cursed", "iron"],
+      "traps": ["T_SNARE_ROOTS", "T_ILLUSION_WALL"],
+      "mechanics": [],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C"]
+    },
+    {
+      "levelId": 21,
+      "themeId": "rotwood",
+      "introduces": ["blood", "S_BLOOD_TRAIL_NEARBY", "A_CAUTERIZE"],
+      "deck": { "fromPrevLevel": 20, "adjustments": [{ "id": "S_BLOOD_TRAIL_NEARBY", "add": 3 }, { "id": "A_CAUTERIZE", "add": 3 }] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 4,
+      "enemyPool": ["E_SPIDER", "E_ORC_WARDEN"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague", "ashen", "hollow", "cursed", "iron", "blood"],
+      "traps": ["T_SNARE_ROOTS", "T_BLEED_VINES"],
+      "mechanics": [],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C"]
+    },
+
+    {
+      "levelId": 22,
+      "themeId": "mirror_halls",
+      "introduces": [],
+      "deck": { "fromPrevLevel": 21, "adjustments": [] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 4,
+      "enemyPool": ["E_GOBLIN_ARCHER", "E_GOBLIN_SCOUT", "E_SPIDER", "E_CULTIST"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague", "ashen", "hollow", "cursed", "iron", "blood"],
+      "traps": ["T_SMOKE_VENTS", "T_ILLUSION_WALL"],
+      "mechanics": ["M_CONVEYOR"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+    },
+    {
+      "levelId": 23,
+      "themeId": "mirror_halls",
+      "introduces": [],
+      "deck": { "fromPrevLevel": 22, "adjustments": [] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 4,
+      "enemyPool": ["E_SKELETON_GUARD", "E_GHOUL", "E_GOBLIN_SHAMAN", "E_GOBLIN_ARCHER"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague", "ashen", "hollow", "cursed", "iron", "blood"],
+      "traps": ["T_BONE_SPIKES", "T_POISON_FOG"],
+      "mechanics": ["M_TIMED_VENTS"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+    },
+    {
+      "levelId": 24,
+      "themeId": "mirror_halls",
+      "introduces": [],
+      "deck": { "fromPrevLevel": 23, "adjustments": [] },
+      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCapOverride": null,
+      "maxSpawnsPerTurn": 4,
+      "enemyPool": ["E_ORC_BRUTE", "E_WRAITH_STALKER", "E_SPIDER", "E_CULTIST"],
+      "nuisancePool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
+      "modifiersAllowed": ["plague", "ashen", "hollow", "cursed", "iron", "blood"],
+      "traps": ["T_CURSE_SIGIL", "T_SNARE_ROOTS", "T_BLEED_VINES"],
+      "mechanics": ["M_PUSH_PLATES"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D", "SP_E"]
+    }
+  ],
+  "note": "Deck inheritance: if level.deck.fromPrevLevel is used, start with that level's resolved deck and apply adjustments."
+}
