@@ -9,7 +9,7 @@ A goblin in dented mail with a small shield and spear. More disciplined than sco
 
 ## Role on the board
 - **Danger:** 2 skull(s) · **Spawn cost:** 4 Pressure (base, before modifiers)
-- **Stats:** HP 4, armor 1, damage 2, attack range 1, speed 1 (see `enemies.json`)
+- **Stats:** HP 3, armor 1, damage 1, attack range 1, speed 1 (see `enemies.json`)
 - Intended role: pressure, zoning, damage, support, or disruption.
 
 ## Core behavior (readable “rule”)

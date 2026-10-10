@@ -8,6 +8,8 @@ Heroes differ in:
 
 Rules:
 - No diagonal movement.
+- **When blocked**, defaults turn right first, then left, and turn around only if both sides are blocked (left first while cursed).
+- **Melee attacks** strike the tile ahead; if it is empty but an enemy is adjacent, the hero turns to face that enemy and strikes in the same action. Ranged attacks turn toward the nearest visible enemy in a straight line.
 - One action per tick (even with speed upgrades; speed affects tiles moved, not number of actions).
 - No multiple attacks in one tick. Damage can increase via upgrades.
 
@@ -35,9 +37,9 @@ Rules:
 
 ### 1) H_SWORDSMAN — Swordsman
 **Fantasy**: balanced frontline.
-- Default behavior: **move forward 1** (if blocked, rotate clockwise to nearest open and move if possible; otherwise wait)
+- Default behavior: **move forward 1** (if blocked, turn right and move; if that is blocked too, turn left; turn around only as a last resort)
 - Hero Attack: **Slash**
-  - attacks the tile in front (melee)
+  - attacks the tile in front (melee); if that tile is empty but an enemy is adjacent, the hero turns to face it and strikes
   - medium damage; bonus damage vs “swarm” tagged enemies
 - Base stats:
   - HP: 10
@@ -54,7 +56,7 @@ Rules:
 - Default behavior: **scan 180° forward arc**, then **move 1** toward safest open tile (prefer away from adjacent enemy)
 - Hero Attack: **Arrow**
   - ranged attack in line-of-sight up to 3 tiles
-  - lower damage than swordsman, but can hit before contact
+  - same damage as Slash (2), but fragile (8 HP, no armor); hits before contact
 - Base stats:
   - HP: 8
   - Speed: 1
@@ -67,7 +69,7 @@ Rules:
 
 ### 3) H_SHIELDBEARER — Shieldbearer
 **Fantasy**: defensive tank.
-- Default behavior: **hold position** if enemy visible; else move forward 1
+- Default behavior: **hold position** if an enemy is adjacent; else move forward 1
 - Hero Attack: **Shield Bash**
   - melee hit + optional pushback 1 tile (if open)
 - Base stats:

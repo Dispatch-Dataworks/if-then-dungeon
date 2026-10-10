@@ -263,6 +263,21 @@ export function validateBoard(level: Level, levelsFile: LevelsFile): string[] {
     }
     const exit = found.exit[0];
     if (exit && !reached.has(exit.join())) errors.push("exit is not reachable from the hero start");
+    // Design rule: there is always a walking route that avoids every damaging trap (traps are shortcuts, not tolls).
+    const traps = levelsFile.content.traps as Record<string, { damage?: number; damagePerLoop?: number }>;
+    const hurts = (x: number, y: number) => { const t = traps[idAt(x, y)]; return !!t && (t.damage !== undefined || t.damagePerLoop !== undefined); };
+    const safe = new Set([start.join()]);
+    const q2 = [start];
+    while (q2.length) {
+      const [x, y] = q2.shift()!;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
+        const nx = x + dx, ny = y + dy;
+        if (nx < 0 || ny < 0 || nx >= width || ny >= height || safe.has(`${nx},${ny}`) || blocked(nx, ny) || hurts(nx, ny)) continue;
+        safe.add(`${nx},${ny}`);
+        q2.push([nx, ny]);
+      }
+    }
+    if (exit && !safe.has(exit.join())) errors.push("there is no route to the exit that avoids every damaging trap");
     for (const [id, pos] of found.spawns) if (!reached.has(pos.join())) errors.push(`spawn point ${id} is not reachable`);
   }
   return errors;

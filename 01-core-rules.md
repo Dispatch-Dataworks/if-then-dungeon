@@ -21,7 +21,7 @@ On death retry (rewind to turn start), the game uses:
 - The only way to change outcomes is to change decisions (discard choices, row builds, row order).
 
 ## Card dealing and exchange
-- At the start of each turn, draw **10** cards.
+- At the start of each turn, draw **10** cards. The deal guarantees at least 2 sensors and 2 actions (swapped in from the deck if needed), so a valid row is always possible.
 - Before building rows, the player may exchange up to **half the hand**:
   - discard **0–5** cards → draw that many replacements.
 - Exchanged cards go to the **discard pile**.

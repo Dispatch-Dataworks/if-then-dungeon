@@ -16,7 +16,7 @@ Defensive tank that teaches holding/guarding behavior and trap management.
 - **Speed** changes how many tiles a move action covers (does not add extra actions)
 
 ## Default behavior (when the active row does not trigger and no ELSE exists)
-If an enemy is visible: **Hold Position**. Otherwise: **Move Forward (1 tile)** (clockwise rotate if blocked).
+If an enemy is **adjacent**: **Hold Position**. Otherwise: **Move Forward (1 tile)** (turn right, then left, if blocked).
 
 ## Hero Attack (effect of the `A_HERO_ATTACK` card)
 **Shield Bash (Hero Attack):** Melee hit + optional **pushback 1 tile** if the destination is open.

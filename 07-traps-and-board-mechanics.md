@@ -11,15 +11,15 @@
 
 ### T_SPIKES
 - Trigger: step onto tile
-- Effect: deal 3 damage
+- Effect: deal 2 damage
 
 ### T_BONE_SPIKES
 - As spikes, different theme
-- Effect: deal 3 damage
+- Effect: deal 2 damage
 
 ### T_PIT
 - Trigger: step onto tile
-- Effect: deal 4 damage (and optional “stun” 1 tick)
+- Effect: deal 3 damage (and optional “stun” 1 tick)
 
 ### T_POISON_FOG
 - Trigger: being inside fog region at tick end
@@ -27,11 +27,11 @@
 
 ### T_SMOKE_VENTS
 - Trigger: being inside smoke region at tick end
-- Effect: 1 damage per tick (light) + visibility penalty (implementation-defined)
+- Effect: 1 damage per tick (light); sight -1 while inside; smoke tiles **block line of sight through them** for everyone (hide from archers, but you can't shoot through it either)
 
 ### T_CURSE_SIGIL
 - Trigger: step onto tile
-- Effect: 2 damage + applies “cursed” status
+- Effect: 1 damage + applies “cursed” status
 
 ### T_WHISPER_TILES
 - Trigger: step onto tile or remain adjacent (tune)
@@ -39,7 +39,7 @@
 
 ### T_BLEED_VINES
 - Trigger: step onto tile
-- Effect: 2 damage + apply 2 bleed stacks
+- Effect: 1 damage + apply 2 bleed stacks
 
 ### T_SNARE_ROOTS
 - Trigger: step onto tile

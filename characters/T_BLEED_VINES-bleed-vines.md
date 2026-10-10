@@ -12,7 +12,7 @@ Thorned crimson vines coiled across the tile, with dark red sap beading on the b
 - **Step onto tile**
 
 ## Effect
-- **2 damage + 2 bleed stacks**
+- **1 damage + 2 bleed stacks**
 - Traps are never “instant kill”, but can be lethal if they reduce HP to 0.
 
 ## Telegraphed state

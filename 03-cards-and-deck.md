@@ -62,11 +62,11 @@ In v0.1:
 ## Threat value (per card)
 Threat(card) = TypeBase(type) + RarityBonus(rarity)
 
-TypeBase:
+TypeBase (tuned by simulation; see `BALANCE.md`):
 - sensor 1
-- action 2
-- operator 3
-- hero_action 3
+- action 1
+- operator 2
+- hero_action 2
 
 RarityBonus:
 - common +0

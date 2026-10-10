@@ -9,7 +9,7 @@ A mangy war hound with a spiked collar and cloudy eyes. Fast and relentless.
 
 ## Role on the board
 - **Danger:** 2 skull(s) · **Spawn cost:** 4 Pressure (base, before modifiers)
-- **Stats:** HP 3, armor 0, damage 2, attack range 1, speed 2 (see `enemies.json`)
+- **Stats:** HP 3, armor 0, damage 1, attack range 1, speed 2 (see `enemies.json`)
 - Intended role: pressure, zoning, damage, support, or disruption.
 
 ## Core behavior (readable “rule”)

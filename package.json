@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "placeholders": "node scripts/gen-placeholders.mjs",
-    "validate": "vitest run tests/content.test.ts"
+    "validate": "vitest run tests/content.test.ts",
+    "sim": "vite-node src/sim/cli.ts --"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",

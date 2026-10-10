@@ -9,7 +9,7 @@ A plated enforcer with a polearm and iron mask; looks like a commander.
 
 ## Role on the board
 - **Danger:** 3 skull(s) · **Spawn cost:** 7 Pressure (base, before modifiers)
-- **Stats:** HP 5, armor 1, damage 2, attack range 1, speed 1 (see `enemies.json`)
+- **Stats:** HP 4, armor 1, damage 2, attack range 1, speed 1 (see `enemies.json`)
 - Intended role: pressure, zoning, damage, support, or disruption.
 
 ## Core behavior (readable “rule”)

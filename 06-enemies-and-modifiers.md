@@ -9,6 +9,10 @@ Enemy variability exists from the start:
 - levels have themed enemy pools
 - some enemies spawn with minor behavioral variants
 
+## Movement rules for all enemies
+- Enemies never step onto damaging traps (they know their dungeon). Only the phasing Wraith Stalker ignores terrain.
+- Enemies chase using the shortest walkable route to the hero and prefer routes that avoid active vents and blood tiles.
+
 ## Skulls vs. spawn cost
 - **Skulls** (1–4) are the *danger rating* shown to players on the enemy info card.
 - **Spawn cost** is the Pressure spent to spawn the enemy (`levels.json` → `enemies.spawnCostsBase`, plus modifier adders). See `04-threat-pressure-spawn.md`.
@@ -38,7 +42,7 @@ HP, armor, damage, range, speed, tags and on-hit statuses for every enemy and mo
 ### E_GOBLIN_ARCHER (2 skull)
 - Role: ranged threat
 - Behavior:
-  - if hero in LoS: shoot
+  - if hero in LoS within 3 tiles: shoot, then reload for one loop (fires every other loop)
   - else reposition to restore LoS
 - Variability:
   - prefers left or right lane at spawn (deterministic)

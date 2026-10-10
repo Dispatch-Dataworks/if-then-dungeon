@@ -9,7 +9,7 @@ A large gray-green brute with heavy shoulder plates and a cleaver. Slow but inti
 
 ## Role on the board
 - **Danger:** 2 skull(s) · **Spawn cost:** 5 Pressure (base, before modifiers)
-- **Stats:** HP 6, armor 0, damage 3, attack range 1, speed 1 (see `enemies.json`)
+- **Stats:** HP 6, armor 0, damage 2, attack range 1, speed 1 (see `enemies.json`)
 - Intended role: pressure, zoning, damage, support, or disruption.
 
 ## Core behavior (readable “rule”)

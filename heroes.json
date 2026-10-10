@@ -24,7 +24,7 @@
       "unlockAfterLevel": 0,
       "baseStats": {"hp": 8, "armor": 0, "speedTiles": 1, "sightRange": 5},
       "defaultBehavior": {"key": "scan_then_move_safest", "text": "Scan the 180° forward arc, then move 1 toward the safest open tile (away from adjacent enemies)."},
-      "heroAttack": {"name": "Arrow", "key": "ranged_los", "damage": 1, "range": 3},
+      "heroAttack": {"name": "Arrow", "key": "ranged_los", "damage": 2, "range": 3},
       "upgrades": [
         {"id": "U_QUICKDRAW", "name": "Quickdraw", "unlockAfterLevelsClearedWithHero": 2, "effect": "Arrow range +1 (max 4)."},
         {"id": "U_PINNING_SHOT", "name": "Pinning Shot", "unlockAfterLevelsClearedWithHero": 4, "effect": "Arrow applies snare_root for 1 loop."},
@@ -37,7 +37,7 @@
       "tier": "starter",
       "unlockAfterLevel": 0,
       "baseStats": {"hp": 12, "armor": 2, "speedTiles": 1, "sightRange": 3},
-      "defaultBehavior": {"key": "hold_if_enemy_visible_else_forward", "text": "Hold if an enemy is visible; otherwise move forward 1 (rotate clockwise if blocked)."},
+      "defaultBehavior": {"key": "hold_if_enemy_adjacent_else_forward", "text": "Hold if an enemy is adjacent; otherwise move forward 1 (turn right, then left, if blocked)."},
       "heroAttack": {"name": "Shield Bash", "key": "melee_push", "damage": 1, "range": 1, "pushTiles": 1},
       "upgrades": [
         {"id": "U_FORTIFY", "name": "Fortify", "unlockAfterLevelsClearedWithHero": 2, "effect": "Wait/Hold grants ranged_resist 1 until your next action."},

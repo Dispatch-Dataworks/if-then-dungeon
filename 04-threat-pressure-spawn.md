@@ -40,7 +40,7 @@ If `Pressure > 0` but you cannot afford the cheapest spawnCost available:
 These are the base costs before modifiers:
 - Goblin Scout: 2
 - Rat Swarm: 2
-- Goblin Archer: 4
+- Goblin Archer: 5
 - Goblin Knight: 4
 - Skeleton Guard: 4
 - Cultist: 4
@@ -68,6 +68,13 @@ Examples:
 - Ashen Goblin Archer = 4 + 1 = 5
 - Iron Orc Brute = 5 + 2 = 7
 - Plague Rat Swarm = 2 + 1 = 3
+
+## Starting Pressure
+- A level may set `startingPressure` (default 0). It is spent at level start, so some enemies are already waiting (used on L19–21).
+
+## Board cap
+- At most `4 + floor(levelNumber / 6)` enemies can be on the board at once. Pressure that cannot spawn because the board is full stays banked for later turns.
+- Spawn points within 2 tiles of the hero are skipped.
 
 ## Pressure and death retry
 - Pressure rewinds to the value at turn start when the player retries the turn.

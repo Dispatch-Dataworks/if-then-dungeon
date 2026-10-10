@@ -30,3 +30,18 @@ export function shuffle<T>(rng: RngState, items: readonly T[]): T[] {
   }
   return a;
 }
+
+/** Derive a 32-bit seed from any mix of numbers and strings (FNV-1a). Used for turn/dice/enemy sub-seeds. */
+export function seedFrom(...parts: (number | string)[]): number {
+  let h = 0x811c9dc5;
+  for (const ch of parts.join("|")) {
+    h ^= ch.charCodeAt(0);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h >>> 0;
+}
+
+/** A one-off float in [0, 1) for the given seed parts. */
+export function chance(...parts: (number | string)[]): number {
+  return next(createRng(seedFrom(...parts)));
+}

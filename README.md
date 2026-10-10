@@ -50,6 +50,15 @@ This repository contains the complete written specification and JSON references 
 - `assets/placeholders/` — generated placeholder images for every card and character (temporary until final art)
 - `branding/` — logo and key-art concepts (see `branding/README.md`)
 
+## Play
+
+```sh
+npm install
+npm run dev            # then open the printed URL
+```
+
+Pick a hero and a level. Each turn: swap up to 5 cards, build IF / THEN (/ ELSE) rows from your hand, press **Roll & Lock**, and watch your rules run. Reach the exit; unused cards add Pressure, which spawns enemies. Add `?unlock=all` to the URL to open every level and hero.
+
 ## Development
 
 The game is built with TypeScript + Vite (see §0 of `engine-spec.md` for why).
@@ -61,7 +70,11 @@ npm run validate       # content validation only (all JSON files, level maps, ch
 npm run typecheck
 npm run dev            # local dev server
 npm run placeholders   # regenerate placeholder images after adding cards or character sheets
+npm run sim -- 1-3 starter 4   # bot plays levels 1-3 with the starter heroes, 4 seeds each
+scripts/sim-all.sh     # full balance run in parallel (see BALANCE.md)
 ```
 
-- `src/engine/` — pure simulation core (no DOM; seeded RNG only)
+- `src/engine/` — pure simulation core (no DOM; seeded RNG only): `game.ts` turn lifecycle, `hero.ts`, `enemy.ts`, `effects.ts`, `rules/` (rows, sensors, parser)
+- `src/ui/` — browser UI (title/level select, board, row builder, playback, progress in localStorage)
+- `src/sim/` — balance bot and simulation runner (see `BALANCE.md`)
 - `tests/` — Vitest tests; CI runs typecheck and tests on every push (`.github/workflows/ci.yml`)

@@ -12,7 +12,7 @@ A collapsing floor panel with a dark drop beneath; edges crumble when approached
 - **Step onto tile**
 
 ## Effect
-- **4 damage + optional stun 1 tick**
+- **3 damage + optional stun 1 tick**
 - Traps are never “instant kill”, but can be lethal if they reduce HP to 0.
 
 ## Telegraphed state

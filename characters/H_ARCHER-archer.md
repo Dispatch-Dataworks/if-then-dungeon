@@ -19,7 +19,7 @@ Ranged control that teaches line-of-sight reasoning and defensive movement.
 **Scan 180° forward arc**, then **move 1** toward a safe open tile (prefers tiles **not adjacent** to an enemy). If no safe option, Wait.
 
 ## Hero Attack (effect of the `A_HERO_ATTACK` card)
-**Arrow (Hero Attack):** Ranged shot in **line-of-sight** up to **3 tiles**. Lower damage than melee heroes, but can strike before contact.
+**Arrow (Hero Attack):** Ranged shot in **line-of-sight** up to **3 tiles** (2 damage). Fragile (8 HP, no armor), but can strike before contact.
 
 ## Baseline stats (tunable)
 - HP: **8**

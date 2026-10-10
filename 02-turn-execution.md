@@ -40,12 +40,12 @@ Repeat for `loops[i]` ticks:
 4) Else:
    - do hero default behavior (consume tick)
 5) Resolve pickups / proximity pickups (auto within 1 tile; no diagonal)
-6) Resolve trap damage/status, then end-of-loop status effects for the hero (poison, bleed, durations; see *Status effects* in `07-traps-and-board-mechanics.md`)
+6) Resolve region hazards (fog, smoke) and active vents under the hero
 7) Enemy tick:
    - each enemy updates based on its behavior rules
    - enemy randomness is deterministic per turn seed + enemyId + tick
 8) Update any timed mechanics (vents, conveyors, push plates)
-9) Resolve end-of-loop status effects for enemies; remove defeated enemies (leave corpses, roll seeded drops)
+9) Resolve end-of-loop status effects for the hero and enemies (poison, bleed, durations; see *Status effects* in `07-traps-and-board-mechanics.md`). Buffs from cards therefore protect against the enemy tick of the loop they were played in.
 
 ### 7) Turn end: discard and Pressure
 - Determine which cards were *placed into valid rows* (count as “placed” even if they never triggered).

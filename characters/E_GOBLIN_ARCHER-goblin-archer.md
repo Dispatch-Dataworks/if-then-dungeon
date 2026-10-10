@@ -8,8 +8,8 @@
 A goblin with a crude shortbow and mismatched arrows, hiding behind debris.
 
 ## Role on the board
-- **Danger:** 2 skull(s) · **Spawn cost:** 4 Pressure (base, before modifiers)
-- **Stats:** HP 2, armor 0, damage 1, attack range 4, speed 1 (see `enemies.json`)
+- **Danger:** 2 skull(s) · **Spawn cost:** 5 Pressure (base, before modifiers)
+- **Stats:** HP 2, armor 0, damage 1, attack range 3, speed 1 (see `enemies.json`)
 - Intended role: pressure, zoning, damage, support, or disruption.
 
 ## Core behavior (readable “rule”)

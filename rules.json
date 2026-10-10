@@ -18,7 +18,9 @@
       "OR"
     ],
     "trapsNoInstantKill": true,
-    "trapsLethalWhenIntroduced": true
+    "trapsLethalWhenIntroduced": true,
+    "maxEnemiesOnBoardFormula": "4 + floor(levelNumber / 6)",
+    "healPerTurn": 1
   },
   "retry": {
     "livesPerLevel": 3,
@@ -29,9 +31,9 @@
   "threatPressure": {
     "typeBase": {
       "sensor": 1,
-      "action": 2,
-      "operator": 3,
-      "hero_action": 3
+      "action": 1,
+      "operator": 2,
+      "hero_action": 2
     },
     "rarityBonus": {
       "common": 0,
