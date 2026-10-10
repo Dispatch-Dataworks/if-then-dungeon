@@ -2,6 +2,8 @@
 
 This document expands the previously identified “items 4–7” into practical, implementation-ready guidance for an **TypeScript (Vite) SPA PWA**. It is intentionally verbose and is meant to be used as a development reference and brainstorming guide.
 
+> **Relationship to `engine-spec.md`:** `engine-spec.md` is the authoritative spec for engine modules, data shapes and APIs. This document covers PWA, offline/caching, privacy and performance. Section 4 below overlaps with the engine spec; where they disagree, `engine-spec.md` wins.
+
 **Context (locked-in decisions):**
 - **No user accounts.** Gameplay data is saved locally on-device. A player may resume locally or “Start New” to wipe local saves.
 - Optional **moderated leaderboard**: players submit a nickname + score; submissions require admin review before becoming public.

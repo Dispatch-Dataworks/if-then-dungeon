@@ -41,3 +41,26 @@ This repository contains the complete written specification and JSON references 
 - `08-levels-and-progression.md` — 24-level plan, introductions, tuning knobs
 - `09-ui-and-teaching.md` — builder UI, explanation UI, kid-facing clarity
 - `10-json-reference.md` — JSON examples and reference objects
+- `engine-spec.md` — engine modules, data shapes, determinism and persistence (authoritative for implementation)
+- `technical-notes-4-7.md` — PWA, offline/caching, privacy and performance notes
+- `Style-guide.md` — colors, typography, UI styling and accessibility rules
+- `cards.json`, `levels.json`, `rules.json` — game content and tuning data
+- `characters/` — one sheet per hero, enemy, modifier, trap, mechanic and obstacle (see `characters/readme.md`)
+- `assets/placeholders/` — generated placeholder images for every card and character (temporary until final art)
+- `branding/` — logo and key-art concepts (see `branding/README.md`)
+
+## Development
+
+The game is built with TypeScript + Vite (see §0 of `engine-spec.md` for why).
+
+```sh
+npm install
+npm test               # engine unit tests + content validation
+npm run validate       # content validation only (cards.json, levels.json, character sheets, placeholders)
+npm run typecheck
+npm run dev            # local dev server
+npm run placeholders   # regenerate placeholder images after adding cards or character sheets
+```
+
+- `src/engine/` — pure simulation core (no DOM; seeded RNG only)
+- `tests/` — Vitest tests; CI runs typecheck and tests on every push (`.github/workflows/ci.yml`)

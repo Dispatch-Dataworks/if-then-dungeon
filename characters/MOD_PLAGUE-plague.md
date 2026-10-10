@@ -1,6 +1,7 @@
 # Plague (Modifier)
 
 **ID:** `MOD_PLAGUE`  
+**JSON key:** `plague` (used in `levels.json`)  
 **Category:** Enemy Modifier  
 **Theme:** disease / rot
 

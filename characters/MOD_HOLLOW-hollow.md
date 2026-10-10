@@ -1,6 +1,7 @@
 # Hollow (Modifier)
 
 **ID:** `MOD_HOLLOW`  
+**JSON key:** `hollow` (used in `levels.json`)  
 **Category:** Enemy Modifier  
 **Theme:** undead
 

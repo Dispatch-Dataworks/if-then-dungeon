@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="420" viewBox="0 0 300 420" role="img" aria-label="ENEMY MODIFIER: Hollow (placeholder)">
+  <rect width="300" height="420" rx="18" fill="#0A0A14"/>
+  <rect x="8" y="8" width="284" height="404" rx="14" fill="#1A1A2E" stroke="#C77DFF" stroke-width="4"/>
+  <rect x="24" y="56" width="252" height="200" rx="8" fill="#2C3146"/>
+  <text x="150" y="40" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="2" fill="#C77DFF">ENEMY MODIFIER</text>
+  <path d="M150,101 L205,156 L150,211 L95,156Z" fill="none" stroke="#C77DFF" stroke-width="6" stroke-linejoin="round"/>
+  <text x="150" y="300" text-anchor="middle" font-family="Cinzel, Georgia, serif" font-size="24" font-weight="700" fill="#F2E6CF">Hollow</text>
+  <text x="150" y="330" text-anchor="middle" font-family="monospace" font-size="12" fill="#CDB38B">MOD_HOLLOW</text>
+  
+  <text x="150" y="402" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-size="10" letter-spacing="3" fill="#CDB38B">PLACEHOLDER</text>
+</svg>

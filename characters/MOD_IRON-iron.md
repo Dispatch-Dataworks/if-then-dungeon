@@ -1,6 +1,7 @@
 # Iron (Modifier)
 
 **ID:** `MOD_IRON`  
+**JSON key:** `iron` (used in `levels.json`)  
 **Category:** Enemy Modifier  
 **Theme:** armor
 

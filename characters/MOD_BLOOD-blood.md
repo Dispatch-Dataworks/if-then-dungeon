@@ -1,6 +1,7 @@
 # Blood (Modifier)
 
 **ID:** `MOD_BLOOD`  
+**JSON key:** `blood` (used in `levels.json`)  
 **Category:** Enemy Modifier  
 **Theme:** slaughter
 
