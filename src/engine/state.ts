@@ -24,6 +24,8 @@ export interface HeroState {
   shardArmor: number;
   runeSpeed: number;
   movedThisLoop: boolean;
+  /** Berserker Rage Meter: the next Heavy Strike deals +1. */
+  rage?: boolean;
 }
 
 export interface EnemyState {
@@ -79,6 +81,14 @@ export interface GameState {
   wardTurns: number;
   deck: DeckState;
   hand: CardInstance[];
+  /** Active hero upgrade ids (see upgrades.ts). */
+  upgrades: string[];
+  /** Once-per-turn upgrade uses; cleared at the start of each turn. */
+  turnFlags: Record<string, number>;
+  /** Loops executed so far this turn. */
+  loopInTurn: number;
+  /** True when the hero waited or held this loop (Fortify, Brace). */
+  heldThisLoop: boolean;
   status: "playing" | "won" | "lost";
   /** Set when the hero dies; the controller rewinds to the turn-start snapshot. */
   diedThisTurn: boolean;
@@ -96,7 +106,7 @@ export function boardOf(state: { levelId: number }): StaticBoard {
 }
 export const levelOf = (state: { levelId: number }): LevelDef => getLevel(state.levelId);
 
-export function createState(levelId: number, heroId: string, seed: number): GameState {
+export function createState(levelId: number, heroId: string, seed: number, upgrades: string[] = []): GameState {
   const level = getLevel(levelId);
   const board = parseBoard(level);
   const hero = HEROES[heroId];
@@ -128,6 +138,10 @@ export function createState(levelId: number, heroId: string, seed: number): Game
     wardTurns: 0,
     deck: { drawPile: shuffle(createRng(seedFrom(seed, "deck")), cards), discardPile: [] },
     hand: [],
+    upgrades: [...upgrades],
+    turnFlags: {},
+    loopInTurn: 0,
+    heldThisLoop: false,
     status: "playing",
     diedThisTurn: false,
     log: [],
@@ -178,7 +192,7 @@ export function inSmoke(state: GameState, p: Vec) {
 }
 
 export function heroSight(state: GameState): number {
-  const smoke = inSmoke(state, state.hero.pos) ? CONTENT.traps.T_SMOKE_VENTS!.visibilityPenalty ?? 1 : 0;
+  const smoke = inSmoke(state, state.hero.pos) && !state.upgrades.includes("U_SMOKE_STEP") ? CONTENT.traps.T_SMOKE_VENTS!.visibilityPenalty ?? 1 : 0;
   const ashen = state.enemies.some((e) => e.modifier === "ashen" && manhattan(e.pos, state.hero.pos) <= 1) ? 1 : 0;
   return Math.max(1, state.hero.sightRange - smoke - ashen);
 }

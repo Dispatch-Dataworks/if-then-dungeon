@@ -24,6 +24,7 @@ export interface HeroDef {
   unlockAfterLevel: number;
   baseStats: { hp: number; armor: number; speedTiles: number; sightRange: number };
   defaultBehavior: { key: string; text: string };
+  upgrades: { id: string; name: string; unlockAfterLevelsClearedWithHero: number; effect: string }[];
   heroAttack: {
     name: string;
     key: string;

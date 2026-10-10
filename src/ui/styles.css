@@ -141,6 +141,11 @@ img { max-width: 100%; }
 .hero-pick.is-locked { opacity: 0.55; cursor: not-allowed; }
 .hero-pick.is-locked .hero-pick__art { filter: grayscale(1); }
 .hero-detail { font-size: 0.95rem; }
+.upgrades h3 { font-size: 1rem; margin: 12px 0 6px; }
+.upgrades__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.upgrade { display: flex; gap: 8px; align-items: baseline; font-size: 0.9rem; color: var(--text-muted, #CDB38B); }
+.upgrade.is-earned { color: inherit; }
+.upgrade__need { min-width: 1.6em; text-align: center; border: 1px solid currentColor; border-radius: 999px; font-size: 0.75rem; }
 
 .levels-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 .themes { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }

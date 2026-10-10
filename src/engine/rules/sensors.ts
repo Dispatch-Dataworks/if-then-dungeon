@@ -11,7 +11,8 @@ type Sensor = (state: GameState, params: Record<string, any>) => boolean;
 
 const withinOf = (state: GameState, d: number) => state.enemies.filter((e) => manhattan(e.pos, state.hero.pos) <= d);
 /** Hazard detection range: 1 tile ahead (2 for a Rogue with Trap Sense is an upgrade hook). */
-const aheadTiles = (state: GameState): Vec[] => [forwardOf(state)];
+const aheadTiles = (state: GameState): Vec[] =>
+  state.upgrades.includes("U_TRAP_SENSE") ? [forwardOf(state), forwardOf(state, 2)] : [forwardOf(state)];
 
 const SENSORS: Record<string, Sensor> = {
   wall_ahead: (s) => obstacleAt(s, forwardOf(s)) !== null || (isIllusion(s, forwardOf(s)) && isRevealed(s, forwardOf(s))),
@@ -56,10 +57,11 @@ const SENSORS: Record<string, Sensor> = {
   phase_threat_next_loop: (s) => s.enemies.some((e) => enemyTags(e).includes("phase") && manhattan(e.pos, s.hero.pos) <= 2),
   illusion_ahead: (s) => isIllusion(s, forwardOf(s)),
   blood_tile_within: (s, p) => {
-    for (let dy = -(p.distance ?? 2); dy <= (p.distance ?? 2); dy++) {
-      for (let dx = -(p.distance ?? 2); dx <= (p.distance ?? 2); dx++) {
+    const r = (p.distance ?? 2) + (s.upgrades.includes("U_BLOOD_SENSE") ? 1 : 0);
+    for (let dy = -r; dy <= r; dy++) {
+      for (let dx = -r; dx <= r; dx++) {
         const t = { x: s.hero.pos.x + dx, y: s.hero.pos.y + dy };
-        if (Math.abs(dx) + Math.abs(dy) <= (p.distance ?? 2) && isBloodTile(s, t)) return true;
+        if (Math.abs(dx) + Math.abs(dy) <= r && isBloodTile(s, t)) return true;
       }
     }
     return false;

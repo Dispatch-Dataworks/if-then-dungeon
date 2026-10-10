@@ -3,6 +3,7 @@ import { add, bfs, DIRS, dirTo, eq, manhattan, right, type Vec } from "./board";
 import { CONTENT, ENEMIES, MODIFIERS } from "./content";
 import { applyStatus, damageEnemy, damageHero, rollStatus } from "./effects";
 import { enterTile, statusWord } from "./hero";
+import { applyHeroStatus, resistsPush } from "./upgrades";
 import { chance } from "./rng";
 import {
   boardOf, emit, enemyAt, enemyDamage, enemyName, hasLoS, hazardous, inBounds, open, solid, trapAt,
@@ -132,17 +133,17 @@ function attack(s: GameState, e: EnemyState) {
   const ranged = manhattan(e.pos, s.hero.pos) > 1;
   const dmg = enemyDamage(e);
   emit(s, "enemy_attack", `${enemyName(e)} ${ranged ? "shoots" : "attacks"}!`, e.pos);
-  damageHero(s, dmg, enemyName(e), { ranged });
+  damageHero(s, dmg, enemyName(e), { ranged, kind: ranged ? "ranged" : "melee" });
   if (s.hero.hp <= 0) return;
   const onHits = [def.statusOnHit, e.modifier ? MODIFIERS[e.modifier]?.statusOnHit : undefined];
   for (const onHit of onHits) {
     if (!onHit || !rollStatus(s, onHit, `enemy-hit-${e.uid}-${onHit.status}`)) continue;
     const alt = (onHit as { altStatus?: string }).altStatus;
     const st = alt && roll(s, e, "alt") < 0.5 ? alt : onHit.status;
-    if (applyStatus(s.hero.statuses, st, onHit.stacks)) emit(s, "status", `The hero is ${statusWord(st)}.`, s.hero.pos);
-    if (e.modifier === "cursed") applyStatus(s.hero.statuses, "hesitation", 1);
+    if (applyHeroStatus(s, st, onHit.stacks)) emit(s, "status", `The hero is ${statusWord(st)}.`, s.hero.pos);
+    if (e.modifier === "cursed") applyHeroStatus(s, "hesitation", 1);
   }
-  if (def.pushOnHitTiles && s.hero.hp > 0 && !s.hero.statuses.push_resist) {
+  if (def.pushOnHitTiles && s.hero.hp > 0 && !resistsPush(s, "shove")) {
     const dir = dirTo(e.pos, s.hero.pos);
     const to = dir ? add(s.hero.pos, dir) : undefined;
     if (to && open(s, to)) {
@@ -173,7 +174,7 @@ export function enemyAct(s: GameState, e: EnemyState) {
     if (d <= def.attackRange && hasLoS(s, e.pos, s.hero.pos) && (s.loop + e.uid) % 2 === 0) {
       const status = roll(s, e, "pulse") < 0.5 ? "fear" : "cursed";
       emit(s, "enemy_attack", `${enemyName(e)} chants a ${status === "fear" ? "fear" : "curse"} spell!`, e.pos);
-      if (applyStatus(s.hero.statuses, status)) emit(s, "status", `The hero is ${statusWord(status)}.`, s.hero.pos);
+      if (applyHeroStatus(s, status)) emit(s, "status", `The hero is ${statusWord(status)}.`, s.hero.pos);
       return;
     }
     if (d < 2) return flee(s, e);

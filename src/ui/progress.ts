@@ -1,11 +1,14 @@
 /** Campaign progress in localStorage. Every access is guarded: the game must work when storage is blocked. */
 import { HERO_LIST, LEVELS } from "../engine/content";
+import { unlockedUpgrades } from "../engine/upgrades";
 import { prefersReducedMotion } from "./dom";
 
 export interface Progress {
   version: 1;
   /** Level IDs cleared at least once. */
   cleared: number[];
+  /** Hero id -> level IDs cleared with that hero (drives hero upgrades). */
+  heroClears: Record<string, number[]>;
   /** Level IDs whose "What's new" panel has been shown. */
   seenIntro: number[];
   heroId: string;
@@ -14,7 +17,7 @@ export interface Progress {
 }
 
 const KEY = "if-then-dungeon.progress.v1";
-const fresh = (): Progress => ({ version: 1, cleared: [], seenIntro: [], heroId: "H_SWORDSMAN", speed: prefersReducedMotion() ? 0 : 1 });
+const fresh = (): Progress => ({ version: 1, cleared: [], heroClears: {}, seenIntro: [], heroId: "H_SWORDSMAN", speed: prefersReducedMotion() ? 0 : 1 });
 
 let memory: Progress = load();
 
@@ -29,6 +32,11 @@ function load(): Progress {
       ...p,
       cleared: Array.isArray(p.cleared) ? p.cleared.filter((n) => typeof n === "number") : [],
       seenIntro: Array.isArray(p.seenIntro) ? p.seenIntro.filter((n) => typeof n === "number") : [],
+      heroClears: Object.fromEntries(
+        Object.entries(p.heroClears && typeof p.heroClears === "object" ? p.heroClears : {})
+          .filter(([, v]) => Array.isArray(v))
+          .map(([k, v]) => [k, (v as unknown[]).filter((n): n is number => typeof n === "number")]),
+      ),
     };
   } catch {
     return fresh();
@@ -50,11 +58,19 @@ export function update(change: (p: Progress) => void) {
   save();
 }
 
-export function markCleared(levelId: number) {
+export function markCleared(levelId: number, heroId: string) {
   update((p) => {
     if (!p.cleared.includes(levelId)) p.cleared.push(levelId);
+    const mine = (p.heroClears[heroId] ??= []);
+    if (!mine.includes(levelId)) mine.push(levelId);
   });
 }
+
+/** Different levels cleared with this hero. */
+export const heroLevelsCleared = (heroId: string) => (unlockAll ? 99 : memory.heroClears[heroId]?.length ?? 0);
+
+/** Upgrade ids this hero has earned (all of them with ?unlock=all). */
+export const heroUpgrades = (heroId: string) => unlockedUpgrades(heroId, heroLevelsCleared(heroId));
 
 export function resetProgress() {
   memory = fresh();

@@ -3,8 +3,22 @@ import { HERO_LIST, HEROES, getLevel } from "../engine/content";
 import { portraitEl } from "./cards";
 import { glyph, h, replace } from "./dom";
 import { openModal } from "./modal";
-import { heroUnlocked, levelUnlocked, progress, resetProgress, update } from "./progress";
+import { heroLevelsCleared, heroUnlocked, heroUpgrades, levelUnlocked, progress, resetProgress, update } from "./progress";
 import { cardText, levelBlurb, THEMES } from "./text";
+
+/** The chosen hero's three upgrades: earned ones checked, the rest showing how many clears they need. */
+function upgradeList(heroId: string) {
+  const earned = heroUpgrades(heroId);
+  const clears = heroLevelsCleared(heroId);
+  return h("div", { class: "upgrades" },
+    h("h3", null, "Upgrades ", h("small", { class: "muted" }, clears >= 99 ? "(review mode: all upgrades on)" : `(levels cleared with this hero: ${clears})`)),
+    h("ul", { class: "upgrades__list" }, HEROES[heroId]!.upgrades.map((u) => {
+      const got = earned.includes(u.id);
+      return h("li", { class: `upgrade${got ? " is-earned" : ""}` },
+        got ? glyph("check") : h("span", { class: "upgrade__need" }, `${u.unlockAfterLevelsClearedWithHero}`),
+        h("span", null, h("b", null, `${u.name}: `), u.effect, got ? "" : ` (clear ${u.unlockAfterLevelsClearedWithHero} levels with this hero)`));
+    })));
+}
 
 export function showTitle(root: HTMLElement, startLevel: (levelId: number) => void) {
   const render = () => {
@@ -57,7 +71,8 @@ export function showTitle(root: HTMLElement, startLevel: (levelId: number) => vo
       h("section", { class: "panel" },
         h("h2", null, "Choose your hero"),
         heroes,
-        h("p", { class: "hero-detail" }, h("b", null, `${chosen.name}: `), `When no rule fires, ${chosen.defaultBehavior.text.charAt(0).toLowerCase()}${chosen.defaultBehavior.text.slice(1)} `, h("br"), h("b", null, "Hero Attack: "), cardText("A_HERO_ATTACK", chosen.id))),
+        h("p", { class: "hero-detail" }, h("b", null, `${chosen.name}: `), `When no rule fires, ${chosen.defaultBehavior.text.charAt(0).toLowerCase()}${chosen.defaultBehavior.text.slice(1)} `, h("br"), h("b", null, "Hero Attack: "), cardText("A_HERO_ATTACK", chosen.id)),
+        upgradeList(chosen.id)),
       h("section", { class: "panel" },
         h("div", { class: "levels-head" },
           h("h2", null, "Levels"),

@@ -27,7 +27,8 @@ Rules:
 | Level 15 | Sentinel, Berserker | Blood Arena brings armor and bleed |
 | Level 18 | Ranger, Hunter | Rotwood brings snares and blood trails |
 
-- Each hero has 3 upgrades that unlock after clearing 2, 4 and 6 levels **with that hero**, which rewards switching heroes.
+- Each hero has 3 upgrades that unlock after clearing 2, 4 and 6 different levels **with that hero**, which rewards switching heroes. Upgrades are always on once earned (no choosing), and the hero picker shows progress toward the next one.
+- Upgrade effects are listed in `heroes.json` and implemented in `src/engine/upgrades.ts` plus the rules they change. Many are "once per turn" (Parry, Bulwark, Heavy Boots, Vent Mastery, Unstoppable, Cleanse, Trap Interaction, Evasion, Illumination's free impact).
 - All numbers (stats, attack damage and range, upgrade effects) are in `heroes.json`.
 - No hero has exclusive card types; some cards change effect per hero (Hero Attack, some utility cards).
 

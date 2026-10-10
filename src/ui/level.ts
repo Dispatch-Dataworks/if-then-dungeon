@@ -14,7 +14,8 @@ import { cardEl, chipEl, portraitEl } from "./cards";
 import { glyph, h, prefersReducedMotion, replace, type Child } from "./dom";
 import { describeTile, entryFor, type InfoEntry } from "./info";
 import { openModal } from "./modal";
-import { heroesUnlockedBy, markCleared, progress, update } from "./progress";
+import { heroUpgrades, heroesUnlockedBy, markCleared, progress, update } from "./progress";
+import { upgradeName } from "../engine/upgrades";
 import { eventText, levelTitle, nameOf, statusLabel, themeOf } from "./text";
 
 export interface Nav {
@@ -74,7 +75,7 @@ export class LevelScreen {
     h("h2", { id: "log-title" }, "What happened"), this.logList);
 
   constructor(private readonly root: HTMLElement, private readonly levelId: number, private readonly heroId: string, private readonly nav: Nav) {
-    this.game = newGame(levelId, heroId, levelSeed(levelId));
+    this.game = newGame(levelId, heroId, levelSeed(levelId), heroUpgrades(heroId));
     this.shown = this.game.state;
     this.builder = new RowBuilder(() => this.game.state.hand, heroId, (d) => this.roll(d));
     const theme = themeOf(levelId);
@@ -535,7 +536,9 @@ export class LevelScreen {
   private wonDialog() {
     const s = this.game.state;
     const firstClear = !progress().cleared.includes(this.levelId);
-    markCleared(this.levelId);
+    const upgradesBefore = heroUpgrades(this.heroId);
+    markCleared(this.levelId, this.heroId);
+    const newUpgrades = heroUpgrades(this.heroId).filter((u) => !upgradesBefore.includes(u));
     const unlockedHeroes = firstClear ? heroesUnlockedBy(this.levelId) : [];
     const idx = LEVELS.findIndex((l) => l.levelId === this.levelId);
     const next = LEVELS[idx + 1];
@@ -551,6 +554,7 @@ export class LevelScreen {
           h("li", null, `Pressure left: ${s.pressure}`)),
         next && firstClear ? h("p", { class: "unlock" }, glyph("check"), ` Unlocked: Level ${next.levelId} (${themeOf(next.levelId).name})`) : null,
         unlockedHeroes.map((hero) => h("p", { class: "unlock" }, glyph("hero_action"), ` New hero: ${hero.name}! Pick them on the level screen.`)),
+        newUpgrades.map((id) => h("p", { class: "unlock" }, glyph("check"), ` Upgrade earned: ${upgradeName(id)}. ${HEROES[this.heroId]!.upgrades.find((u) => u.id === id)!.effect}`)),
       ],
       actions: [
         ...(next ? [{ label: `Next: Level ${next.levelId}`, primary: true, onClick: () => this.nav.toLevel(next.levelId) }] : []),

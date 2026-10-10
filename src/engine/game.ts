@@ -2,7 +2,8 @@
 import { eq, manhattan } from "./board";
 import { CARDS, COSTS, CONTENT, ENEMIES, MODIFIER_COSTS, MODIFIERS, RULES, pressureSpendCap } from "./content";
 import { draw, ensureMinimum, type CardInstance, type DeckState } from "./deck";
-import { collectPickups, damageHero, applyStatus, tickStatuses } from "./effects";
+import { collectPickups, damageHero, tickStatuses } from "./effects";
+import { afterHeroAction, applyHeroStatus, resistsPush } from "./upgrades";
 import { enemyAct, enemyLoopEnd } from "./enemy";
 import { defaultBehavior, enterTile, performAction } from "./hero";
 import { createRng, chance, roll, seedFrom } from "./rng";
@@ -49,8 +50,9 @@ export const MAX_TURNS = 40;
 
 const clone = <T>(x: T): T => structuredClone(x);
 
-export function newGame(levelId: number, heroId: string, seed: number): Game {
-  const state = createState(levelId, heroId, seed);
+/** `upgrades`: the hero's unlocked upgrade ids (see `unlockedUpgrades` in upgrades.ts). */
+export function newGame(levelId: number, heroId: string, seed: number, upgrades: string[] = []): Game {
+  const state = createState(levelId, heroId, seed, upgrades);
   spawnFromPressure(state);
   state.hand = deal(seedFrom(seed, "deal", 0), state.deck);
   state.log = [];
@@ -107,6 +109,8 @@ export function playTurn(game: Game, drafts: RowDraft[], opts: { loops?: number[
   const loops = opts.loops ?? rollLoops(s, rows.length);
   const frames: Frame[] = [];
   s.log = [];
+  s.turnFlags = {};
+  s.loopInTurn = 0;
   emit(s, "turn", `Turn ${s.turnIndex + 1}: ${rows.length} row(s), loops ${loops.join(" / ")}.`);
 
   outer: for (let r = 0; r < rows.length; r++) {
@@ -178,7 +182,7 @@ export function playTurn(game: Game, drafts: RowDraft[], opts: { loops?: number[
 
 /** Restart the level from scratch (after losing all lives). Same seed, so the same first deal. */
 export function restartLevel(game: Game): Game {
-  const fresh = newGame(game.state.levelId, game.state.heroId, game.state.seed);
+  const fresh = newGame(game.state.levelId, game.state.heroId, game.state.seed, game.state.upgrades);
   fresh.deaths = game.deaths;
   fresh.levelRestarts = game.levelRestarts + 1;
   return fresh;
@@ -187,6 +191,7 @@ export function restartLevel(game: Game): Game {
 function runLoop(s: GameState, row: ParsedRow): Frame["fired"] {
   const h = s.hero;
   h.movedThisLoop = false;
+  s.heldThisLoop = false;
   let fired: Frame["fired"];
   const truth = evalPredicate(s, row.predicate);
   emit(s, "eval", `${describeRow(row)} → ${truth ? "TRUE" : "FALSE"}`, undefined, { truth });
@@ -203,6 +208,7 @@ function runLoop(s: GameState, row: ParsedRow): Frame["fired"] {
       emit(s, "wait", "Stunned/hesitating: the hero loses the loop.", h.pos);
     } else defaultBehavior(s);
   }
+  if (s.status === "playing" && h.hp > 0) afterHeroAction(s);
   if (s.status !== "playing") return fired;
 
   collectPickups(s);
@@ -210,13 +216,12 @@ function runLoop(s: GameState, row: ParsedRow): Frame["fired"] {
   const trap = trapAt(s, h.pos);
   const trapDef = trap ? CONTENT.traps[trap] : undefined;
   if (trapDef?.damagePerLoop) {
-    damageHero(s, trapDef.damagePerLoop, trap === "T_POISON_FOG" ? "Poison fog" : "Smoke", { ignoreArmor: true });
+    damageHero(s, trapDef.damagePerLoop, trap === "T_POISON_FOG" ? "Poison fog" : "Smoke", { ignoreArmor: true, kind: "region" });
     if (trapDef.appliesStatus && chance(s.seed, s.turnIndex, s.loop, "fog") * 100 < (trapDef.statusChancePercent ?? 100)) {
-      applyStatus(h.statuses, trapDef.appliesStatus[0]!, trapDef.statusStacks);
-      emit(s, "status", "The hero is poisoned.", h.pos);
+      if (h.hp > 0 && applyHeroStatus(s, trapDef.appliesStatus[0]!, trapDef.statusStacks)) emit(s, "status", "The hero is poisoned.", h.pos);
     }
   }
-  if (ventActive(s, h.pos)) damageHero(s, CONTENT.mechanics.M_TIMED_VENTS!.damage ?? 2, "A steam vent", { ignoreArmor: true });
+  if (ventActive(s, h.pos)) damageHero(s, CONTENT.mechanics.M_TIMED_VENTS!.damage ?? 2, "A steam vent", { ignoreArmor: true, kind: "vent" });
 
   for (const e of [...s.enemies].sort((a, b) => a.uid - b.uid)) {
     if (h.hp <= 0 || s.status !== "playing") break;
@@ -226,16 +231,17 @@ function runLoop(s: GameState, row: ParsedRow): Frame["fired"] {
   const mech = mechanicAt(s, h.pos);
   if (mech?.id === "M_CONVEYOR" && mech.dir && h.hp > 0 && s.status === "playing") {
     const to = { x: h.pos.x + (mech.dir === "E" ? 1 : mech.dir === "W" ? -1 : 0), y: h.pos.y + (mech.dir === "S" ? 1 : mech.dir === "N" ? -1 : 0) };
-    if (open(s, to)) {
+    if (open(s, to) && !resistsPush(s, "conveyor")) {
       emit(s, "push", "The conveyor carries the hero.", to);
       enterTile(s, to);
     }
   }
 
-  tickStatuses(h.statuses, h.movedThisLoop, (dmg, why) => damageHero(s, dmg, why, { ignoreArmor: true }));
+  tickStatuses(h.statuses, h.movedThisLoop, (dmg, why) => damageHero(s, dmg, why, { ignoreArmor: true, kind: "status" }));
   enemyLoopEnd(s);
   s.bloodTiles = s.bloodTiles.map((b) => ({ ...b, loops: b.loops - 1 })).filter((b) => b.loops > 0);
   s.loop++;
+  s.loopInTurn++;
   return fired;
 }
 

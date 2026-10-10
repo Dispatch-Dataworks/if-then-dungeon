@@ -1,7 +1,7 @@
 {
   "file": "heroes.json",
   "version": "0.1.0",
-  "note": "Starter heroes are available from the start. Advanced heroes unlock after the listed level, just before the theme they suit best. Upgrades unlock by levels cleared with that hero, which rewards trying different heroes.",
+  "note": "Starter heroes are available from the start. Advanced heroes unlock after the listed level, just before the theme they suit best. Upgrades unlock by levels cleared with that hero, which rewards trying different heroes. Upgrades are active in the engine (src/engine/upgrades.ts).",
   "heroes": [
     {
       "id": "H_SWORDSMAN",
@@ -12,9 +12,9 @@
       "defaultBehavior": {"key": "forward_or_rotate_clockwise", "text": "Move forward 1. If blocked, rotate clockwise to the nearest open tile and move; otherwise wait."},
       "heroAttack": {"name": "Slash", "key": "melee", "damage": 2, "range": 1, "bonus": {"vsTag": "swarm", "damageAdd": 1}},
       "upgrades": [
-        {"id": "U_CLEAVE", "name": "Cleave", "unlockAfterLevelsClearedWithHero": 2, "effect": "Slash also hits the tile behind the target."},
-        {"id": "U_PARRY", "name": "Parry", "unlockAfterLevelsClearedWithHero": 4, "effect": "Once per turn, reduce one hit by 1."},
-        {"id": "U_HEAVY_BOOTS", "name": "Heavy Boots", "unlockAfterLevelsClearedWithHero": 6, "effect": "Ignore the first push per turn."}
+        {"id": "U_CLEAVE", "name": "Cleave", "unlockAfterLevelsClearedWithHero": 2, "effect": "Slash also hits an enemy standing directly behind the target."},
+        {"id": "U_PARRY", "name": "Parry", "unlockAfterLevelsClearedWithHero": 4, "effect": "The first enemy hit each turn deals 1 less damage."},
+        {"id": "U_HEAVY_BOOTS", "name": "Heavy Boots", "unlockAfterLevelsClearedWithHero": 6, "effect": "Ignore the first push each turn (push plates, shoves, conveyors)."}
       ]
     },
     {
@@ -40,9 +40,9 @@
       "defaultBehavior": {"key": "hold_if_enemy_adjacent_else_forward", "text": "Hold if an enemy is adjacent; otherwise move forward 1 (turn right, then left, if blocked)."},
       "heroAttack": {"name": "Shield Bash", "key": "melee_push", "damage": 1, "range": 1, "pushTiles": 1},
       "upgrades": [
-        {"id": "U_FORTIFY", "name": "Fortify", "unlockAfterLevelsClearedWithHero": 2, "effect": "Wait/Hold grants ranged_resist 1 until your next action."},
-        {"id": "U_BULWARK", "name": "Bulwark", "unlockAfterLevelsClearedWithHero": 4, "effect": "Ignore the first trap damage per turn (statuses still apply)."},
-        {"id": "U_BASH_MASTERY", "name": "Bash Mastery", "unlockAfterLevelsClearedWithHero": 6, "effect": "Shield Bash pushes even into a tile with a trap."}
+        {"id": "U_FORTIFY", "name": "Fortify", "unlockAfterLevelsClearedWithHero": 2, "effect": "Wait/Hold (or holding by default) grants ranged_resist until your next action."},
+        {"id": "U_BULWARK", "name": "Bulwark", "unlockAfterLevelsClearedWithHero": 4, "effect": "The first trap each turn deals no damage (its status still applies)."},
+        {"id": "U_BASH_MASTERY", "name": "Bash Mastery", "unlockAfterLevelsClearedWithHero": 6, "effect": "Shield Bash pushes 2 tiles, and enemies pushed onto damaging traps trigger them."}
       ]
     },
     {
@@ -55,8 +55,8 @@
       "heroAttack": {"name": "Stab", "key": "melee", "damage": 2, "range": 1, "bonus": {"vsStatus": ["slowed", "snare_root", "stun"], "vsUnaware": true, "damageAdd": 2}},
       "upgrades": [
         {"id": "U_SMOKE_STEP", "name": "Smoke Step", "unlockAfterLevelsClearedWithHero": 2, "effect": "Ignore the smoke visibility penalty."},
-        {"id": "U_TRAP_SENSE", "name": "Trap Sense", "unlockAfterLevelsClearedWithHero": 4, "effect": "Hazard and trap sensors see 1 tile further."},
-        {"id": "U_BACKSTAB", "name": "Backstab", "unlockAfterLevelsClearedWithHero": 6, "effect": "Stab bonus becomes +3."}
+        {"id": "U_TRAP_SENSE", "name": "Trap Sense", "unlockAfterLevelsClearedWithHero": 4, "effect": "Trap and hazard sensors also check the tile 2 ahead."},
+        {"id": "U_BACKSTAB", "name": "Backstab", "unlockAfterLevelsClearedWithHero": 6, "effect": "Stab's bonus becomes +3."}
       ]
     },
     {
@@ -69,8 +69,8 @@
       "heroAttack": {"name": "Throw Vial", "key": "ranged_tile_splash", "damage": 2, "range": 3, "statusOnHit": {"status": "poison", "stacks": 1}},
       "upgrades": [
         {"id": "U_ANTITOXIN", "name": "Antitoxin", "unlockAfterLevelsClearedWithHero": 2, "effect": "Poison never stacks above 1 on you."},
-        {"id": "U_NEUTRALIZER", "name": "Neutralizer", "unlockAfterLevelsClearedWithHero": 4, "effect": "Once per turn, a vial that lands on fog or smoke clears it for 2 loops."},
-        {"id": "U_VOLATILE_MIX", "name": "Volatile Mix", "unlockAfterLevelsClearedWithHero": 6, "effect": "Vial also hits the 4 tiles around the target."}
+        {"id": "U_NEUTRALIZER", "name": "Neutralizer", "unlockAfterLevelsClearedWithHero": 4, "effect": "Poison fog and smoke deal you no damage."},
+        {"id": "U_VOLATILE_MIX", "name": "Volatile Mix", "unlockAfterLevelsClearedWithHero": 6, "effect": "Throw Vial also deals 1 damage to enemies next to the target."}
       ]
     },
     {
@@ -84,7 +84,7 @@
       "upgrades": [
         {"id": "U_VENT_MASTERY", "name": "Vent Mastery", "unlockAfterLevelsClearedWithHero": 2, "effect": "The first vent damage each turn is 0."},
         {"id": "U_PUSH_PLATE_RESIST", "name": "Push Plate Resist", "unlockAfterLevelsClearedWithHero": 4, "effect": "Immune to push plates."},
-        {"id": "U_DISCIPLINE", "name": "Discipline", "unlockAfterLevelsClearedWithHero": 6, "effect": "Stun chance 40%."}
+        {"id": "U_DISCIPLINE", "name": "Discipline", "unlockAfterLevelsClearedWithHero": 6, "effect": "Focused Strike stun chance 40%."}
       ]
     },
     {
@@ -96,9 +96,9 @@
       "defaultBehavior": {"key": "cautious_avoid_cursed", "text": "Move forward, but treat visible curse sigils as walls."},
       "heroAttack": {"name": "Smite", "key": "melee", "damage": 2, "range": 1, "bonus": {"vsTag": "undead", "damageAdd": 2}},
       "upgrades": [
-        {"id": "U_CLEANSE", "name": "Cleanse", "unlockAfterLevelsClearedWithHero": 2, "effect": "Once per turn, after acting, remove one negative status."},
+        {"id": "U_CLEANSE", "name": "Cleanse", "unlockAfterLevelsClearedWithHero": 2, "effect": "Once per turn, after acting, remove one harmful status."},
         {"id": "U_WARD", "name": "Ward", "unlockAfterLevelsClearedWithHero": 4, "effect": "Immune to fear and cursed during the first 2 loops of each turn."},
-        {"id": "U_BLESSED_STRIKE", "name": "Blessed Strike", "unlockAfterLevelsClearedWithHero": 6, "effect": "Smite reach 2; undead bonus +3."}
+        {"id": "U_BLESSED_STRIKE", "name": "Blessed Strike", "unlockAfterLevelsClearedWithHero": 6, "effect": "Smite reaches 2 tiles; undead bonus +3."}
       ]
     },
     {
@@ -112,7 +112,7 @@
       "upgrades": [
         {"id": "U_ILLUMINATION", "name": "Illumination", "unlockAfterLevelsClearedWithHero": 2, "effect": "Illuminate radius +1; the first illusion-wall impact each turn deals 0."},
         {"id": "U_WARDBREAKER", "name": "Wardbreaker", "unlockAfterLevelsClearedWithHero": 4, "effect": "Arc Bolt ignores 1 armor."},
-        {"id": "U_CURSE_MITIGATION", "name": "Curse Mitigation", "unlockAfterLevelsClearedWithHero": 6, "effect": "cursed and fear last 1 loop on you."}
+        {"id": "U_CURSE_MITIGATION", "name": "Curse Mitigation", "unlockAfterLevelsClearedWithHero": 6, "effect": "cursed and fear last only 1 loop on you."}
       ]
     },
     {
@@ -125,7 +125,7 @@
       "heroAttack": {"name": "Spear Thrust", "key": "line_reach", "damage": 2, "range": 2},
       "upgrades": [
         {"id": "U_PIERCE", "name": "Pierce", "unlockAfterLevelsClearedWithHero": 2, "effect": "Spear Thrust ignores 1 armor."},
-        {"id": "U_BRACE", "name": "Brace", "unlockAfterLevelsClearedWithHero": 4, "effect": "Immune to pushback while holding."},
+        {"id": "U_BRACE", "name": "Brace", "unlockAfterLevelsClearedWithHero": 4, "effect": "On loops where you hold or wait, pushes don't move you."},
         {"id": "U_CROWD_CONTROL", "name": "Crowd Control", "unlockAfterLevelsClearedWithHero": 6, "effect": "Spear Thrust applies slowed for 1 loop."}
       ]
     },
@@ -138,7 +138,7 @@
       "defaultBehavior": {"key": "charge_nearest_visible", "text": "Move toward the nearest visible enemy; if none, move forward."},
       "heroAttack": {"name": "Heavy Strike", "key": "melee", "damage": 3, "range": 1, "statusOnHit": {"status": "bleed", "stacks": 1, "chancePercent": 25}},
       "upgrades": [
-        {"id": "U_RAGE_METER", "name": "Rage Meter", "unlockAfterLevelsClearedWithHero": 2, "effect": "After taking damage, the next Heavy Strike deals +1."},
+        {"id": "U_RAGE_METER", "name": "Rage Meter", "unlockAfterLevelsClearedWithHero": 2, "effect": "After taking damage, your next Heavy Strike deals +1."},
         {"id": "U_BLOOD_RESISTANCE", "name": "Blood Resistance", "unlockAfterLevelsClearedWithHero": 4, "effect": "Bleed never stacks above 1 on you."},
         {"id": "U_UNSTOPPABLE", "name": "Unstoppable", "unlockAfterLevelsClearedWithHero": 6, "effect": "Once per turn, ignore snare_root on a move."}
       ]
@@ -152,9 +152,9 @@
       "defaultBehavior": {"key": "kite", "text": "If an enemy is within 2 tiles, move away; else move forward."},
       "heroAttack": {"name": "Volley", "key": "ranged_nearest", "damage": 1, "range": 4, "bonus": {"vsStatus": ["mark"], "ignoresLoS": true}},
       "upgrades": [
-        {"id": "U_SNARE_CONTROL", "name": "Snare Control", "unlockAfterLevelsClearedWithHero": 2, "effect": "snare_root you apply lasts 1 extra loop."},
-        {"id": "U_TRAP_INTERACTION", "name": "Trap Interaction", "unlockAfterLevelsClearedWithHero": 4, "effect": "Once per turn, ignore snare roots and bleed vines when moving."},
-        {"id": "U_TRACKING", "name": "Tracking", "unlockAfterLevelsClearedWithHero": 6, "effect": "Enemies standing on blood tiles count as marked for Volley."}
+        {"id": "U_SNARE_CONTROL", "name": "Snare Control", "unlockAfterLevelsClearedWithHero": 2, "effect": "Volley snares its target for 2 loops."},
+        {"id": "U_TRAP_INTERACTION", "name": "Trap Interaction", "unlockAfterLevelsClearedWithHero": 4, "effect": "Once per turn, snare roots and bleed vines don't affect you."},
+        {"id": "U_TRACKING", "name": "Tracking", "unlockAfterLevelsClearedWithHero": 6, "effect": "Enemies on blood tiles count as marked for Volley (seen through walls, +1 damage)."}
       ]
     },
     {
@@ -166,8 +166,8 @@
       "defaultBehavior": {"key": "track", "text": "Move toward the nearest visible enemy, preferring tiles next to blood tiles; if none, move forward."},
       "heroAttack": {"name": "Execute", "key": "melee", "damage": 2, "range": 1, "bonus": {"vsHpAtOrBelowHalf": true, "damageAdd": 2}},
       "upgrades": [
-        {"id": "U_BLOOD_SENSE", "name": "Blood Sense", "unlockAfterLevelsClearedWithHero": 2, "effect": "Blood Trail Nearby sees 1 tile further; wounded enemies are visible through smoke."},
-        {"id": "U_FINISHER", "name": "Finisher", "unlockAfterLevelsClearedWithHero": 4, "effect": "Execute bonus applies at or below two-thirds HP."},
+        {"id": "U_BLOOD_SENSE", "name": "Blood Sense", "unlockAfterLevelsClearedWithHero": 2, "effect": "Blood Trail Nearby reaches 1 tile further."},
+        {"id": "U_FINISHER", "name": "Finisher", "unlockAfterLevelsClearedWithHero": 4, "effect": "Execute's bonus applies at or below two-thirds HP."},
         {"id": "U_TROPHY_HUNTER", "name": "Trophy Hunter", "unlockAfterLevelsClearedWithHero": 6, "effect": "Double drop chance from enemies with 3+ skulls."}
       ]
     }

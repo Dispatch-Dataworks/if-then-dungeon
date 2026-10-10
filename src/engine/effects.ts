@@ -3,6 +3,7 @@ import { eq, type Vec } from "./board";
 import { CONTENT, DROPS, ENEMIES, MODIFIERS, key } from "./content";
 import { chance } from "./rng";
 import { emit, enemyArmor, enemyName, heroArmor, type EnemyState, type GameState, type Statuses } from "./state";
+import { has, once, upgradeName } from "./upgrades";
 
 const STACKING = new Set(["poison", "bleed"]);
 
@@ -17,10 +18,26 @@ export function applyStatus(statuses: Statuses, status: string, amount?: number,
   return true;
 }
 
-export function damageHero(state: GameState, amount: number, source: string, opts: { ignoreArmor?: boolean; ranged?: boolean } = {}) {
+export type DamageKind = "melee" | "ranged" | "trap" | "illusion" | "region" | "vent" | "status";
+
+export function damageHero(
+  state: GameState, amount: number, source: string,
+  opts: { ignoreArmor?: boolean; ranged?: boolean; kind?: DamageKind } = {},
+) {
   if (amount <= 0 || state.hero.hp <= 0) return;
+  const kind = opts.kind ?? (opts.ranged ? "ranged" : "melee");
+  const blockedBy = (upgrade: string) => {
+    emit(state, "block", `${upgradeName(upgrade)}: ${source} does no damage.`, state.hero.pos);
+  };
+  if (kind === "trap" && once(state, "U_BULWARK")) return blockedBy("U_BULWARK");
+  if (kind === "illusion" && once(state, "U_ILLUMINATION")) return blockedBy("U_ILLUMINATION");
+  if (kind === "vent" && once(state, "U_VENT_MASTERY")) return blockedBy("U_VENT_MASTERY");
+  if (kind === "region" && has(state, "U_NEUTRALIZER")) return blockedBy("U_NEUTRALIZER");
   let dmg = opts.ignoreArmor ? amount : Math.max(1, amount - heroArmor(state));
   if (opts.ranged && state.hero.statuses.ranged_resist) dmg = Math.max(0, dmg - 1);
+  if (kind === "melee" && once(state, "U_EVASION")) dmg = Math.max(0, dmg - 1);
+  if ((kind === "melee" || kind === "ranged") && once(state, "U_PARRY")) dmg = Math.max(0, dmg - 1);
+  if (dmg > 0 && has(state, "U_RAGE_METER")) state.hero.rage = true;
   if (dmg <= 0) {
     emit(state, "block", `${source} is blocked.`, state.hero.pos);
     return;
@@ -41,9 +58,12 @@ export function healHero(state: GameState, amount: number) {
   }
 }
 
-export function damageEnemy(state: GameState, enemy: EnemyState, amount: number, opts: { ignoreArmor?: boolean; trap?: boolean } = {}) {
+export function damageEnemy(
+  state: GameState, enemy: EnemyState, amount: number,
+  opts: { ignoreArmor?: boolean; trap?: boolean; armorIgnored?: number } = {},
+) {
   if (amount <= 0 || enemy.hp <= 0) return;
-  const armor = opts.ignoreArmor || opts.trap ? 0 : enemyArmor(enemy);
+  const armor = opts.ignoreArmor || opts.trap ? 0 : Math.max(0, enemyArmor(enemy) - (opts.armorIgnored ?? 0));
   const dmg = Math.max(1, amount + (enemy.statuses.mark && !opts.trap ? 1 : 0) - armor);
   enemy.hp -= dmg;
   emit(state, "enemy_hurt", `${enemyName(enemy)} takes ${dmg} damage.`, enemy.pos, { amount: dmg, target: enemy.uid });
@@ -59,7 +79,8 @@ function killEnemy(state: GameState, enemy: EnemyState) {
   state.corpses.push({ pos: enemy.pos, typeId: enemy.typeId, modifier: enemy.modifier });
   state.defeatedPool.push(enemy.typeId);
   const skulls = ENEMIES[enemy.typeId]!.dangerSkulls;
-  if (chance(state.seed, "drop", enemy.uid) * 100 < skulls * DROPS.chancePercentPerSkull && !state.pickups[key(enemy.pos)]) {
+  const trophy = skulls >= 3 && has(state, "U_TROPHY_HUNTER") ? 2 : 1;
+  if (chance(state.seed, "drop", enemy.uid) * 100 < skulls * DROPS.chancePercentPerSkull * trophy && !state.pickups[key(enemy.pos)]) {
     const table = DROPS.table;
     const pick = table[Math.floor(chance(state.seed, "dropkind", enemy.uid) * table.length)]!;
     state.pickups[key(enemy.pos)] = pick;

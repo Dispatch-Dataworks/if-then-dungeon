@@ -1,6 +1,8 @@
 /** Plays whole levels with the bot. */
 
+import { HEROES } from "../engine/content";
 import { newGame, playTurn, restartLevel, type Game } from "../engine/game";
+import { unlockedUpgrades } from "../engine/upgrades";
 import { describeRow } from "../engine/rules/rows";
 import { planTurn, SKILLED, type BotOptions } from "./bot";
 
@@ -25,8 +27,18 @@ export interface LevelRun {
 
 export const MAX_ATTEMPTS = 3;
 
-export function playLevel(levelId: number, heroId: string, seed: number, opts: BotOptions = SKILLED, verbose = false): LevelRun {
-  let game: Game = newGame(levelId, heroId, seed);
+/**
+ * Upgrades a player would have if they cleared every earlier level with this hero
+ * (levels since the hero unlocked). This is the upper bound on upgrade power at a level.
+ */
+export function maxUpgradesAt(levelId: number, heroId: string): string[] {
+  return unlockedUpgrades(heroId, Math.max(0, levelId - 1 - HEROES[heroId]!.unlockAfterLevel));
+}
+
+export function playLevel(
+  levelId: number, heroId: string, seed: number, opts: BotOptions = SKILLED, verbose = false, upgrades: string[] = [],
+): LevelRun {
+  let game: Game = newGame(levelId, heroId, seed, upgrades);
   let maxEnemies = 0, turns = 0, attempts = 1, threat = 0, spawned = 0, rows = 0, cardsPlaced = 0;
   const log: string[] = [];
   for (let guard = 0; guard < 300; guard++) {
