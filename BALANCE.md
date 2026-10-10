@@ -7,6 +7,7 @@ The game is balanced by simulation: a bot plays every level with every starter h
 ```sh
 scripts/sim-all.sh starter 8          # all levels, 4 starter heroes, 8 seeds each (about 10 minutes on 4 cores)
 scripts/sim-all.sh all 4 13-18        # every hero on levels 13-18
+scripts/sim-advanced.sh 8             # each advanced hero on the levels after it unlocks
 npm run sim -- 12 H_SWORDSMAN 3       # one level; add VERBOSE=1 for turn-by-turn logs
 python3 scripts/deck-topup.py         # after editing deck adjustments: keep core cards at a steady share
 python3 scripts/sync-docs.py          # after changing numbers: update docs and character sheets
@@ -51,6 +52,26 @@ Metrics: **1st try** = cleared with the first 3 lives; **cleared** = cleared wit
 
 By hero (all levels): Swordsman 84% / Rogue 85% / Shieldbearer 72% / Archer 69% first try. The Archer is meant to be the fragile, skill-heavy pick.
 
+## Advanced heroes
+
+Each advanced hero was run (8 seeds) on every level after it unlocks, and compared with the starter heroes on the same levels (`scripts/sim-advanced.sh`). Hero upgrades are not simulated yet; these are base heroes.
+
+| Hero | Unlocks after | 1st try | Starters, same levels | Difference | Cleared |
+|---|---|---|---|---|---|
+| Alchemist | L3 | 71% | 75% | −4 | 85% |
+| Monk | L6 | 78% | 73% | +5 | 91% |
+| Cleric | L9 | 86% | 75% | +10 | 96% |
+| Battlemage | L12 | 74% | 77% | −3 | 88% |
+| Sentinel | L15 | 72% | 71% | +1 | 81% |
+| Berserker | L15 | 78% | 71% | +6 | 92% |
+| Ranger | L18 | 81% | 72% | +9 | 88% |
+| Hunter | L18 | 83% | 72% | +11 | 94% |
+
+- Target: within about ±10 points of the starters. Per-level numbers are noisy (±15 points at 8 seeds); the per-hero averages are the reliable signal.
+- **Alchemist** was −9 (66%). It is the first hero a player unlocks, so it shouldn't feel like a downgrade: Throw Vial changed from 1 damage + 2 poison stacks to 2 damage + 1 stack (same total, front-loaded).
+- **Cleric** (+10) and **Hunter** (+11) run slightly strong. Both unlock right before the themes they are built for (undead; blood trails), so that is intended. The Hunter figure covers only 6 levels.
+- Weak spots worth watching: Battlemage on L16 (1/8 first try), Sentinel on L19 and L22.
+
 ## What changed and why
 
 | Change | Evidence |
@@ -67,11 +88,12 @@ By hero (all levels): Swordsman 84% / Rogue 85% / Shieldbearer 72% / Archer 69% 
 | Goblin Archer: range 4→3, fires every other loop, cost 4→5 | Archers were the top killer in the Foundry levels. |
 | Smoke blocks line of sight through it | Archers could shoot a hero who couldn't see them. Now smoke is cover for both sides. |
 | Hound damage 2→1; Goblin Knight 4 HP/2 dmg → 3 HP/1 dmg; Orc Brute damage 3→2; Orc Warden HP 5→4; Skeleton Guard 3 HP/2 dmg → 4 HP/1 dmg | Each was the top damage source on its levels. |
+| Alchemist Throw Vial: 1 damage + 2 poison → 2 damage + 1 poison | Alchemist was 9 points behind the starters on its levels. |
 | Hero Arrow damage 1→2; Shieldbearer holds only when an enemy is adjacent | Archer was far behind (31% first try); the Shieldbearer stalled forever whenever an enemy was in sight. |
 | Fewer spawns per turn on L7–9, L12, L16, L23; L23 pool drops archers | Spike levels; archers didn't fit the undead remix. |
 | Starting Pressure 4 on L19–21; Health Draughts on L12 and L16 safe routes | Smooths the curve (L19–21 were at 97–100%). |
 
 ## Next tuning targets
 - **L12 and L16** are the steepest spikes outside the finale. Candidates: a slower resurrection rule for hollow enemies (L12), or splitting the L16 introductions across L16–17.
-- **Advanced heroes** have not been through the same loop yet: run `scripts/sim-all.sh all 4` and compare each with the starter heroes on the levels after it unlocks.
+- **Hero upgrades** are not implemented in the engine yet, so the simulation covers base heroes only.
 - **A real playtest**: the bot can't tell us whether rules are *understandable*. Watch a few kids play L1–7 and note where they get stuck.

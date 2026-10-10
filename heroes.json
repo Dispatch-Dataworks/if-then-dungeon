@@ -66,7 +66,7 @@
       "unlockAfterLevel": 3,
       "baseStats": {"hp": 8, "armor": 0, "speedTiles": 1, "sightRange": 4},
       "defaultBehavior": {"key": "wait_if_safe_else_step_aside", "text": "Wait when safe; step aside when threatened; otherwise advance."},
-      "heroAttack": {"name": "Throw Vial", "key": "ranged_tile_splash", "damage": 1, "range": 3, "statusOnHit": {"status": "poison", "stacks": 2}},
+      "heroAttack": {"name": "Throw Vial", "key": "ranged_tile_splash", "damage": 2, "range": 3, "statusOnHit": {"status": "poison", "stacks": 1}},
       "upgrades": [
         {"id": "U_ANTITOXIN", "name": "Antitoxin", "unlockAfterLevelsClearedWithHero": 2, "effect": "Poison never stacks above 1 on you."},
         {"id": "U_NEUTRALIZER", "name": "Neutralizer", "unlockAfterLevelsClearedWithHero": 4, "effect": "Once per turn, a vial that lands on fog or smoke clears it for 2 loops."},
