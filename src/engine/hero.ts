@@ -155,7 +155,8 @@ function lineTargets(state: GameState, range: number): EnemyState | undefined {
 export function heroAttack(state: GameState): boolean {
   const base = HEROES[state.heroId]!.heroAttack;
   const h = state.hero;
-  const def = { ...base, range: has(state, "U_QUICKDRAW") ? Math.min(4, base.range + 1) : base.range };
+  const rangeUp = ["U_QUICKDRAW", "U_NEUTRALIZER", "U_ILLUMINATION"].some((u) => has(state, u)) ? 1 : 0;
+  const def = { ...base, range: base.range + rangeUp };
   let target: EnemyState | undefined;
   switch (def.key) {
     case "melee":
@@ -208,7 +209,7 @@ export function heroAttack(state: GameState): boolean {
     const slowed = b.vsStatus?.some((st) => (target!.statuses[st] ?? 0) > 0);
     const executeAt = has(state, "U_FINISHER") ? 2 / 3 : 1 / 2;
     if ((b.vsTag && enemyTags(target).includes(b.vsTag)) || slowed || unaware || (b.vsHpAtOrBelowHalf && target.hp <= target.maxHp * executeAt)) {
-      const bigger = has(state, "U_BACKSTAB") || (b.vsTag === "undead" && has(state, "U_BLESSED_STRIKE"));
+      const bigger = has(state, "U_BACKSTAB") || has(state, "U_FINISHER") || (b.vsTag === "undead" && has(state, "U_BLESSED_STRIKE"));
       dmg += bigger ? 3 : b.damageAdd ?? 0;
     }
   }
@@ -216,9 +217,10 @@ export function heroAttack(state: GameState): boolean {
     dmg += 1;
     h.rage = false;
   }
+  if (has(state, "U_BASH_MASTERY") || has(state, "U_BACKSTAB") || has(state, "U_PIERCE")) dmg += 1;
   const pierce = (h.statuses.armor_pierce ?? 0) > 0;
   if (pierce) delete h.statuses.armor_pierce;
-  const armorIgnored = has(state, "U_WARDBREAKER") || has(state, "U_PIERCE") ? 1 : 0;
+  const armorIgnored = has(state, "U_WARDBREAKER") ? 99 : has(state, "U_PIERCE") ? 1 : 0;
   emit(state, "attack", `${def.name}!`, target.pos);
   const tPos = target.pos;
   const behind = add(tPos, h.facing);
@@ -229,7 +231,7 @@ export function heroAttack(state: GameState): boolean {
   if (has(state, "U_VOLATILE_MIX")) {
     for (const d of DIRS) {
       const splash = enemyAt(state, add(tPos, d));
-      if (splash) damageEnemy(state, splash, 1, { trap: true });
+      if (splash) damageEnemy(state, splash, 2, { trap: true });
     }
   }
   if (target.hp > 0) {
@@ -239,7 +241,7 @@ export function heroAttack(state: GameState): boolean {
       emit(state, "status", `${enemyName(target)} is ${statusWord(onHit.status)}.`, tPos);
     }
     const extra: [string, string, number][] = [
-      ["U_PINNING_SHOT", "snare_root", 2], ["U_SNARE_CONTROL", "snare_root", 3], ["U_CROWD_CONTROL", "slowed", 2],
+      ["U_PINNING_SHOT", "snare_root", 2], ["U_SNARE_CONTROL", "snare_root", 3], ["U_CROWD_CONTROL", "slowed", 3],
     ];
     for (const [upgrade, status, loops] of extra) {
       if (has(state, upgrade)) {

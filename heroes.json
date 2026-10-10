@@ -40,9 +40,9 @@
       "defaultBehavior": {"key": "hold_if_enemy_adjacent_else_forward", "text": "Hold if an enemy is adjacent; otherwise move forward 1 (turn right, then left, if blocked)."},
       "heroAttack": {"name": "Shield Bash", "key": "melee_push", "damage": 1, "range": 1, "pushTiles": 1},
       "upgrades": [
-        {"id": "U_FORTIFY", "name": "Fortify", "unlockAfterLevelsClearedWithHero": 2, "effect": "Wait/Hold (or holding by default) grants ranged_resist until your next action."},
-        {"id": "U_BULWARK", "name": "Bulwark", "unlockAfterLevelsClearedWithHero": 4, "effect": "The first trap each turn deals no damage (its status still applies)."},
-        {"id": "U_BASH_MASTERY", "name": "Bash Mastery", "unlockAfterLevelsClearedWithHero": 6, "effect": "Shield Bash pushes 2 tiles, and enemies pushed onto damaging traps trigger them."}
+        {"id": "U_FORTIFY", "name": "Fortify", "unlockAfterLevelsClearedWithHero": 2, "effect": "On loops where you hold or wait: +1 armor and ranged_resist."},
+        {"id": "U_BULWARK", "name": "Bulwark", "unlockAfterLevelsClearedWithHero": 4, "effect": "Traps deal 1 less damage, and the first trap each turn deals none (statuses still apply)."},
+        {"id": "U_BASH_MASTERY", "name": "Bash Mastery", "unlockAfterLevelsClearedWithHero": 6, "effect": "Shield Bash deals +1 damage, pushes 2 tiles, and enemies pushed onto damaging traps trigger them."}
       ]
     },
     {
@@ -54,9 +54,9 @@
       "defaultBehavior": {"key": "sidestep_hazard_else_forward", "text": "If a hazard is ahead, sidestep to the first safe open tile (clockwise); else move forward."},
       "heroAttack": {"name": "Stab", "key": "melee", "damage": 2, "range": 1, "bonus": {"vsStatus": ["slowed", "snare_root", "stun"], "vsUnaware": true, "damageAdd": 2}},
       "upgrades": [
-        {"id": "U_SMOKE_STEP", "name": "Smoke Step", "unlockAfterLevelsClearedWithHero": 2, "effect": "Ignore the smoke visibility penalty."},
-        {"id": "U_TRAP_SENSE", "name": "Trap Sense", "unlockAfterLevelsClearedWithHero": 4, "effect": "Trap and hazard sensors also check the tile 2 ahead."},
-        {"id": "U_BACKSTAB", "name": "Backstab", "unlockAfterLevelsClearedWithHero": 6, "effect": "Stab's bonus becomes +3."}
+        {"id": "U_SMOKE_STEP", "name": "Smoke Step", "unlockAfterLevelsClearedWithHero": 2, "effect": "+1 sight, and smoke doesn't reduce it."},
+        {"id": "U_TRAP_SENSE", "name": "Trap Sense", "unlockAfterLevelsClearedWithHero": 4, "effect": "Trap and hazard sensors also check the tile 2 ahead, and traps deal you 1 less damage."},
+        {"id": "U_BACKSTAB", "name": "Backstab", "unlockAfterLevelsClearedWithHero": 6, "effect": "Stab deals +1 damage, and its bonus becomes +3."}
       ]
     },
     {
@@ -68,9 +68,9 @@
       "defaultBehavior": {"key": "wait_if_safe_else_step_aside", "text": "Wait when safe; step aside when threatened; otherwise advance."},
       "heroAttack": {"name": "Throw Vial", "key": "ranged_tile_splash", "damage": 2, "range": 3, "statusOnHit": {"status": "poison", "stacks": 1}},
       "upgrades": [
-        {"id": "U_ANTITOXIN", "name": "Antitoxin", "unlockAfterLevelsClearedWithHero": 2, "effect": "Poison never stacks above 1 on you."},
-        {"id": "U_NEUTRALIZER", "name": "Neutralizer", "unlockAfterLevelsClearedWithHero": 4, "effect": "Poison fog and smoke deal you no damage."},
-        {"id": "U_VOLATILE_MIX", "name": "Volatile Mix", "unlockAfterLevelsClearedWithHero": 6, "effect": "Throw Vial also deals 1 damage to enemies next to the target."}
+        {"id": "U_ANTITOXIN", "name": "Antitoxin", "unlockAfterLevelsClearedWithHero": 2, "effect": "Immune to poison."},
+        {"id": "U_NEUTRALIZER", "name": "Neutralizer", "unlockAfterLevelsClearedWithHero": 4, "effect": "Poison fog and smoke deal you no damage; Throw Vial range +1."},
+        {"id": "U_VOLATILE_MIX", "name": "Volatile Mix", "unlockAfterLevelsClearedWithHero": 6, "effect": "Throw Vial also deals 2 damage to enemies next to the target."}
       ]
     },
     {
@@ -110,9 +110,9 @@
       "defaultBehavior": {"key": "keep_distance", "text": "If an enemy is adjacent, step aside; else move forward."},
       "heroAttack": {"name": "Arc Bolt", "key": "ranged_first_in_los", "damage": 2, "range": 4, "statusOnHit": {"status": "mark", "chancePercent": 100}},
       "upgrades": [
-        {"id": "U_ILLUMINATION", "name": "Illumination", "unlockAfterLevelsClearedWithHero": 2, "effect": "Illuminate radius +1; the first illusion-wall impact each turn deals 0."},
-        {"id": "U_WARDBREAKER", "name": "Wardbreaker", "unlockAfterLevelsClearedWithHero": 4, "effect": "Arc Bolt ignores 1 armor."},
-        {"id": "U_CURSE_MITIGATION", "name": "Curse Mitigation", "unlockAfterLevelsClearedWithHero": 6, "effect": "cursed and fear last only 1 loop on you."}
+        {"id": "U_ILLUMINATION", "name": "Illumination", "unlockAfterLevelsClearedWithHero": 2, "effect": "Arc Bolt range +1; Illuminate radius +1; the first illusion-wall impact each turn deals 0."},
+        {"id": "U_WARDBREAKER", "name": "Wardbreaker", "unlockAfterLevelsClearedWithHero": 4, "effect": "Arc Bolt ignores all armor."},
+        {"id": "U_CURSE_MITIGATION", "name": "Curse Mitigation", "unlockAfterLevelsClearedWithHero": 6, "effect": "Immune to cursed and fear."}
       ]
     },
     {
@@ -124,9 +124,9 @@
       "defaultBehavior": {"key": "hold_if_enemy_visible_else_forward", "text": "Hold if an enemy is visible; otherwise advance."},
       "heroAttack": {"name": "Spear Thrust", "key": "line_reach", "damage": 2, "range": 2},
       "upgrades": [
-        {"id": "U_PIERCE", "name": "Pierce", "unlockAfterLevelsClearedWithHero": 2, "effect": "Spear Thrust ignores 1 armor."},
-        {"id": "U_BRACE", "name": "Brace", "unlockAfterLevelsClearedWithHero": 4, "effect": "On loops where you hold or wait, pushes don't move you."},
-        {"id": "U_CROWD_CONTROL", "name": "Crowd Control", "unlockAfterLevelsClearedWithHero": 6, "effect": "Spear Thrust applies slowed for 1 loop."}
+        {"id": "U_PIERCE", "name": "Pierce", "unlockAfterLevelsClearedWithHero": 2, "effect": "Spear Thrust deals +1 damage and ignores 1 armor."},
+        {"id": "U_BRACE", "name": "Brace", "unlockAfterLevelsClearedWithHero": 4, "effect": "Pushes never move you, and you take 1 less melee damage on loops where you hold or wait."},
+        {"id": "U_CROWD_CONTROL", "name": "Crowd Control", "unlockAfterLevelsClearedWithHero": 6, "effect": "Spear Thrust slows its target for 2 loops."}
       ]
     },
     {
@@ -166,9 +166,9 @@
       "defaultBehavior": {"key": "track", "text": "Move toward the nearest visible enemy, preferring tiles next to blood tiles; if none, move forward."},
       "heroAttack": {"name": "Execute", "key": "melee", "damage": 2, "range": 1, "bonus": {"vsHpAtOrBelowHalf": true, "damageAdd": 2}},
       "upgrades": [
-        {"id": "U_BLOOD_SENSE", "name": "Blood Sense", "unlockAfterLevelsClearedWithHero": 2, "effect": "Blood Trail Nearby reaches 1 tile further."},
-        {"id": "U_FINISHER", "name": "Finisher", "unlockAfterLevelsClearedWithHero": 4, "effect": "Execute's bonus applies at or below two-thirds HP."},
-        {"id": "U_TROPHY_HUNTER", "name": "Trophy Hunter", "unlockAfterLevelsClearedWithHero": 6, "effect": "Double drop chance from enemies with 3+ skulls."}
+        {"id": "U_BLOOD_SENSE", "name": "Blood Sense", "unlockAfterLevelsClearedWithHero": 2, "effect": "+1 sight, and Blood Trail Nearby reaches 1 tile further."},
+        {"id": "U_FINISHER", "name": "Finisher", "unlockAfterLevelsClearedWithHero": 4, "effect": "Execute's bonus becomes +3 and applies at or below two-thirds HP."},
+        {"id": "U_TROPHY_HUNTER", "name": "Trophy Hunter", "unlockAfterLevelsClearedWithHero": 6, "effect": "Double drop chance from every enemy, and heal 1 HP per kill."}
       ]
     }
   ]

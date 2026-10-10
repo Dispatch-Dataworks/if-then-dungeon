@@ -194,7 +194,8 @@ export function inSmoke(state: GameState, p: Vec) {
 export function heroSight(state: GameState): number {
   const smoke = inSmoke(state, state.hero.pos) && !state.upgrades.includes("U_SMOKE_STEP") ? CONTENT.traps.T_SMOKE_VENTS!.visibilityPenalty ?? 1 : 0;
   const ashen = state.enemies.some((e) => e.modifier === "ashen" && manhattan(e.pos, state.hero.pos) <= 1) ? 1 : 0;
-  return Math.max(1, state.hero.sightRange - smoke - ashen);
+  const bonus = state.upgrades.includes("U_SMOKE_STEP") || state.upgrades.includes("U_BLOOD_SENSE") ? 1 : 0;
+  return Math.max(1, state.hero.sightRange + bonus - smoke - ashen);
 }
 
 /** Enemies the hero can currently see (range + line of sight, any direction). */

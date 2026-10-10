@@ -88,15 +88,15 @@ describe("upgrade effects", () => {
       run(g, "S_ENEMY_AHEAD", "A_HERO_ATTACK");
       return 6 - e.hp;
     };
-    expect(dealt(["U_BACKSTAB"])).toBe(dealt([]) + 1);
+    expect(dealt(["U_BACKSTAB"])).toBe(dealt([]) + 2); // +1 base and a +3 (instead of +2) bonus
   });
 
-  it("Antitoxin, Blood Resistance and Curse Mitigation cap statuses", () => {
+  it("Antitoxin and Curse Mitigation give immunity; Blood Resistance caps bleed", () => {
     const g = setup("H_SWORDSMAN", ["U_ANTITOXIN", "U_BLOOD_RESISTANCE", "U_CURSE_MITIGATION"], { x: 1, y: 1, facing: "E" });
-    applyHeroStatus(g.state, "poison", 3);
+    expect(applyHeroStatus(g.state, "poison", 3)).toBe(false);
     applyHeroStatus(g.state, "bleed", 3);
-    applyHeroStatus(g.state, "cursed");
-    expect(g.state.hero.statuses).toMatchObject({ poison: 1, bleed: 1, cursed: 1 });
+    expect(applyHeroStatus(g.state, "cursed")).toBe(false);
+    expect(g.state.hero.statuses).toEqual({ bleed: 1 });
   });
 
   it("Ward blocks fear in the first 2 loops of a turn only", () => {
@@ -149,6 +149,21 @@ describe("upgrade effects", () => {
       return 20 - e.hp;
     };
     expect(dealt(["U_RAGE_METER"])).toBe(dealt([]) + 1);
+  });
+
+  it("Illumination extends Arc Bolt from 4 to 5 tiles", () => {
+    // Level 17 row 7 is "#C.b......DX#": tiles x=4..9 are open floor in a straight line.
+    for (const [ups, hit] of [[[], false], [["U_ILLUMINATION"], true]] as const) {
+      const g = newGame(17, "H_BATTLEMAGE", 1, [...ups]);
+      g.state.enemies = [];
+      g.state.hero.pos = { x: 4, y: 7 };
+      g.state.hero.facing = "E";
+      g.state.hero.sightRange = 9;
+      g.phase = "build";
+      const e = enemy(g, "E_ORC_BRUTE", 9, 7);
+      run(g, "S_ENEMY_VISIBLE", "A_HERO_ATTACK");
+      expect(e.hp < 6).toBe(hit);
+    }
   });
 
   it("Wardbreaker ignores 1 armor", () => {

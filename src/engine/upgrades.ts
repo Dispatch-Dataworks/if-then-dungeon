@@ -32,10 +32,13 @@ export function applyHeroStatus(s: GameState, status: string, amount?: number): 
     emit(s, "block", "Ward: the hero shrugs it off.", h.pos);
     return false;
   }
+  const immune = (status === "poison" && has(s, "U_ANTITOXIN")) || ((status === "cursed" || status === "fear") && has(s, "U_CURSE_MITIGATION"));
+  if (immune) {
+    emit(s, "block", `Immune: the hero is not ${status === "fear" ? "afraid" : status}.`, h.pos);
+    return false;
+  }
   if (!applyStatus(h.statuses, status, amount)) return false;
-  if (status === "poison" && has(s, "U_ANTITOXIN")) h.statuses.poison = Math.min(1, h.statuses.poison!);
   if (status === "bleed" && has(s, "U_BLOOD_RESISTANCE")) h.statuses.bleed = Math.min(1, h.statuses.bleed!);
-  if ((status === "cursed" || status === "fear") && has(s, "U_CURSE_MITIGATION")) h.statuses[status] = 1;
   return true;
 }
 
@@ -44,7 +47,7 @@ export function resistsPush(s: GameState, kind: "plate" | "shove" | "conveyor"):
   const h = s.hero;
   if (h.statuses.push_resist && kind !== "conveyor") return true;
   if (kind === "plate" && has(s, "U_PUSH_PLATE_RESIST")) return true;
-  if (has(s, "U_BRACE") && s.heldThisLoop) return true;
+  if (has(s, "U_BRACE")) return true;
   return once(s, "U_HEAVY_BOOTS");
 }
 
