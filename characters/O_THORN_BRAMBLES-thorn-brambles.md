@@ -8,16 +8,23 @@
 Dense brambles with thorns and red berries; looks painful to cross.
 
 ## Core rule
-In v0.1, impassable. Later could become passable with damage or a 'cut' action.
+Solid and opaque; the Rotwood equivalent of a wall.
+
+| Property | Value |
+|---|---|
+| Map symbol | `*` |
+| Blocks movement | Yes |
+| Blocks line of sight | Yes |
+| Can be jumped over (**A_JUMP_FWD**) | No |
+| Used in levels | 19, 20, 21, 24 |
 
 ## Movement interaction
-- The hero and enemies **cannot enter** this tile in v0.1.
-- When movement is blocked:
-  - hero uses clockwise rotation to nearest open direction (per hero default / rules)
-  - enemies follow their own deterministic blocked handling
+- The hero and enemies **cannot enter** this tile.
+- A blocked move fails and still uses the loop. **S_WALL_AHEAD** and **S_BLOCKED_AHEAD** are true when this tile is directly ahead.
+- Hero default behaviors that rotate when blocked use clockwise preference (counter-clockwise while **cursed**).
 
 ## Line-of-sight interaction
-- Default: blocks LoS unless otherwise specified in the level’s tile rules.
+- Blocks line of sight: enemies behind it are not visible and ranged attacks cannot pass.
 
 ## Teaching notes
 Good for creating soft-looking but functionally hard boundaries.
@@ -30,4 +37,4 @@ Good for creating soft-looking but functionally hard boundaries.
 ## JSON knobs
 - blocksMovement (bool)
 - blocksLoS (bool)
-- hazardOnContact (optional; not used in v0.1)
+- jumpable (bool)

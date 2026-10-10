@@ -9,8 +9,13 @@ Enemy variability exists from the start:
 - levels have themed enemy pools
 - some enemies spawn with minor behavioral variants
 
-## Spawn costs (base)
-See `04-threat-pressure-spawn.md` for the full table.
+## Skulls vs. spawn cost
+- **Skulls** (1–4) are the *danger rating* shown to players on the enemy info card.
+- **Spawn cost** is the Pressure spent to spawn the enemy (`levels.json` → `enemies.spawnCostsBase`, plus modifier adders). See `04-threat-pressure-spawn.md`.
+- They are related but not the same: the Orc Brute is a 2-skull enemy that costs 5 because it is slow but hits hard.
+
+## Combat numbers
+HP, armor, damage, range, speed, tags and on-hit statuses for every enemy and modifier are in `enemies.json`. Damage dealt is `max(1, damage - armor)`.
 
 ---
 

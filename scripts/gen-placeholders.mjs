@@ -20,6 +20,7 @@ const CATEGORIES = {
   Trap: { color: "#FF3300", glyph: "spike" },
   "Board Mechanic": { color: "#FFD700", glyph: "gear" },
   "Obstruction / Terrain": { color: "#CDB38B", glyph: "block" },
+  Pickup: { color: "#00FF66", glyph: "flask" },
 };
 const RARITY_PIPS = { common: 1, uncommon: 2, rare: 3, epic: 4, legendary: 5 };
 
@@ -49,6 +50,8 @@ function glyph(kind, cx, cy, c) {
       return `<path d="M${cx - 60},${cy + 45} L${cx - 30},${cy - 45} L${cx},${cy + 45} L${cx + 30},${cy - 45} L${cx + 60},${cy + 45}Z" ${s}/>`;
     case "gear":
       return `<circle cx="${cx}" cy="${cy}" r="40" ${s} stroke-dasharray="18 10"/><circle cx="${cx}" cy="${cy}" r="16" ${s}/>`;
+    case "flask":
+      return `<path d="M${cx - 14},${cy - 55} H${cx + 14} V${cy - 20} L${cx + 45},${cy + 45} H${cx - 45} L${cx - 14},${cy - 20}Z" ${s}/>`;
     default:
       return `<rect x="${cx - 50}" y="${cy - 40}" width="100" height="80" ${s}/><path d="M${cx - 50},${cy} H${cx + 50} M${cx},${cy - 40} V${cy}" ${s}/>`;
   }

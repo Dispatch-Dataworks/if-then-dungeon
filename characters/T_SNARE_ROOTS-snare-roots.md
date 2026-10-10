@@ -2,6 +2,7 @@
 
 **ID:** `T_SNARE_ROOTS`  
 **Category:** Trap  
+**Map symbol:** `n`  
 **Theme:** webbed/roots
 
 ## Visual description

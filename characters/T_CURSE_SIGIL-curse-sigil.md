@@ -2,6 +2,7 @@
 
 **ID:** `T_CURSE_SIGIL`  
 **Category:** Trap  
+**Map symbol:** `c`  
 **Theme:** ritual chamber
 
 ## Visual description

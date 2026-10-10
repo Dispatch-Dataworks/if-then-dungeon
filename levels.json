@@ -4,28 +4,19 @@
   "campaign": {
     "levelCount": 24,
     "themes": [
-      { "id": "ruined_keep", "levels": [1, 2, 3] },
-      { "id": "sewer_vermin", "levels": [4, 5, 6] },
-      { "id": "ash_foundry", "levels": [7, 8, 9] },
-      { "id": "catacombs", "levels": [10, 11, 12] },
-      { "id": "cursed_chapel", "levels": [13, 14, 15] },
-      { "id": "blood_arena", "levels": [16, 17, 18] },
-      { "id": "rotwood", "levels": [19, 20, 21] },
-      { "id": "mirror_halls", "levels": [22, 23, 24] }
+      {"id": "ruined_keep", "levels": [1, 2, 3]},
+      {"id": "sewer_vermin", "levels": [4, 5, 6]},
+      {"id": "ash_foundry", "levels": [7, 8, 9]},
+      {"id": "catacombs", "levels": [10, 11, 12]},
+      {"id": "cursed_chapel", "levels": [13, 14, 15]},
+      {"id": "blood_arena", "levels": [16, 17, 18]},
+      {"id": "rotwood", "levels": [19, 20, 21]},
+      {"id": "mirror_halls", "levels": [22, 23, 24]}
     ],
     "modifierOrder": ["plague", "ashen", "hollow", "cursed", "iron", "blood"]
   },
   "enemies": {
-    "modifierCostAdders": {
-      "hollow": 1,
-      "mutant": 2,
-      "iron": 2,
-      "ashen": 1,
-      "blood": 2,
-      "plague": 1,
-      "cursed": 2,
-      "lantern": 1
-    },
+    "modifierCostAdders": {"hollow": 1, "mutant": 2, "iron": 2, "ashen": 1, "blood": 2, "plague": 1, "cursed": 2, "lantern": 1},
     "spawnCostsBase": {
       "E_GOBLIN_SCOUT": 2,
       "E_RAT_SWARM": 2,
@@ -44,38 +35,109 @@
   },
   "content": {
     "traps": {
-      "T_SPIKES": { "damage": 3 },
-      "T_PIT": { "damage": 4 },
-      "T_POISON_FOG": { "damagePerLoop": 1 },
-      "T_SMOKE_VENTS": { "damagePerLoop": 1, "visibilityPenalty": 1 },
-      "T_BONE_SPIKES": { "damage": 3 },
-      "T_CURSE_SIGIL": { "damage": 2, "appliesStatus": ["cursed"] },
-      "T_WHISPER_TILES": { "damage": 1, "appliesStatus": ["fear"] },
-      "T_BLEED_VINES": { "damage": 2, "appliesStatus": ["bleed"] },
-      "T_SNARE_ROOTS": { "damage": 1, "appliesStatus": ["snare_root"] },
-      "T_ILLUSION_WALL": { "damageOnImpact": 2 }
+      "T_SPIKES": {"damage": 3},
+      "T_PIT": {"damage": 4},
+      "T_POISON_FOG": {"damagePerLoop": 1, "appliesStatus": ["poison"], "statusChancePercent": 25, "statusStacks": 1},
+      "T_SMOKE_VENTS": {"damagePerLoop": 1, "visibilityPenalty": 1},
+      "T_BONE_SPIKES": {"damage": 3},
+      "T_CURSE_SIGIL": {"damage": 2, "appliesStatus": ["cursed"]},
+      "T_WHISPER_TILES": {"damage": 1, "appliesStatus": ["fear"]},
+      "T_BLEED_VINES": {"damage": 2, "appliesStatus": ["bleed"], "statusStacks": 2},
+      "T_SNARE_ROOTS": {"damage": 1, "appliesStatus": ["snare_root"]},
+      "T_ILLUSION_WALL": {"damageOnImpact": 2}
     },
-    "mechanics": {
-      "M_TIMED_VENTS": { "cycle": [2, 2] },
-      "M_CONVEYOR": { "forcedMove": 1 },
-      "M_PUSH_PLATES": { "pushTiles": 1 }
+    "mechanics": {"M_TIMED_VENTS": {"cycle": [2, 2]}, "M_CONVEYOR": {"forcedMove": 1}, "M_PUSH_PLATES": {"pushTiles": 1}},
+    "obstacles": {
+      "O_STONE_WALL": {"blocksMovement": true, "blocksLoS": true, "jumpable": false},
+      "O_RUBBLE_PILE": {"blocksMovement": true, "blocksLoS": true, "jumpable": false},
+      "O_LOCKED_GATE": {"blocksMovement": true, "blocksLoS": true, "jumpable": false},
+      "O_TOMBSTONE": {"blocksMovement": true, "blocksLoS": true, "jumpable": false},
+      "O_THORN_BRAMBLES": {"blocksMovement": true, "blocksLoS": true, "jumpable": false},
+      "O_IRON_BARS": {"blocksMovement": true, "blocksLoS": false, "jumpable": false},
+      "O_BONE_PILE": {"blocksMovement": true, "blocksLoS": false, "jumpable": true},
+      "O_WATER_CHANNEL": {"blocksMovement": true, "blocksLoS": false, "jumpable": true},
+      "O_LAVA_FLOW": {"blocksMovement": true, "blocksLoS": false, "jumpable": true},
+      "O_CHASM_EDGE": {"blocksMovement": true, "blocksLoS": false, "jumpable": true}
+    },
+    "statuses": {
+      "poison": {"appliesTo": ["hero", "enemy"], "kind": "damage_over_time", "maxStacks": 3, "rule": "At the end of each loop: take 1 damage, then lose 1 stack."},
+      "bleed": {"appliesTo": ["hero", "enemy"], "kind": "damage_over_time", "maxStacks": 3, "rule": "At the end of each loop: if the bearer moved this loop, take 1 damage. Either way, lose 1 stack."},
+      "snare_root": {"appliesTo": ["hero", "enemy"], "kind": "movement", "durationLoops": 2, "speedTilesAdd": -1, "rule": "Move actions cover 1 fewer tile (minimum 0; a 0-tile move fails). Turning and attacking still work."},
+      "slowed": {"appliesTo": ["enemy"], "kind": "movement", "durationLoops": 2, "rule": "The enemy acts only on even-numbered loops. Snared or stunned enemies also count as slowed for attack bonuses."},
+      "stun": {"appliesTo": ["hero", "enemy"], "kind": "control", "durationLoops": 1, "rule": "The bearer's next action becomes Wait."},
+      "hesitation": {"appliesTo": ["hero", "enemy"], "kind": "control", "durationLoops": 1, "rule": "The bearer's next action becomes Wait, then the status ends."},
+      "fear": {"appliesTo": ["hero", "enemy"], "kind": "control", "durationLoops": 2, "rule": "Hero: Move Forward fails while a visible enemy is ahead. Enemy: moves away from the hero instead of toward it."},
+      "cursed": {"appliesTo": ["hero"], "kind": "control", "durationLoops": 3, "rule": "Default behavior and Step Aside rotate counter-clockwise instead of clockwise."},
+      "enraged": {"appliesTo": ["enemy"], "kind": "buff", "durationLoops": 3, "damageAdd": 1, "rule": "+1 damage and immune to hesitation."},
+      "mark": {"appliesTo": ["enemy"], "kind": "debuff", "durationLoops": 3, "damageTakenAdd": 1, "rule": "Takes +1 damage from hero attacks and can be targeted by sensors through obstacles that block LoS."},
+      "ranged_resist": {"appliesTo": ["hero"], "kind": "buff", "rule": "Ranged damage taken is reduced by the buff amount (minimum 0)."},
+      "push_resist": {"appliesTo": ["hero"], "kind": "buff", "rule": "Ignore push plates and pushback."},
+      "armor_pierce": {"appliesTo": ["hero"], "kind": "buff", "rule": "The next hero attack ignores armor."},
+      "blood_tile_resist": {"appliesTo": ["hero"], "kind": "buff", "rule": "Blood tiles do not apply bleed."}
+    },
+    "boardEffects": {
+      "blood_tile": {"durationLoops": 5, "appliesStatus": ["bleed"], "stacks": 1, "rule": "Left behind by blood-modified enemies as they move. Stepping on one applies 1 bleed stack."},
+      "corpse": {"rule": "Left where an enemy dies. Ghouls feed on corpses; hollow enemies can rise from them. Stomp destroys corpses within 1 tile."}
+    },
+    "pickups": {
+      "P_HEALTH_DRAUGHT": {"healHp": 3, "rule": "Restore 3 HP (up to max HP)."},
+      "P_ARMOR_SHARD": {"armorAdd": 1, "maxStack": 2, "lasts": "level", "rule": "+1 armor for the rest of the level (at most +2 from shards)."},
+      "P_SPEED_RUNE": {"speedTilesAdd": 1, "lasts": "turn", "rule": "+1 tile per move action for the rest of the turn (still 1 action per loop)."}
+    },
+    "mapLegend": {
+      ".": "floor",
+      "@": "hero_start",
+      "X": "exit",
+      "A": "SP_A",
+      "B": "SP_B",
+      "C": "SP_C",
+      "D": "SP_D",
+      "E": "SP_E",
+      "#": "O_STONE_WALL",
+      "%": "O_RUBBLE_PILE",
+      "=": "O_LOCKED_GATE",
+      "|": "O_IRON_BARS",
+      "&": "O_BONE_PILE",
+      "+": "O_TOMBSTONE",
+      "~": "O_WATER_CHANNEL",
+      "L": "O_LAVA_FLOW",
+      ":": "O_CHASM_EDGE",
+      "*": "O_THORN_BRAMBLES",
+      "s": "T_SPIKES",
+      "p": "T_PIT",
+      "f": "T_POISON_FOG",
+      "m": "T_SMOKE_VENTS",
+      "k": "T_BONE_SPIKES",
+      "c": "T_CURSE_SIGIL",
+      "w": "T_WHISPER_TILES",
+      "b": "T_BLEED_VINES",
+      "n": "T_SNARE_ROOTS",
+      "i": "T_ILLUSION_WALL",
+      "e": "M_TIMED_VENTS",
+      ">": "M_CONVEYOR:E",
+      "<": "M_CONVEYOR:W",
+      "^": "M_CONVEYOR:N",
+      "v": "M_CONVEYOR:S",
+      "P": "M_PUSH_PLATES",
+      "!": "P_HEALTH_DRAUGHT",
+      "$": "P_ARMOR_SHARD",
+      "?": "P_SPEED_RUNE"
     }
   },
   "decks": {
     "baseDeck_L1": {
       "id": "baseDeck_L1",
       "cards": [
-        { "id": "A_MOVE_FWD", "count": 14 },
-        { "id": "A_TURN_L", "count": 8 },
-        { "id": "A_TURN_R", "count": 8 },
-        { "id": "A_WAIT", "count": 6 },
-        { "id": "A_HERO_ATTACK", "count": 6 },
-
-        { "id": "S_WALL_AHEAD", "count": 8 },
-        { "id": "S_BLOCKED_AHEAD", "count": 6 },
-        { "id": "S_ENEMY_AHEAD", "count": 6 },
-        { "id": "S_ENEMY_ADJACENT", "count": 4 },
-        { "id": "S_ENEMY_VISIBLE", "count": 6 }
+        {"id": "A_MOVE_FWD", "count": 14},
+        {"id": "A_TURN_L", "count": 8},
+        {"id": "A_TURN_R", "count": 8},
+        {"id": "A_WAIT", "count": 6},
+        {"id": "A_HERO_ATTACK", "count": 6},
+        {"id": "S_WALL_AHEAD", "count": 8},
+        {"id": "S_BLOCKED_AHEAD", "count": 6},
+        {"id": "S_ENEMY_AHEAD", "count": 6},
+        {"id": "S_ENEMY_ADJACENT", "count": 4},
+        {"id": "S_ENEMY_VISIBLE", "count": 6}
       ],
       "note": "Persistent finite deck. Shuffle once at level start."
     }
@@ -84,9 +146,10 @@
     {
       "levelId": 1,
       "themeId": "ruined_keep",
+      "diceSides": 4,
       "introduces": ["E_GOBLIN_SCOUT", "A_MOVE_FWD", "A_TURN_L", "A_TURN_R", "A_WAIT", "A_HERO_ATTACK", "S_WALL_AHEAD", "S_BLOCKED_AHEAD", "S_ENEMY_AHEAD", "S_ENEMY_ADJACENT", "S_ENEMY_VISIBLE"],
-      "deck": { "baseDeckId": "baseDeck_L1", "adjustments": [] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "deck": {"baseDeckId": "baseDeck_L1", "adjustments": []},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 2,
       "enemyPool": ["E_GOBLIN_SCOUT"],
@@ -94,21 +157,28 @@
       "modifiersAllowed": [],
       "traps": [],
       "mechanics": [],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C"]
+      "obstacles": ["O_STONE_WALL"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "#########",
+          "#@..#..A#",
+          "#.#.#.#.#",
+          "#.#...#.#",
+          "#.###.#B#",
+          "#C....#X#",
+          "#########"
+        ]
+      }
     },
     {
       "levelId": 2,
       "themeId": "ruined_keep",
-      "introduces": ["T_SPIKES", "E_GOBLIN_KNIGHT", "S_SPIKES_AHEAD", "S_SPIKES_HERE", "A_TURN_AROUND"],
-      "deck": {
-        "baseDeckId": "baseDeck_L1",
-        "adjustments": [
-          { "id": "S_SPIKES_AHEAD", "add": 4 },
-          { "id": "S_SPIKES_HERE", "add": 2 },
-          { "id": "A_TURN_AROUND", "add": 2 }
-        ]
-      },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "diceSides": 4,
+      "introduces": ["T_SPIKES", "E_GOBLIN_KNIGHT", "S_SPIKES_AHEAD", "S_SPIKES_HERE", "A_TURN_AROUND", "P_HEALTH_DRAUGHT"],
+      "deck": {"baseDeckId": "baseDeck_L1", "adjustments": [{"id": "S_SPIKES_AHEAD", "add": 4}, {"id": "S_SPIKES_HERE", "add": 2}, {"id": "A_TURN_AROUND", "add": 2}]},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 2,
       "enemyPool": ["E_GOBLIN_SCOUT", "E_GOBLIN_KNIGHT"],
@@ -116,25 +186,31 @@
       "modifiersAllowed": [],
       "traps": ["T_SPIKES"],
       "mechanics": [],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C"]
+      "obstacles": ["O_RUBBLE_PILE", "O_STONE_WALL"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "#########",
+          "#@.s...A#",
+          "#.###%#.#",
+          "#...s!#.#",
+          "#%#.#C..#",
+          "#B..s..X#",
+          "#########"
+        ]
+      }
     },
     {
       "levelId": 3,
       "themeId": "ruined_keep",
+      "diceSides": 4,
       "introduces": ["T_PIT", "E_GOBLIN_ARCHER", "S_PIT_AHEAD", "A_JUMP_FWD", "S_RANGED_THREAT_VISIBLE"],
       "deck": {
         "baseDeckId": "baseDeck_L1",
-        "adjustments": [
-          { "id": "S_SPIKES_AHEAD", "add": 4 },
-          { "id": "S_SPIKES_HERE", "add": 2 },
-          { "id": "A_TURN_AROUND", "add": 2 },
-
-          { "id": "S_PIT_AHEAD", "add": 4 },
-          { "id": "A_JUMP_FWD", "add": 4 },
-          { "id": "S_RANGED_THREAT_VISIBLE", "add": 2 }
-        ]
+        "adjustments": [{"id": "S_SPIKES_AHEAD", "add": 4}, {"id": "S_SPIKES_HERE", "add": 2}, {"id": "A_TURN_AROUND", "add": 2}, {"id": "S_PIT_AHEAD", "add": 4}, {"id": "A_JUMP_FWD", "add": 4}, {"id": "S_RANGED_THREAT_VISIBLE", "add": 2}]
       },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 2,
       "enemyPool": ["E_GOBLIN_SCOUT", "E_GOBLIN_KNIGHT", "E_GOBLIN_ARCHER"],
@@ -142,29 +218,41 @@
       "modifiersAllowed": [],
       "traps": ["T_SPIKES", "T_PIT"],
       "mechanics": [],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C"]
+      "obstacles": ["O_IRON_BARS", "O_RUBBLE_PILE", "O_STONE_WALL"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "#########",
+          "#@..p..A#",
+          "#.#|#.#.#",
+          "#.#.sCp.#",
+          "#.#.#|#.#",
+          "#B.%p..X#",
+          "#########"
+        ]
+      }
     },
-
     {
       "levelId": 4,
       "themeId": "sewer_vermin",
+      "diceSides": 6,
       "introduces": ["E_RAT_SWARM", "T_POISON_FOG", "S_FOG_AHEAD", "S_IN_FOG", "A_RETREAT"],
       "deck": {
         "baseDeckId": "baseDeck_L1",
         "adjustments": [
-          { "id": "S_SPIKES_AHEAD", "add": 4 },
-          { "id": "S_SPIKES_HERE", "add": 2 },
-          { "id": "A_TURN_AROUND", "add": 2 },
-          { "id": "S_PIT_AHEAD", "add": 4 },
-          { "id": "A_JUMP_FWD", "add": 4 },
-          { "id": "S_RANGED_THREAT_VISIBLE", "add": 2 },
-
-          { "id": "S_FOG_AHEAD", "add": 4 },
-          { "id": "S_IN_FOG", "add": 2 },
-          { "id": "A_RETREAT", "add": 2 }
+          {"id": "S_SPIKES_AHEAD", "add": 4},
+          {"id": "S_SPIKES_HERE", "add": 2},
+          {"id": "A_TURN_AROUND", "add": 2},
+          {"id": "S_PIT_AHEAD", "add": 4},
+          {"id": "A_JUMP_FWD", "add": 4},
+          {"id": "S_RANGED_THREAT_VISIBLE", "add": 2},
+          {"id": "S_FOG_AHEAD", "add": 4},
+          {"id": "S_IN_FOG", "add": 2},
+          {"id": "A_RETREAT", "add": 2}
         ]
       },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 2,
       "enemyPool": ["E_GOBLIN_SCOUT", "E_RAT_SWARM"],
@@ -172,32 +260,47 @@
       "modifiersAllowed": [],
       "traps": ["T_SPIKES", "T_POISON_FOG"],
       "mechanics": [],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+      "obstacles": ["O_IRON_BARS", "O_STONE_WALL", "O_WATER_CHANNEL"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "###########",
+          "#@..~..f.A#",
+          "#.#.~.#f#.#",
+          "#.#...#...#",
+          "#.##|##.#.#",
+          "#B..s..fs.#",
+          "#C#..~~.#D#",
+          "#.....~..X#",
+          "###########"
+        ]
+      }
     },
     {
       "levelId": 5,
       "themeId": "sewer_vermin",
-      "introduces": ["E_HOUND", "M_TIMED_VENTS", "S_VENT_ACTIVE_AHEAD", "S_VENT_ACTIVE_HERE", "S_ENEMY_NEAR_2", "S_CROWDED_AHEAD"],
+      "diceSides": 6,
+      "introduces": ["E_HOUND", "M_TIMED_VENTS", "S_VENT_ACTIVE_AHEAD", "S_VENT_ACTIVE_HERE", "S_ENEMY_NEAR_2", "S_CROWDED_AHEAD", "P_ARMOR_SHARD"],
       "deck": {
         "baseDeckId": "baseDeck_L1",
         "adjustments": [
-          { "id": "S_SPIKES_AHEAD", "add": 4 },
-          { "id": "S_SPIKES_HERE", "add": 2 },
-          { "id": "A_TURN_AROUND", "add": 2 },
-          { "id": "S_PIT_AHEAD", "add": 4 },
-          { "id": "A_JUMP_FWD", "add": 4 },
-          { "id": "S_RANGED_THREAT_VISIBLE", "add": 2 },
-          { "id": "S_FOG_AHEAD", "add": 4 },
-          { "id": "S_IN_FOG", "add": 2 },
-          { "id": "A_RETREAT", "add": 2 },
-
-          { "id": "S_VENT_ACTIVE_AHEAD", "add": 4 },
-          { "id": "S_VENT_ACTIVE_HERE", "add": 2 },
-          { "id": "S_ENEMY_NEAR_2", "add": 2 },
-          { "id": "S_CROWDED_AHEAD", "add": 2 }
+          {"id": "S_SPIKES_AHEAD", "add": 4},
+          {"id": "S_SPIKES_HERE", "add": 2},
+          {"id": "A_TURN_AROUND", "add": 2},
+          {"id": "S_PIT_AHEAD", "add": 4},
+          {"id": "A_JUMP_FWD", "add": 4},
+          {"id": "S_RANGED_THREAT_VISIBLE", "add": 2},
+          {"id": "S_FOG_AHEAD", "add": 4},
+          {"id": "S_IN_FOG", "add": 2},
+          {"id": "A_RETREAT", "add": 2},
+          {"id": "S_VENT_ACTIVE_AHEAD", "add": 4},
+          {"id": "S_VENT_ACTIVE_HERE", "add": 2},
+          {"id": "S_ENEMY_NEAR_2", "add": 2},
+          {"id": "S_CROWDED_AHEAD", "add": 2}
         ]
       },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 2,
       "enemyPool": ["E_RAT_SWARM", "E_HOUND"],
@@ -205,33 +308,49 @@
       "modifiersAllowed": [],
       "traps": ["T_POISON_FOG"],
       "mechanics": ["M_TIMED_VENTS"],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+      "obstacles": ["O_IRON_BARS", "O_STONE_WALL", "O_WATER_CHANNEL"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "###########",
+          "#@...e...A#",
+          "#.##.#.##.#",
+          "#..~.e.~..#",
+          "#|.~.#.~.|#",
+          "#B...e..$.#",
+          "#.##.#.##C#",
+          "#D..f.f..X#",
+          "###########"
+        ]
+      }
     },
     {
       "levelId": 6,
       "themeId": "sewer_vermin",
-      "introduces": ["plague", "E_GOBLIN_SHAMAN", "A_SHAKE_IT_OFF"],
+      "diceSides": 6,
+      "introduces": ["plague", "E_GOBLIN_SHAMAN", "A_SHAKE_IT_OFF", "S_POISONED"],
       "deck": {
         "baseDeckId": "baseDeck_L1",
         "adjustments": [
-          { "id": "S_SPIKES_AHEAD", "add": 4 },
-          { "id": "S_SPIKES_HERE", "add": 2 },
-          { "id": "A_TURN_AROUND", "add": 2 },
-          { "id": "S_PIT_AHEAD", "add": 4 },
-          { "id": "A_JUMP_FWD", "add": 4 },
-          { "id": "S_RANGED_THREAT_VISIBLE", "add": 2 },
-          { "id": "S_FOG_AHEAD", "add": 4 },
-          { "id": "S_IN_FOG", "add": 2 },
-          { "id": "A_RETREAT", "add": 2 },
-          { "id": "S_VENT_ACTIVE_AHEAD", "add": 4 },
-          { "id": "S_VENT_ACTIVE_HERE", "add": 2 },
-          { "id": "S_ENEMY_NEAR_2", "add": 2 },
-          { "id": "S_CROWDED_AHEAD", "add": 2 },
-
-          { "id": "A_SHAKE_IT_OFF", "add": 4 }
+          {"id": "S_SPIKES_AHEAD", "add": 4},
+          {"id": "S_SPIKES_HERE", "add": 2},
+          {"id": "A_TURN_AROUND", "add": 2},
+          {"id": "S_PIT_AHEAD", "add": 4},
+          {"id": "A_JUMP_FWD", "add": 4},
+          {"id": "S_RANGED_THREAT_VISIBLE", "add": 2},
+          {"id": "S_FOG_AHEAD", "add": 4},
+          {"id": "S_IN_FOG", "add": 2},
+          {"id": "A_RETREAT", "add": 2},
+          {"id": "S_VENT_ACTIVE_AHEAD", "add": 4},
+          {"id": "S_VENT_ACTIVE_HERE", "add": 2},
+          {"id": "S_ENEMY_NEAR_2", "add": 2},
+          {"id": "S_CROWDED_AHEAD", "add": 2},
+          {"id": "A_SHAKE_IT_OFF", "add": 4},
+          {"id": "S_POISONED", "add": 2}
         ]
       },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 2,
       "enemyPool": ["E_RAT_SWARM", "E_GOBLIN_SHAMAN"],
@@ -239,15 +358,30 @@
       "modifiersAllowed": ["plague"],
       "traps": ["T_POISON_FOG"],
       "mechanics": ["M_TIMED_VENTS"],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+      "obstacles": ["O_RUBBLE_PILE", "O_STONE_WALL", "O_WATER_CHANNEL"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "###########",
+          "#@.f..~..A#",
+          "#.%.#.~.#.#",
+          "#...#e..f.#",
+          "#.#.#.#~#.#",
+          "#B..e..~.!#",
+          "#.%.#.#.%C#",
+          "#D..f....X#",
+          "###########"
+        ]
+      }
     },
-
     {
       "levelId": 7,
       "themeId": "ash_foundry",
+      "diceSides": 6,
       "introduces": ["OP_ELSE", "S_HAZARD_AHEAD", "A_STEP_ASIDE", "T_SMOKE_VENTS", "M_CONVEYOR"],
-      "deck": { "fromPrevLevel": 6, "adjustments": [{ "id": "OP_ELSE", "add": 10 }, { "id": "S_HAZARD_AHEAD", "add": 6 }, { "id": "A_STEP_ASIDE", "add": 6 }] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "deck": {"fromPrevLevel": 6, "adjustments": [{"id": "OP_ELSE", "add": 10}, {"id": "S_HAZARD_AHEAD", "add": 6}, {"id": "A_STEP_ASIDE", "add": 6}]},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 3,
       "enemyPool": ["E_GOBLIN_ARCHER", "E_GOBLIN_SCOUT"],
@@ -255,14 +389,30 @@
       "modifiersAllowed": ["plague"],
       "traps": ["T_SMOKE_VENTS"],
       "mechanics": ["M_CONVEYOR"],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+      "obstacles": ["O_IRON_BARS", "O_LAVA_FLOW", "O_STONE_WALL"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "############",
+          "#@..m...LL.#",
+          "#.##.##.LL.#",
+          "#..>>>>.|..#",
+          "#.#.#.#.#A.#",
+          "#B..m.L....#",
+          "#.#.#.L.#..#",
+          "#C..<<<<mDX#",
+          "############"
+        ]
+      }
     },
     {
       "levelId": 8,
       "themeId": "ash_foundry",
-      "introduces": ["E_ORC_BRUTE", "E_ORC_WARDEN", "S_SMOKE_AHEAD", "S_IN_SMOKE", "A_HOLD"],
-      "deck": { "fromPrevLevel": 7, "adjustments": [{ "id": "S_SMOKE_AHEAD", "add": 4 }, { "id": "S_IN_SMOKE", "add": 4 }, { "id": "A_HOLD", "add": 4 }] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "diceSides": 6,
+      "introduces": ["E_ORC_BRUTE", "E_ORC_WARDEN", "S_SMOKE_AHEAD", "S_IN_SMOKE", "A_HOLD", "P_SPEED_RUNE"],
+      "deck": {"fromPrevLevel": 7, "adjustments": [{"id": "S_SMOKE_AHEAD", "add": 4}, {"id": "S_IN_SMOKE", "add": 4}, {"id": "A_HOLD", "add": 4}]},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 3,
       "enemyPool": ["E_ORC_BRUTE", "E_ORC_WARDEN", "E_GOBLIN_ARCHER"],
@@ -270,14 +420,31 @@
       "modifiersAllowed": ["plague"],
       "traps": ["T_SMOKE_VENTS"],
       "mechanics": ["M_CONVEYOR"],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D", "SP_E"]
+      "obstacles": ["O_LAVA_FLOW", "O_RUBBLE_PILE", "O_STONE_WALL"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D", "SP_E"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "#############",
+          "#@..%..m..A.#",
+          "#.#.%.#.#.#.#",
+          "#...>>>>...B#",
+          "#L#.#.#.#.#.#",
+          "#L..m..?..m.#",
+          "#.#.#.#.#.#.#",
+          "#C..<<<<..D.#",
+          "#..%...E%..X#",
+          "#############"
+        ]
+      }
     },
     {
       "levelId": 9,
       "themeId": "ash_foundry",
+      "diceSides": 6,
       "introduces": ["ashen", "A_RAISE_SHIELD", "A_SPRINT"],
-      "deck": { "fromPrevLevel": 8, "adjustments": [{ "id": "A_RAISE_SHIELD", "add": 4 }, { "id": "A_SPRINT", "add": 4 }] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "deck": {"fromPrevLevel": 8, "adjustments": [{"id": "A_RAISE_SHIELD", "add": 4}, {"id": "A_SPRINT", "add": 4}]},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 3,
       "enemyPool": ["E_ORC_WARDEN", "E_GOBLIN_ARCHER", "E_ORC_BRUTE"],
@@ -285,15 +452,31 @@
       "modifiersAllowed": ["plague", "ashen"],
       "traps": ["T_SMOKE_VENTS"],
       "mechanics": ["M_CONVEYOR"],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D", "SP_E"]
+      "obstacles": ["O_IRON_BARS", "O_LAVA_FLOW", "O_RUBBLE_PILE", "O_STONE_WALL"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D", "SP_E"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "#############",
+          "#@.....LL..A#",
+          "#.#|#.#LL.#.#",
+          "#.v.m.....#B#",
+          "#.v.#.#.#.#.#",
+          "#.v.L.m.L...#",
+          "#.#.#.#.%.#.#",
+          "#C>>>>..m.D.#",
+          "#..%..E..|.X#",
+          "#############"
+        ]
+      }
     },
-
     {
       "levelId": 10,
       "themeId": "catacombs",
+      "diceSides": 8,
       "introduces": ["OP_NOT", "S_SAFE_AHEAD", "A_BACKSTEP", "E_SKELETON_GUARD", "T_BONE_SPIKES"],
-      "deck": { "fromPrevLevel": 9, "adjustments": [{ "id": "OP_NOT", "add": 10 }, { "id": "S_SAFE_AHEAD", "add": 6 }, { "id": "A_BACKSTEP", "add": 4 }] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "deck": {"fromPrevLevel": 9, "adjustments": [{"id": "OP_NOT", "add": 10}, {"id": "S_SAFE_AHEAD", "add": 6}, {"id": "A_BACKSTEP", "add": 4}]},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 3,
       "enemyPool": ["E_SKELETON_GUARD", "E_ORC_BRUTE"],
@@ -301,14 +484,30 @@
       "modifiersAllowed": ["plague", "ashen"],
       "traps": ["T_BONE_SPIKES"],
       "mechanics": [],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+      "obstacles": ["O_BONE_PILE", "O_STONE_WALL", "O_TOMBSTONE"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "############",
+          "#@..k..+..A#",
+          "#.#&#.#.#&.#",
+          "#...+.k..+.#",
+          "#&#.#.#&#..#",
+          "#B..k...k..#",
+          "#.+.#&#.#+.#",
+          "#C.....k.DX#",
+          "############"
+        ]
+      }
     },
     {
       "levelId": 11,
       "themeId": "catacombs",
+      "diceSides": 8,
       "introduces": ["E_GHOUL", "S_CORPSE_NEARBY", "S_GHOUL_VISIBLE", "A_STOMP"],
-      "deck": { "fromPrevLevel": 10, "adjustments": [{ "id": "S_CORPSE_NEARBY", "add": 4 }, { "id": "S_GHOUL_VISIBLE", "add": 2 }, { "id": "A_STOMP", "add": 4 }] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "deck": {"fromPrevLevel": 10, "adjustments": [{"id": "S_CORPSE_NEARBY", "add": 4}, {"id": "S_GHOUL_VISIBLE", "add": 2}, {"id": "A_STOMP", "add": 4}]},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 3,
       "enemyPool": ["E_SKELETON_GUARD", "E_GHOUL"],
@@ -316,14 +515,30 @@
       "modifiersAllowed": ["plague", "ashen"],
       "traps": ["T_BONE_SPIKES"],
       "mechanics": [],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+      "obstacles": ["O_BONE_PILE", "O_STONE_WALL", "O_TOMBSTONE"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "############",
+          "#@.+..k..+A#",
+          "#.#..&#.#..#",
+          "#.k.+...k..#",
+          "#.#&#.#+#&.#",
+          "#B..k.!...k#",
+          "#&#.#.#.#..#",
+          "#C..+..k.DX#",
+          "############"
+        ]
+      }
     },
     {
       "levelId": 12,
       "themeId": "catacombs",
+      "diceSides": 8,
       "introduces": ["hollow", "S_RESURRECTION_PENDING", "S_ENEMY_COUNT_HIGH", "A_WARD"],
-      "deck": { "fromPrevLevel": 11, "adjustments": [{ "id": "S_RESURRECTION_PENDING", "add": 2 }, { "id": "S_ENEMY_COUNT_HIGH", "add": 2 }, { "id": "A_WARD", "add": 2 }] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "deck": {"fromPrevLevel": 11, "adjustments": [{"id": "S_RESURRECTION_PENDING", "add": 2}, {"id": "S_ENEMY_COUNT_HIGH", "add": 2}, {"id": "A_WARD", "add": 2}]},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 3,
       "enemyPool": ["E_SKELETON_GUARD", "E_GHOUL"],
@@ -331,15 +546,30 @@
       "modifiersAllowed": ["plague", "ashen", "hollow"],
       "traps": ["T_BONE_SPIKES"],
       "mechanics": [],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+      "obstacles": ["O_BONE_PILE", "O_LOCKED_GATE", "O_STONE_WALL", "O_TOMBSTONE"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "############",
+          "#@..=..k..A#",
+          "#.#.#.#.#=.#",
+          "#.k.+.&.+..#",
+          "#.#=#.#.#.&#",
+          "#B....k....#",
+          "#&#.#.#=#.+#",
+          "#C.k..+..DX#",
+          "############"
+        ]
+      }
     },
-
     {
       "levelId": 13,
       "themeId": "cursed_chapel",
-      "introduces": ["OP_AND", "S_LOW_HP", "S_CURSED_STATUS", "A_FOCUS", "E_CULTIST", "T_CURSE_SIGIL"],
-      "deck": { "fromPrevLevel": 12, "adjustments": [{ "id": "OP_AND", "add": 10 }, { "id": "S_LOW_HP", "add": 4 }, { "id": "S_CURSED_STATUS", "add": 2 }, { "id": "A_FOCUS", "add": 2 }, { "id": "S_CURSE_SIGIL_AHEAD", "add": 2 }] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "diceSides": 8,
+      "introduces": ["OP_AND", "S_LOW_HP", "S_CURSED_STATUS", "A_FOCUS", "E_CULTIST", "T_CURSE_SIGIL", "S_CURSE_SIGIL_AHEAD"],
+      "deck": {"fromPrevLevel": 12, "adjustments": [{"id": "OP_AND", "add": 10}, {"id": "S_LOW_HP", "add": 4}, {"id": "S_CURSED_STATUS", "add": 2}, {"id": "A_FOCUS", "add": 2}, {"id": "S_CURSE_SIGIL_AHEAD", "add": 2}]},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 3,
       "enemyPool": ["E_CULTIST", "E_SKELETON_GUARD"],
@@ -347,14 +577,30 @@
       "modifiersAllowed": ["plague", "ashen", "hollow"],
       "traps": ["T_CURSE_SIGIL"],
       "mechanics": [],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C"]
+      "obstacles": ["O_LOCKED_GATE", "O_STONE_WALL", "O_TOMBSTONE"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "############",
+          "#@..c..+..A#",
+          "#.#.#=#.#.+#",
+          "#.+...c...c#",
+          "#.#.#.#=#..#",
+          "#B..c..+...#",
+          "#.=.#.#.#c.#",
+          "#C.....c..X#",
+          "############"
+        ]
+      }
     },
     {
       "levelId": 14,
       "themeId": "cursed_chapel",
+      "diceSides": 8,
       "introduces": ["E_WRAITH_STALKER", "T_WHISPER_TILES", "S_PHASE_THREAT", "S_WHISPER_AHEAD", "A_ILLUMINATE"],
-      "deck": { "fromPrevLevel": 13, "adjustments": [{ "id": "S_PHASE_THREAT", "add": 3 }, { "id": "S_WHISPER_AHEAD", "add": 3 }, { "id": "A_ILLUMINATE", "add": 2 }] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "deck": {"fromPrevLevel": 13, "adjustments": [{"id": "S_PHASE_THREAT", "add": 3}, {"id": "S_WHISPER_AHEAD", "add": 3}, {"id": "A_ILLUMINATE", "add": 2}]},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 3,
       "enemyPool": ["E_WRAITH_STALKER", "E_CULTIST"],
@@ -362,14 +608,30 @@
       "modifiersAllowed": ["plague", "ashen", "hollow"],
       "traps": ["T_CURSE_SIGIL", "T_WHISPER_TILES"],
       "mechanics": [],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C"]
+      "obstacles": ["O_IRON_BARS", "O_LOCKED_GATE", "O_STONE_WALL", "O_TOMBSTONE"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "############",
+          "#@..w..|..A#",
+          "#.#.#=#.#..#",
+          "#.c.+.w.+.c#",
+          "#.#|#.#.#..#",
+          "#B..w..c...#",
+          "#.+.#=#.#w.#",
+          "#C..c..w..X#",
+          "############"
+        ]
+      }
     },
     {
       "levelId": 15,
       "themeId": "cursed_chapel",
+      "diceSides": 8,
       "introduces": ["cursed", "S_FEAR_STATUS", "A_STEEL_NERVES", "S_SUPPORT_ENEMY_VISIBLE"],
-      "deck": { "fromPrevLevel": 14, "adjustments": [{ "id": "S_FEAR_STATUS", "add": 2 }, { "id": "A_STEEL_NERVES", "add": 2 }, { "id": "S_SUPPORT_ENEMY_VISIBLE", "add": 2 }] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "deck": {"fromPrevLevel": 14, "adjustments": [{"id": "S_FEAR_STATUS", "add": 2}, {"id": "A_STEEL_NERVES", "add": 2}, {"id": "S_SUPPORT_ENEMY_VISIBLE", "add": 2}]},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 3,
       "enemyPool": ["E_WRAITH_STALKER", "E_CULTIST"],
@@ -377,15 +639,33 @@
       "modifiersAllowed": ["plague", "ashen", "hollow", "cursed"],
       "traps": ["T_CURSE_SIGIL", "T_WHISPER_TILES"],
       "mechanics": [],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C"]
+      "obstacles": ["O_LOCKED_GATE", "O_STONE_WALL", "O_TOMBSTONE"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "############",
+          "#@.w...+..A#",
+          "#.#.#=#.#.c#",
+          "#.c.+.w.+..#",
+          "#.#.#.#=#w.#",
+          "#B..w.$.c..#",
+          "#.+.#.#.#..#",
+          "#C..c..w..X#",
+          "############"
+        ]
+      }
     },
-
     {
       "levelId": 16,
       "themeId": "blood_arena",
-      "introduces": ["OP_OR", "S_TRAP_AHEAD", "S_ENEMY_LEFT", "S_ENEMY_RIGHT", "M_PUSH_PLATES", "T_BLEED_VINES", "A_BRACE"],
-      "deck": { "fromPrevLevel": 15, "adjustments": [{ "id": "OP_OR", "add": 10 }, { "id": "S_TRAP_AHEAD", "add": 4 }, { "id": "S_ENEMY_LEFT", "add": 2 }, { "id": "S_ENEMY_RIGHT", "add": 2 }, { "id": "A_BRACE", "add": 2 }] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "diceSides": 10,
+      "introduces": ["OP_OR", "S_TRAP_AHEAD", "S_ENEMY_LEFT", "S_ENEMY_RIGHT", "M_PUSH_PLATES", "T_BLEED_VINES", "A_BRACE", "S_BLEEDING"],
+      "deck": {
+        "fromPrevLevel": 15,
+        "adjustments": [{"id": "OP_OR", "add": 10}, {"id": "S_TRAP_AHEAD", "add": 4}, {"id": "S_ENEMY_LEFT", "add": 2}, {"id": "S_ENEMY_RIGHT", "add": 2}, {"id": "A_BRACE", "add": 2}, {"id": "S_BLEEDING", "add": 2}]
+      },
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 4,
       "enemyPool": ["E_ORC_BRUTE", "E_GOBLIN_KNIGHT"],
@@ -393,14 +673,31 @@
       "modifiersAllowed": ["plague", "ashen", "hollow", "cursed"],
       "traps": ["T_BLEED_VINES"],
       "mechanics": ["M_PUSH_PLATES"],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+      "obstacles": ["O_CHASM_EDGE", "O_IRON_BARS", "O_STONE_WALL"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "#############",
+          "#@..b..|..A.#",
+          "#.#P#.:.#.#.#",
+          "#...|.:.b..B#",
+          "#.#.#.:.#P#.#",
+          "#C..b...P...#",
+          "#.#.#.|.#.#.#",
+          "#D..b...b..X#",
+          "#############"
+        ],
+        "pushPlateDirections": ["S", "W", "E"]
+      }
     },
     {
       "levelId": 17,
       "themeId": "blood_arena",
+      "diceSides": 10,
       "introduces": ["S_ENEMY_ENRAGED", "A_BAIT"],
-      "deck": { "fromPrevLevel": 16, "adjustments": [{ "id": "S_ENEMY_ENRAGED", "add": 3 }, { "id": "A_BAIT", "add": 2 }] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "deck": {"fromPrevLevel": 16, "adjustments": [{"id": "S_ENEMY_ENRAGED", "add": 3}, {"id": "A_BAIT", "add": 2}]},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 4,
       "enemyPool": ["E_ORC_BRUTE"],
@@ -408,14 +705,31 @@
       "modifiersAllowed": ["plague", "ashen", "hollow", "cursed"],
       "traps": ["T_BLEED_VINES"],
       "mechanics": ["M_PUSH_PLATES"],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+      "obstacles": ["O_CHASM_EDGE", "O_IRON_BARS", "O_STONE_WALL"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "#############",
+          "#@..P..b..A.#",
+          "#.#.#|#.#.#.#",
+          "#.b.:.?.:.b.#",
+          "#.#.#.#.#|#.#",
+          "#B..P..b..P.#",
+          "#.#.#|#.#.#.#",
+          "#C.b......DX#",
+          "#############"
+        ],
+        "pushPlateDirections": ["S", "N", "W"]
+      }
     },
     {
       "levelId": 18,
       "themeId": "blood_arena",
+      "diceSides": 10,
       "introduces": ["iron", "S_ARMORED_ENEMY_VISIBLE", "A_PIERCE"],
-      "deck": { "fromPrevLevel": 17, "adjustments": [{ "id": "S_ARMORED_ENEMY_VISIBLE", "add": 3 }, { "id": "A_PIERCE", "add": 3 }] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "deck": {"fromPrevLevel": 17, "adjustments": [{"id": "S_ARMORED_ENEMY_VISIBLE", "add": 3}, {"id": "A_PIERCE", "add": 3}]},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 4,
       "enemyPool": ["E_ORC_BRUTE"],
@@ -423,15 +737,31 @@
       "modifiersAllowed": ["plague", "ashen", "hollow", "cursed", "iron"],
       "traps": ["T_BLEED_VINES"],
       "mechanics": ["M_PUSH_PLATES"],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+      "obstacles": ["O_CHASM_EDGE", "O_IRON_BARS", "O_RUBBLE_PILE", "O_STONE_WALL"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "#############",
+          "#@..b..%..A.#",
+          "#.#P#.:.#.#.#",
+          "#.%.|.:.b.%.#",
+          "#.#.#.:.#P#.#",
+          "#B..b..P..b.#",
+          "#.#%#.|.#.#.#",
+          "#C...b...DX.#",
+          "#############"
+        ],
+        "pushPlateDirections": ["E", "N", "W"]
+      }
     },
-
     {
       "levelId": 19,
       "themeId": "rotwood",
+      "diceSides": 10,
       "introduces": ["E_SPIDER", "T_SNARE_ROOTS", "S_SNARE_AHEAD", "S_IN_ROOTS", "A_CUT_FREE"],
-      "deck": { "fromPrevLevel": 18, "adjustments": [{ "id": "S_SNARE_AHEAD", "add": 4 }, { "id": "S_IN_ROOTS", "add": 2 }, { "id": "A_CUT_FREE", "add": 3 }] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "deck": {"fromPrevLevel": 18, "adjustments": [{"id": "S_SNARE_AHEAD", "add": 4}, {"id": "S_IN_ROOTS", "add": 2}, {"id": "A_CUT_FREE", "add": 3}]},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 4,
       "enemyPool": ["E_SPIDER", "E_HOUND"],
@@ -439,14 +769,30 @@
       "modifiersAllowed": ["plague", "ashen", "hollow", "cursed", "iron"],
       "traps": ["T_SNARE_ROOTS", "T_BLEED_VINES"],
       "mechanics": [],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C"]
+      "obstacles": ["O_STONE_WALL", "O_THORN_BRAMBLES", "O_WATER_CHANNEL"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "#############",
+          "#@..n..*..A.#",
+          "#.*.~.*.n.*.#",
+          "#.n.~...b...#",
+          "#.*.~.*.*.*.#",
+          "#B..b..n....#",
+          "#.*.~~~.*.*.#",
+          "#C..n...b..X#",
+          "#############"
+        ]
+      }
     },
     {
       "levelId": 20,
       "themeId": "rotwood",
+      "diceSides": 10,
       "introduces": ["T_ILLUSION_WALL", "S_ILLUSION_AHEAD", "A_PROBE"],
-      "deck": { "fromPrevLevel": 19, "adjustments": [{ "id": "S_ILLUSION_AHEAD", "add": 4 }, { "id": "A_PROBE", "add": 4 }] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "deck": {"fromPrevLevel": 19, "adjustments": [{"id": "S_ILLUSION_AHEAD", "add": 4}, {"id": "A_PROBE", "add": 4}]},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 4,
       "enemyPool": ["E_SPIDER", "E_CULTIST"],
@@ -454,14 +800,30 @@
       "modifiersAllowed": ["plague", "ashen", "hollow", "cursed", "iron"],
       "traps": ["T_SNARE_ROOTS", "T_ILLUSION_WALL"],
       "mechanics": [],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C"]
+      "obstacles": ["O_STONE_WALL", "O_THORN_BRAMBLES", "O_WATER_CHANNEL"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "#############",
+          "#@..n..*..A.#",
+          "#.*.~.i.*.*.#",
+          "#.i.~...n.i.#",
+          "#.*.....*.*.#",
+          "#B..n.!..i..#",
+          "#.*.~~~.*.*.#",
+          "#C..i...n..X#",
+          "#############"
+        ]
+      }
     },
     {
       "levelId": 21,
       "themeId": "rotwood",
+      "diceSides": 10,
       "introduces": ["blood", "S_BLOOD_TRAIL_NEARBY", "A_CAUTERIZE"],
-      "deck": { "fromPrevLevel": 20, "adjustments": [{ "id": "S_BLOOD_TRAIL_NEARBY", "add": 3 }, { "id": "A_CAUTERIZE", "add": 3 }] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "deck": {"fromPrevLevel": 20, "adjustments": [{"id": "S_BLOOD_TRAIL_NEARBY", "add": 3}, {"id": "A_CAUTERIZE", "add": 3}]},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 4,
       "enemyPool": ["E_SPIDER", "E_ORC_WARDEN"],
@@ -469,15 +831,30 @@
       "modifiersAllowed": ["plague", "ashen", "hollow", "cursed", "iron", "blood"],
       "traps": ["T_SNARE_ROOTS", "T_BLEED_VINES"],
       "mechanics": [],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C"]
+      "obstacles": ["O_CHASM_EDGE", "O_STONE_WALL", "O_THORN_BRAMBLES", "O_WATER_CHANNEL"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "#############",
+          "#@..n..:..A.#",
+          "#.*.~.:.b.*.#",
+          "#.b.~...n...#",
+          "#.*.~.*.*.:.#",
+          "#B..n..b....#",
+          "#.*.~~~.*.*.#",
+          "#C..b...n..X#",
+          "#############"
+        ]
+      }
     },
-
     {
       "levelId": 22,
       "themeId": "mirror_halls",
+      "diceSides": 12,
       "introduces": [],
-      "deck": { "fromPrevLevel": 21, "adjustments": [] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "deck": {"fromPrevLevel": 21, "adjustments": []},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 4,
       "enemyPool": ["E_GOBLIN_ARCHER", "E_GOBLIN_SCOUT", "E_SPIDER", "E_CULTIST"],
@@ -485,14 +862,31 @@
       "modifiersAllowed": ["plague", "ashen", "hollow", "cursed", "iron", "blood"],
       "traps": ["T_SMOKE_VENTS", "T_ILLUSION_WALL"],
       "mechanics": ["M_CONVEYOR"],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+      "obstacles": ["O_CHASM_EDGE", "O_IRON_BARS", "O_STONE_WALL"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "##############",
+          "#@..m...|...A#",
+          "#.#.#.#.#.#..#",
+          "#..>>>>.i..m.#",
+          "#.#i#.#.#.#..#",
+          "#B...m:...i..#",
+          "#.#.#.:.#.#..#",
+          "#C.<<<<..m..D#",
+          "#..i...|....X#",
+          "##############"
+        ]
+      }
     },
     {
       "levelId": 23,
       "themeId": "mirror_halls",
+      "diceSides": 12,
       "introduces": [],
-      "deck": { "fromPrevLevel": 22, "adjustments": [] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "deck": {"fromPrevLevel": 22, "adjustments": []},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 4,
       "enemyPool": ["E_SKELETON_GUARD", "E_GHOUL", "E_GOBLIN_SHAMAN", "E_GOBLIN_ARCHER"],
@@ -500,14 +894,31 @@
       "modifiersAllowed": ["plague", "ashen", "hollow", "cursed", "iron", "blood"],
       "traps": ["T_BONE_SPIKES", "T_POISON_FOG"],
       "mechanics": ["M_TIMED_VENTS"],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"]
+      "obstacles": ["O_BONE_PILE", "O_CHASM_EDGE", "O_STONE_WALL", "O_TOMBSTONE"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "##############",
+          "#@..k..e..+.A#",
+          "#.#&#.#.#.#..#",
+          "#.f.k.f.e..k.#",
+          "#.#.#:#.#&#..#",
+          "#B..e..k..f..#",
+          "#.+.#.#:#.#..#",
+          "#C..f..e..k.D#",
+          "#..k...+....X#",
+          "##############"
+        ]
+      }
     },
     {
       "levelId": 24,
       "themeId": "mirror_halls",
+      "diceSides": 12,
       "introduces": [],
-      "deck": { "fromPrevLevel": 23, "adjustments": [] },
-      "pressureSpendCap": { "formula": "6 + levelNumber" },
+      "deck": {"fromPrevLevel": 23, "adjustments": []},
+      "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 4,
       "enemyPool": ["E_ORC_BRUTE", "E_WRAITH_STALKER", "E_SPIDER", "E_CULTIST"],
@@ -515,8 +926,25 @@
       "modifiersAllowed": ["plague", "ashen", "hollow", "cursed", "iron", "blood"],
       "traps": ["T_CURSE_SIGIL", "T_SNARE_ROOTS", "T_BLEED_VINES"],
       "mechanics": ["M_PUSH_PLATES"],
-      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D", "SP_E"]
+      "obstacles": ["O_CHASM_EDGE", "O_IRON_BARS", "O_STONE_WALL", "O_THORN_BRAMBLES"],
+      "spawnPoints": ["SP_A", "SP_B", "SP_C", "SP_D", "SP_E"],
+      "board": {
+        "heroFacing": "E",
+        "map": [
+          "##############",
+          "#@..c..*..n.A#",
+          "#.#P#.:.#.#..#",
+          "#.n.|.b.c..B.#",
+          "#.#.#.:.#P#..#",
+          "#C..b..n..c..#",
+          "#.*.#.|.#.#..#",
+          "#D..n..P..b.E#",
+          "#..c.....*..X#",
+          "##############"
+        ],
+        "pushPlateDirections": ["S", "W", "N"]
+      }
     }
   ],
-  "note": "Deck inheritance: if level.deck.fromPrevLevel is used, start with that level's resolved deck and apply adjustments."
+  "note": "Deck inheritance: if level.deck.fromPrevLevel is used, start with that level's resolved deck and apply adjustments. Board maps use content.mapLegend (see 10-json-reference.md)."
 }

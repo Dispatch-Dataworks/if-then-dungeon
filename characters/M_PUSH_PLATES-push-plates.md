@@ -2,6 +2,7 @@
 
 **ID:** `M_PUSH_PLATES`  
 **Category:** Board Mechanic  
+**Map symbol:** `P`  
 **Theme:** trapped corridors
 
 ## Visual description

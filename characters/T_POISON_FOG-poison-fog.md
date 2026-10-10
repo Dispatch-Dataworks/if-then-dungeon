@@ -2,6 +2,7 @@
 
 **ID:** `T_POISON_FOG`  
 **Category:** Trap  
+**Map symbol:** `f`  
 **Theme:** sewers / alchemy labs
 
 ## Visual description
@@ -11,7 +12,7 @@ Low green haze that fills regions; thicker toward the center.
 - **End tick while inside fog**
 
 ## Effect
-- **1 damage per tick + optional poison stack**
+- **1 damage per tick, plus a 25% (seeded) chance of 1 poison stack**
 - Traps are never “instant kill”, but can be lethal if they reduce HP to 0.
 
 ## Telegraphed state
@@ -19,7 +20,7 @@ Low green haze that fills regions; thicker toward the center.
 - If timed/cycling, show **one tick of warning** before an unsafe phase (animation + UI).
 
 ## How it behaves (deterministic)
-Damage applies at tick end; encourages planning around zones.
+Damage applies at tick end; encourages planning around zones. Poison keeps hurting after you leave (1 damage per loop, then -1 stack), so **S_POISONED** + **A_SHAKE_IT_OFF** (both L6) become useful.
 
 ## Movement interaction
 - Stepping rules:

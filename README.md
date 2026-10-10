@@ -44,7 +44,8 @@ This repository contains the complete written specification and JSON references 
 - `engine-spec.md` — engine modules, data shapes, determinism and persistence (authoritative for implementation)
 - `technical-notes-4-7.md` — PWA, offline/caching, privacy and performance notes
 - `Style-guide.md` — colors, typography, UI styling and accessibility rules
-- `cards.json`, `levels.json`, `rules.json` — game content and tuning data
+- `cards.json`, `levels.json`, `rules.json` — cards, campaign (levels, maps, decks, traps, obstacles, statuses, pickups) and global rules
+- `heroes.json`, `enemies.json`, `themes.json` — hero and enemy stats, modifier effects, per-theme art direction
 - `characters/` — one sheet per hero, enemy, modifier, trap, mechanic and obstacle (see `characters/readme.md`)
 - `assets/placeholders/` — generated placeholder images for every card and character (temporary until final art)
 - `branding/` — logo and key-art concepts (see `branding/README.md`)
@@ -56,7 +57,7 @@ The game is built with TypeScript + Vite (see §0 of `engine-spec.md` for why).
 ```sh
 npm install
 npm test               # engine unit tests + content validation
-npm run validate       # content validation only (cards.json, levels.json, character sheets, placeholders)
+npm run validate       # content validation only (all JSON files, level maps, character sheets, placeholders)
 npm run typecheck
 npm run dev            # local dev server
 npm run placeholders   # regenerate placeholder images after adding cards or character sheets

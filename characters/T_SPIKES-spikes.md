@@ -2,6 +2,7 @@
 
 **ID:** `T_SPIKES`  
 **Category:** Trap  
+**Map symbol:** `s`  
 **Theme:** classic dungeon
 
 ## Visual description

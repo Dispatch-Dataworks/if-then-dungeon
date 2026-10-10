@@ -49,7 +49,7 @@ This document specifies the engine boundaries, core data shapes, and required be
 - `engine/spawn.ts` — pressure spending, resurrection-first, spawn selection
 - `engine/tick.ts` — tick step reducer: (state, ctx) -> {state, events}
 - `engine/turn.ts` — orchestrate deal/exchange/build/roll/execute sequence
-- `engine/validate.ts` — content + level validation helpers
+- `engine/validate.ts` — content + level validation helpers (implemented: JSON cross-references, campaign progression, level maps, catalogs)
 
 UI-side:
 - `ui/controller.ts` — orchestrates engine calls, maintains tick history
@@ -109,9 +109,11 @@ Below are conceptual shapes, not strict TS.
 
 #### BoardState
 - `width`, `height`
-- `tiles` (static terrain)
+- `tiles` (static terrain: floor or obstacle id; parsed from `level.board.map` via `content.mapLegend`)
 - `traps` (trap instances keyed by tile)
-- `mechanics` (conveyors, vents, plates)
+- `mechanics` (conveyors with direction, vents, push plates with direction)
+- `pickups` (pickup instances keyed by tile; includes enemy drops)
+- `effects` (blood tiles and corpses, with remaining loops)
 - `exit` tile coordinate
 - `spawnPoints` list
 

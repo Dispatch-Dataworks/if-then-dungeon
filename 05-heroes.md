@@ -14,6 +14,19 @@ Rules:
 ## Unlock strategy
 - Start with **4 heroes**.
 - Advanced heroes unlock as the player clears higher levels.
+- Each advanced hero unlocks just **before the theme it is best at**, so a new hero arrives with a reason to try it:
+
+| Unlocks after clearing | Hero | Why then |
+|---|---|---|
+| Level 3 | Alchemist | Sewer Vermin brings poison fog |
+| Level 6 | Monk | Ash Foundry brings vents and conveyors |
+| Level 9 | Cleric | Catacombs bring the undead |
+| Level 12 | Battlemage | Cursed Chapel brings curses and fear |
+| Level 15 | Sentinel, Berserker | Blood Arena brings armor and bleed |
+| Level 18 | Ranger, Hunter | Rotwood brings snares and blood trails |
+
+- Each hero has 3 upgrades that unlock after clearing 2, 4 and 6 levels **with that hero**, which rewards switching heroes.
+- All numbers (stats, attack damage and range, upgrade effects) are in `heroes.json`.
 - No hero has exclusive card types; some cards change effect per hero (Hero Attack, some utility cards).
 
 ---

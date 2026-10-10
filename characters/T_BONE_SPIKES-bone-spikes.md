@@ -2,6 +2,7 @@
 
 **ID:** `T_BONE_SPIKES`  
 **Category:** Trap  
+**Map symbol:** `k`  
 **Theme:** crypt / ossuary
 
 ## Visual description

@@ -8,16 +8,23 @@
 A heavy wooden gate reinforced with iron bands, shut tight.
 
 ## Core rule
-Blocks movement. In v0.1, cannot be opened; later could be opened with keys or actions.
+Solid. Signals "not this way" in chapels and catacombs (keys may open gates in a later version).
+
+| Property | Value |
+|---|---|
+| Map symbol | `=` |
+| Blocks movement | Yes |
+| Blocks line of sight | Yes |
+| Can be jumped over (**A_JUMP_FWD**) | No |
+| Used in levels | 12, 13, 14, 15 |
 
 ## Movement interaction
-- The hero and enemies **cannot enter** this tile in v0.1.
-- When movement is blocked:
-  - hero uses clockwise rotation to nearest open direction (per hero default / rules)
-  - enemies follow their own deterministic blocked handling
+- The hero and enemies **cannot enter** this tile.
+- A blocked move fails and still uses the loop. **S_WALL_AHEAD** and **S_BLOCKED_AHEAD** are true when this tile is directly ahead.
+- Hero default behaviors that rotate when blocked use clockwise preference (counter-clockwise while **cursed**).
 
 ## Line-of-sight interaction
-- Default: blocks LoS unless otherwise specified in the level’s tile rules.
+- Blocks line of sight: enemies behind it are not visible and ranged attacks cannot pass.
 
 ## Teaching notes
 Useful as a puzzle constraint (route planning).
@@ -30,4 +37,4 @@ Useful as a puzzle constraint (route planning).
 ## JSON knobs
 - blocksMovement (bool)
 - blocksLoS (bool)
-- hazardOnContact (optional; not used in v0.1)
+- jumpable (bool)

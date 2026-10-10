@@ -2,6 +2,7 @@
 
 **ID:** `M_TIMED_VENTS`  
 **Category:** Board Mechanic  
+**Map symbol:** `e`  
 **Theme:** industrial / vents
 
 ## Visual description

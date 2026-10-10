@@ -2,6 +2,7 @@
 
 **ID:** `T_WHISPER_TILES`  
 **Category:** Trap  
+**Map symbol:** `w`  
 **Theme:** haunted halls
 
 ## Visual description

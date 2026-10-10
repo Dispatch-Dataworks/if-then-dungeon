@@ -2,6 +2,7 @@
 
 **ID:** `T_SMOKE_VENTS`  
 **Category:** Trap  
+**Map symbol:** `m`  
 **Theme:** forge / vents
 
 ## Visual description

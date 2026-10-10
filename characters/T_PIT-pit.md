@@ -2,6 +2,7 @@
 
 **ID:** `T_PIT`  
 **Category:** Trap  
+**Map symbol:** `p`  
 **Theme:** ruins / caves
 
 ## Visual description
