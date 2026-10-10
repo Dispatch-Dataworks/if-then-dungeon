@@ -1,6 +1,6 @@
 # Technical Notes (Draft) — PWA + Architecture Guidance (Items 4–7)
 
-This document expands the previously identified “items 4–7” into practical, implementation-ready guidance for an **HTML/CSS/jQuery SPA PWA**. It is intentionally verbose and is meant to be used as a development reference and brainstorming guide.
+This document expands the previously identified “items 4–7” into practical, implementation-ready guidance for an **TypeScript (Vite) SPA PWA**. It is intentionally verbose and is meant to be used as a development reference and brainstorming guide.
 
 **Context (locked-in decisions):**
 - **No user accounts.** Gameplay data is saved locally on-device. A player may resume locally or “Start New” to wipe local saves.
@@ -9,7 +9,7 @@ This document expands the previously identified “items 4–7” into practical
 
 ---
 
-## 4) Engine boundaries (even in jQuery)
+## 4) Engine boundaries (TypeScript)
 
 ### 4.1 Why boundaries matter
 Even “simple” grid games become hard to debug if logic and UI are mixed. Your game has:

@@ -1,6 +1,14 @@
 # Engine Spec (Draft) — If-Then Dungeon v0.1
 
-This document specifies the engine boundaries, core data shapes, and required behaviors to implement the game reliably (determinism, replay, persistence). It is written to be implementable in plain JS (with jQuery for UI), but the simulation should be framework-agnostic.
+## 0) Decision: platform and stack
+- **Language/build:** TypeScript + Vite; tests with Vitest.
+- **Simulation core:** plain TypeScript, no DOM, seeded RNG (runs under Node).
+- **UI:** DOM/CSS for cards and the rule builder; PixiJS (or Phaser) for the board and animation.
+- **Distribution:** web/PWA first; Capacitor for Android/iOS; Tauri optional for desktop.
+- **Why:** the game is UI-heavy and turn-based, the audience plays in classroom browsers/Chromebooks, and a pure core is easy to test and replay.
+- **Revisit if:** visual spectacle (shaders, particles) becomes more important than browser reach. Because the core is separate from rendering, only the UI layer would be ported (e.g. to Godot).
+
+This document specifies the engine boundaries, core data shapes, and required behaviors to implement the game reliably (determinism, replay, persistence). It is written for **TypeScript** (see §0 Decision), but the simulation should be framework-agnostic.
 
 ---
 
@@ -30,23 +38,23 @@ This document specifies the engine boundaries, core data shapes, and required be
 ## 2) High-level modules
 
 ### 2.1 Core modules (recommended files)
-- `engine/state.js` — state constructors, defaults, validation
-- `engine/rng.js` — seeded RNG utilities
-- `engine/deck.js` — deck building, shuffle, draw, discard, exchange
-- `engine/rules/parse.js` — parse card rows into AST or token groups
-- `engine/rules/eval.js` — evaluate predicates against state
-- `engine/hero.js` — hero defaults + hero_attack resolution
-- `engine/enemy.js` — enemy AI intents + actions
-- `engine/traps.js` — trap triggers + statuses
-- `engine/spawn.js` — pressure spending, resurrection-first, spawn selection
-- `engine/tick.js` — tick step reducer: (state, ctx) -> {state, events}
-- `engine/turn.js` — orchestrate deal/exchange/build/roll/execute sequence
-- `engine/validate.js` — content + level validation helpers
+- `engine/state.ts` — state constructors, defaults, validation
+- `engine/rng.ts` — seeded RNG utilities
+- `engine/deck.ts` — deck building, shuffle, draw, discard, exchange
+- `engine/rules/parse.ts` — parse card rows into AST or token groups
+- `engine/rules/eval.ts` — evaluate predicates against state
+- `engine/hero.ts` — hero defaults + hero_attack resolution
+- `engine/enemy.ts` — enemy AI intents + actions
+- `engine/traps.ts` — trap triggers + statuses
+- `engine/spawn.ts` — pressure spending, resurrection-first, spawn selection
+- `engine/tick.ts` — tick step reducer: (state, ctx) -> {state, events}
+- `engine/turn.ts` — orchestrate deal/exchange/build/roll/execute sequence
+- `engine/validate.ts` — content + level validation helpers
 
 UI-side:
-- `ui/controller.js` — orchestrates engine calls, maintains tick history
-- `ui/render.js` — DOM transforms + animation
-- `ui/builder.js` — row builder interactions + validation feedback
+- `ui/controller.ts` — orchestrates engine calls, maintains tick history
+- `ui/render.ts` — DOM transforms + animation
+- `ui/builder.ts` — row builder interactions + validation feedback
 
 ---
 
