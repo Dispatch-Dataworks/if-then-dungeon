@@ -117,8 +117,8 @@ export function createState(levelId: number, heroId: string, seed: number, upgra
   }
   const s = hero.baseStats;
   // Upgrades that raise base stats.
-  const hpBonus = upgrades.filter((u) => u === "U_ANTITOXIN" || u === "U_BLOOD_SENSE").length * 2;
-  const armorBonus = upgrades.includes("U_CURSE_MITIGATION") ? 1 : 0;
+  const hpBonus = upgrades.filter((u) => u === "U_ANTITOXIN" || u === "U_BLOOD_SENSE" || u === "U_VENT_MASTERY").length * 2;
+  const armorBonus = upgrades.filter((u) => u === "U_CURSE_MITIGATION" || u === "U_PUSH_PLATE_RESIST").length;
   return {
     levelId,
     heroId,
@@ -197,7 +197,7 @@ export function inSmoke(state: GameState, p: Vec) {
 export function heroSight(state: GameState): number {
   const smoke = inSmoke(state, state.hero.pos) && !state.upgrades.includes("U_SMOKE_STEP") ? CONTENT.traps.T_SMOKE_VENTS!.visibilityPenalty ?? 1 : 0;
   const ashen = state.enemies.some((e) => e.modifier === "ashen" && manhattan(e.pos, state.hero.pos) <= 1) ? 1 : 0;
-  const bonus = state.upgrades.includes("U_SMOKE_STEP") || state.upgrades.includes("U_ILLUMINATION") ? 1 : 0;
+  const bonus = ["U_SMOKE_STEP", "U_ILLUMINATION", "U_QUICKDRAW"].some((u) => state.upgrades.includes(u)) ? 1 : 0;
   return Math.max(1, state.hero.sightRange + bonus - smoke - ashen);
 }
 

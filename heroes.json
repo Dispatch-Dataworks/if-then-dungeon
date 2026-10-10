@@ -26,9 +26,9 @@
       "defaultBehavior": {"key": "scan_then_move_safest", "text": "Scan the 180° forward arc, then move 1 toward the safest open tile (away from adjacent enemies)."},
       "heroAttack": {"name": "Arrow", "key": "ranged_los", "damage": 2, "range": 3},
       "upgrades": [
-        {"id": "U_QUICKDRAW", "name": "Quickdraw", "unlockAfterLevelsClearedWithHero": 2, "effect": "Arrow range +1 (max 4)."},
-        {"id": "U_PINNING_SHOT", "name": "Pinning Shot", "unlockAfterLevelsClearedWithHero": 4, "effect": "Arrow applies snare_root for 1 loop."},
-        {"id": "U_EVASION", "name": "Evasion", "unlockAfterLevelsClearedWithHero": 6, "effect": "First melee hit per turn deals 1 less."}
+        {"id": "U_QUICKDRAW", "name": "Quickdraw", "unlockAfterLevelsClearedWithHero": 2, "effect": "Arrow range +1 (to 4), and +1 sight."},
+        {"id": "U_PINNING_SHOT", "name": "Pinning Shot", "unlockAfterLevelsClearedWithHero": 4, "effect": "Arrow deals +1 damage and snares its target for 1 loop."},
+        {"id": "U_EVASION", "name": "Evasion", "unlockAfterLevelsClearedWithHero": 6, "effect": "Every melee hit deals you 1 less damage."}
       ]
     },
     {
@@ -82,9 +82,9 @@
       "defaultBehavior": {"key": "forward_fluid_turns", "text": "Move forward; if blocked, turn toward the first open direction clockwise and move in the same loop."},
       "heroAttack": {"name": "Focused Strike", "key": "melee", "damage": 2, "range": 1, "statusOnHit": {"status": "stun", "chancePercent": 25}},
       "upgrades": [
-        {"id": "U_VENT_MASTERY", "name": "Vent Mastery", "unlockAfterLevelsClearedWithHero": 2, "effect": "The first vent damage each turn is 0."},
-        {"id": "U_PUSH_PLATE_RESIST", "name": "Push Plate Resist", "unlockAfterLevelsClearedWithHero": 4, "effect": "Immune to push plates."},
-        {"id": "U_DISCIPLINE", "name": "Discipline", "unlockAfterLevelsClearedWithHero": 6, "effect": "Focused Strike stun chance 40%."}
+        {"id": "U_VENT_MASTERY", "name": "Vent Mastery", "unlockAfterLevelsClearedWithHero": 2, "effect": "Vents never hurt you, and +2 max HP."},
+        {"id": "U_PUSH_PLATE_RESIST", "name": "Push Plate Resist", "unlockAfterLevelsClearedWithHero": 4, "effect": "Immune to all pushes (plates, shoves, conveyors), and +1 armor."},
+        {"id": "U_DISCIPLINE", "name": "Discipline", "unlockAfterLevelsClearedWithHero": 6, "effect": "Focused Strike deals +1 damage and stuns 40% of the time."}
       ]
     },
     {

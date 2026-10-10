@@ -33,13 +33,13 @@ export function damageHero(
   if (kind === "trap" && (has(state, "U_BULWARK") || has(state, "U_TRAP_SENSE"))) amount -= 1;
   if (amount <= 0) return blockedBy(has(state, "U_BULWARK") ? "U_BULWARK" : "U_TRAP_SENSE");
   if (kind === "illusion" && once(state, "U_ILLUMINATION")) return blockedBy("U_ILLUMINATION");
-  if (kind === "vent" && once(state, "U_VENT_MASTERY")) return blockedBy("U_VENT_MASTERY");
+  if (kind === "vent" && has(state, "U_VENT_MASTERY")) return blockedBy("U_VENT_MASTERY");
   if (kind === "region" && has(state, "U_NEUTRALIZER")) return blockedBy("U_NEUTRALIZER");
   const fortified = has(state, "U_FORTIFY") && state.heldThisLoop ? 1 : 0;
   let dmg = opts.ignoreArmor ? amount : Math.max(1, amount - heroArmor(state) - fortified);
   if (kind === "melee" && has(state, "U_BRACE") && state.heldThisLoop) dmg = Math.max(0, dmg - 1);
   if (opts.ranged && state.hero.statuses.ranged_resist) dmg = Math.max(0, dmg - 1);
-  if (kind === "melee" && once(state, "U_EVASION")) dmg = Math.max(0, dmg - 1);
+  if (kind === "melee" && has(state, "U_EVASION")) dmg = Math.max(0, dmg - 1);
   if ((kind === "melee" || kind === "ranged") && once(state, "U_PARRY")) dmg = Math.max(0, dmg - 1);
   if (dmg > 0 && has(state, "U_RAGE_METER")) state.hero.rage = true;
   if (dmg <= 0) {

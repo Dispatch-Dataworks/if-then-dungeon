@@ -46,7 +46,7 @@ export function applyHeroStatus(s: GameState, status: string, amount?: number): 
 export function resistsPush(s: GameState, kind: "plate" | "shove" | "conveyor"): boolean {
   const h = s.hero;
   if (h.statuses.push_resist && kind !== "conveyor") return true;
-  if (kind === "plate" && has(s, "U_PUSH_PLATE_RESIST")) return true;
+  if (has(s, "U_PUSH_PLATE_RESIST")) return true;
   if (has(s, "U_BRACE")) return true;
   return once(s, "U_HEAVY_BOOTS");
 }

@@ -24,6 +24,12 @@ function enemy(g: Game, typeId: string, x: number, y: number, extra: Partial<Ene
   return e;
 }
 
+/** Runs `loops` loops of "IF <sensor> THEN <action>" with cards injected into the hand. */
+function playTurnWith(g: Game, sensor: string, action: string, loops: number) {
+  g.state.hand.push({ instanceId: "t-s", cardId: sensor }, { instanceId: "t-a", cardId: action });
+  return playTurn(g, [{ ifTokens: ["t-s"], thenAction: "t-a" }], { loops: [loops] });
+}
+
 /** Runs one loop of "IF <sensor> THEN <action>" with cards injected into the hand. */
 function run(g: Game, sensor: string, action: string) {
   g.state.hand.push({ instanceId: "t-s", cardId: sensor }, { instanceId: "t-a", cardId: action });
@@ -166,10 +172,19 @@ describe("upgrade effects", () => {
     }
   });
 
+  it("Evasion reduces every melee hit, not just the first", () => {
+    const g = setup("H_ARCHER", ["U_EVASION"], { x: 1, y: 1, facing: "S" });
+    enemy(g, "E_ORC_BRUTE", 2, 1);
+    const r = playTurnWith(g, "S_ENEMY_ADJACENT", "A_WAIT", 3);
+    const hits = r.frames.flatMap((f) => f.events).filter((e) => e.kind === "hero_hurt").map((e) => e.amount);
+    expect(hits.every((n) => n === 1)).toBe(true); // brute deals 2, archer has no armor: 1 each time
+  });
+
   it("stat upgrades raise max HP and armor", () => {
     expect(newGame(5, "H_ALCHEMIST", 1, ["U_ANTITOXIN"]).state.hero.maxHp).toBe(10);
     expect(newGame(20, "H_HUNTER", 1, ["U_BLOOD_SENSE"]).state.hero.maxHp).toBe(11);
     expect(newGame(14, "H_BATTLEMAGE", 1, ["U_CURSE_MITIGATION"]).state.hero.armor).toBe(2);
+    expect(newGame(8, "H_MONK", 1, ["U_VENT_MASTERY", "U_PUSH_PLATE_RESIST"]).state.hero).toMatchObject({ maxHp: 11, armor: 2 });
   });
 
   it("Wardbreaker ignores 1 armor", () => {
