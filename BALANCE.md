@@ -8,6 +8,7 @@ The game is balanced by simulation: a bot plays every level with every starter h
 scripts/sim-all.sh starter 8          # all levels, 4 starter heroes, 8 seeds each (about 10 minutes on 4 cores)
 scripts/sim-all.sh all 4 13-18        # every hero on levels 13-18
 scripts/sim-advanced.sh 8             # each advanced hero on the levels after it unlocks
+UPGRADES=max scripts/sim-all.sh       # same, with every upgrade the hero could have earned by each level
 npm run sim -- 12 H_SWORDSMAN 3       # one level; add VERBOSE=1 for turn-by-turn logs
 python3 scripts/deck-topup.py         # after editing deck adjustments: keep core cards at a steady share
 python3 scripts/sync-docs.py          # after changing numbers: update docs and character sheets
@@ -72,6 +73,29 @@ Each advanced hero was run (8 seeds) on every level after it unlocks, and compar
 - **Cleric** (+10) and **Hunter** (+11) run slightly strong. Both unlock right before the themes they are built for (undead; blood trails), so that is intended. The Hunter figure covers only 6 levels.
 - Weak spots worth watching: Battlemage on L16 (1/8 first try), Sentinel on L19 and L22.
 
+## Hero upgrades
+
+All 36 upgrades are implemented (`src/engine/upgrades.ts`). The sim was run twice on the same seeds: once with base heroes and once with **every upgrade the hero could have earned by that level** (`UPGRADES=max`: as if every earlier level since the hero unlocked was cleared with it). That is the upper bound on upgrade power.
+
+| Hero | Levels | Base | Upgraded | Gain |
+|---|---|---|---|---|
+| Swordsman | 1–24 | 83% | 90% | +6 |
+| Archer | 1–24 | 69% | 71% | +2 |
+| Shieldbearer | 1–24 | 70% | 69% | −1 |
+| Rogue | 1–24 | 85% | 85% | −1 |
+| Alchemist | 4–24 | 71% | 71% | 0 |
+| Monk | 7–24 | 78% | 80% | +2 |
+| Cleric | 10–24 | 86% | 91% | +5 |
+| Battlemage | 13–24 | 74% | 74% | 0 |
+| Sentinel | 16–24 | 72% | 71% | −1 |
+| Berserker | 16–24 | 78% | 83% | +6 |
+| Ranger | 19–24 | 81% | 85% | +4 |
+| Hunter | 19–24 | 83% | 83% | 0 |
+
+- Upgrades do not break the curve: no level gets more than about 7 points easier (largest: L22 59%→66%, L8 56%→62%).
+- Their effect is small and uneven. Offensive upgrades (Cleave, Smite reach, Rage Meter, Volley snares) show up; defensive and situational ones (Fortify, Brace, Smoke Step, Trap Sense, Neutralizer) barely register. Part of that is the bot, which doesn't change its play to exploit an upgrade (for example, holding more often to use Fortify). Differences of ±2 are within noise.
+- Upgrades are not simulated per-level in the "starter heroes" tables above; those are base heroes.
+
 ## What changed and why
 
 | Change | Evidence |
@@ -95,5 +119,5 @@ Each advanced hero was run (8 seeds) on every level after it unlocks, and compar
 
 ## Next tuning targets
 - **L12 and L16** are the steepest spikes outside the finale. Candidates: a slower resurrection rule for hollow enemies (L12), or splitting the L16 introductions across L16–17.
-- **Hero upgrades** are not implemented in the engine yet, so the simulation covers base heroes only.
+- **Weak upgrade sets** (Shieldbearer, Rogue, Alchemist, Battlemage, Sentinel, Hunter) add almost nothing in simulation. Candidates: make Fortify +1 armor while holding, Smoke Step also grant +1 sight, Brace work on every loop.
 - **A real playtest**: the bot can't tell us whether rules are *understandable*. Watch a few kids play L1–7 and note where they get stuck.
