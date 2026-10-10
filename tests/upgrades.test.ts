@@ -166,6 +166,12 @@ describe("upgrade effects", () => {
     }
   });
 
+  it("stat upgrades raise max HP and armor", () => {
+    expect(newGame(5, "H_ALCHEMIST", 1, ["U_ANTITOXIN"]).state.hero.maxHp).toBe(10);
+    expect(newGame(20, "H_HUNTER", 1, ["U_BLOOD_SENSE"]).state.hero.maxHp).toBe(11);
+    expect(newGame(14, "H_BATTLEMAGE", 1, ["U_CURSE_MITIGATION"]).state.hero.armor).toBe(2);
+  });
+
   it("Wardbreaker ignores 1 armor", () => {
     const dealt = (ups: string[]) => {
       const g = setup("H_BATTLEMAGE", ups, { x: 1, y: 1, facing: "S" });
@@ -173,6 +179,6 @@ describe("upgrade effects", () => {
       run(g, "S_ENEMY_VISIBLE", "A_HERO_ATTACK");
       return 10 - e.hp;
     };
-    expect(dealt(["U_WARDBREAKER"])).toBe(dealt([]) + 1);
+    expect(dealt(["U_WARDBREAKER"])).toBe(dealt([]) + 2); // +1 damage and its 1 armor ignored
   });
 });

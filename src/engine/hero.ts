@@ -217,7 +217,7 @@ export function heroAttack(state: GameState): boolean {
     dmg += 1;
     h.rage = false;
   }
-  if (has(state, "U_BASH_MASTERY") || has(state, "U_BACKSTAB") || has(state, "U_PIERCE")) dmg += 1;
+  if (["U_BASH_MASTERY", "U_BACKSTAB", "U_PIERCE", "U_WARDBREAKER"].some((u) => has(state, u))) dmg += 1;
   const pierce = (h.statuses.armor_pierce ?? 0) > 0;
   if (pierce) delete h.statuses.armor_pierce;
   const armorIgnored = has(state, "U_WARDBREAKER") ? 99 : has(state, "U_PIERCE") ? 1 : 0;

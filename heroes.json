@@ -68,7 +68,7 @@
       "defaultBehavior": {"key": "wait_if_safe_else_step_aside", "text": "Wait when safe; step aside when threatened; otherwise advance."},
       "heroAttack": {"name": "Throw Vial", "key": "ranged_tile_splash", "damage": 2, "range": 3, "statusOnHit": {"status": "poison", "stacks": 1}},
       "upgrades": [
-        {"id": "U_ANTITOXIN", "name": "Antitoxin", "unlockAfterLevelsClearedWithHero": 2, "effect": "Immune to poison."},
+        {"id": "U_ANTITOXIN", "name": "Antitoxin", "unlockAfterLevelsClearedWithHero": 2, "effect": "Immune to poison, and +2 max HP."},
         {"id": "U_NEUTRALIZER", "name": "Neutralizer", "unlockAfterLevelsClearedWithHero": 4, "effect": "Poison fog and smoke deal you no damage; Throw Vial range +1."},
         {"id": "U_VOLATILE_MIX", "name": "Volatile Mix", "unlockAfterLevelsClearedWithHero": 6, "effect": "Throw Vial also deals 2 damage to enemies next to the target."}
       ]
@@ -110,9 +110,9 @@
       "defaultBehavior": {"key": "keep_distance", "text": "If an enemy is adjacent, step aside; else move forward."},
       "heroAttack": {"name": "Arc Bolt", "key": "ranged_first_in_los", "damage": 2, "range": 4, "statusOnHit": {"status": "mark", "chancePercent": 100}},
       "upgrades": [
-        {"id": "U_ILLUMINATION", "name": "Illumination", "unlockAfterLevelsClearedWithHero": 2, "effect": "Arc Bolt range +1; Illuminate radius +1; the first illusion-wall impact each turn deals 0."},
-        {"id": "U_WARDBREAKER", "name": "Wardbreaker", "unlockAfterLevelsClearedWithHero": 4, "effect": "Arc Bolt ignores all armor."},
-        {"id": "U_CURSE_MITIGATION", "name": "Curse Mitigation", "unlockAfterLevelsClearedWithHero": 6, "effect": "Immune to cursed and fear."}
+        {"id": "U_ILLUMINATION", "name": "Illumination", "unlockAfterLevelsClearedWithHero": 2, "effect": "+1 sight and Arc Bolt range +1; Illuminate radius +1; the first illusion-wall impact each turn deals 0."},
+        {"id": "U_WARDBREAKER", "name": "Wardbreaker", "unlockAfterLevelsClearedWithHero": 4, "effect": "Arc Bolt deals +1 damage and ignores all armor."},
+        {"id": "U_CURSE_MITIGATION", "name": "Curse Mitigation", "unlockAfterLevelsClearedWithHero": 6, "effect": "Immune to cursed and fear, and +1 armor."}
       ]
     },
     {
@@ -166,7 +166,7 @@
       "defaultBehavior": {"key": "track", "text": "Move toward the nearest visible enemy, preferring tiles next to blood tiles; if none, move forward."},
       "heroAttack": {"name": "Execute", "key": "melee", "damage": 2, "range": 1, "bonus": {"vsHpAtOrBelowHalf": true, "damageAdd": 2}},
       "upgrades": [
-        {"id": "U_BLOOD_SENSE", "name": "Blood Sense", "unlockAfterLevelsClearedWithHero": 2, "effect": "+1 sight, and Blood Trail Nearby reaches 1 tile further."},
+        {"id": "U_BLOOD_SENSE", "name": "Blood Sense", "unlockAfterLevelsClearedWithHero": 2, "effect": "+2 max HP, and Blood Trail Nearby reaches 1 tile further."},
         {"id": "U_FINISHER", "name": "Finisher", "unlockAfterLevelsClearedWithHero": 4, "effect": "Execute's bonus becomes +3 and applies at or below two-thirds HP."},
         {"id": "U_TROPHY_HUNTER", "name": "Trophy Hunter", "unlockAfterLevelsClearedWithHero": 6, "effect": "Double drop chance from every enemy, and heal 1 HP per kill."}
       ]

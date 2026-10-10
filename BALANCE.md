@@ -81,20 +81,23 @@ All 36 upgrades are implemented (`src/engine/upgrades.ts`). The sim was run twic
 |---|---|---|---|---|
 | Swordsman | 1–24 | 83% | 90% | +6 |
 | Archer | 1–24 | 69% | 71% | +2 |
-| Shieldbearer | 1–24 | 70% | 69% | −1 |
-| Rogue | 1–24 | 85% | 85% | −1 |
-| Alchemist | 4–24 | 71% | 71% | 0 |
+| Shieldbearer | 1–24 | 70% | 78% | +8 |
+| Rogue | 1–24 | 85% | 89% | +4 |
+| Alchemist | 4–24 | 71% | 79% | +7 |
 | Monk | 7–24 | 78% | 80% | +2 |
 | Cleric | 10–24 | 86% | 91% | +5 |
-| Battlemage | 13–24 | 74% | 74% | 0 |
-| Sentinel | 16–24 | 72% | 71% | −1 |
+| Battlemage | 13–24 | 75% | 81% | +6 (16 seeds) |
+| Sentinel | 16–24 | 72% | 82% | +10 |
 | Berserker | 16–24 | 78% | 83% | +6 |
 | Ranger | 19–24 | 81% | 85% | +4 |
-| Hunter | 19–24 | 83% | 83% | 0 |
+| Hunter | 19–24 | 73% | 76% | +3 (16 seeds) |
 
-- Upgrades do not break the curve: no level gets more than about 7 points easier (largest: L22 59%→66%, L8 56%→62%).
-- Their effect is small and uneven. Offensive upgrades (Cleave, Smite reach, Rage Meter, Volley snares) show up; defensive and situational ones (Fortify, Brace, Smoke Step, Trap Sense, Neutralizer) barely register. Part of that is the bot, which doesn't change its play to exploit an upgrade (for example, holding more often to use Fortify). Differences of ±2 are within noise.
-- Upgrades are not simulated per-level in the "starter heroes" tables above; those are base heroes.
+- Upgrades do not break the curve: in the first pass no level got more than about 7 points easier (largest: L22 59%→66%, L8 56%→62%).
+- **First pass:** offensive upgrades (Cleave, Smite reach, Rage Meter, Volley snares) showed up; six sets (Shieldbearer, Rogue, Alchemist, Battlemage, Sentinel, Hunter) added nothing measurable.
+- **Strengthened** those six with always-on effects: armor while holding (Fortify), trap damage −1 (Bulwark, Trap Sense), +1 damage (Bash Mastery, Backstab, Pierce, Wardbreaker), range and sight (Neutralizer, Illumination, Smoke Step), immunities and stats (Antitoxin +2 HP, Curse Mitigation +1 armor, Blood Sense +2 HP), heal on kill (Trophy Hunter).
+- **A sight bonus can hurt:** giving the Hunter +1 sight made its default ("move toward the nearest visible enemy") pick fights earlier and cost 8 points, so Blood Sense gives +2 max HP instead.
+- **Noise:** with 6 levels × 8 seeds, a hero's average can swing about ±7 points (the Hunter read 83% base at 8 seeds and 73% at 16). The Battlemage and Hunter rows use 16 seeds.
+- Still small: Archer and Monk (+2). Candidates if they should feel stronger: Evasion → +1 armor vs melee; Discipline → stun also on 2nd hit.
 
 ## What changed and why
 
@@ -119,5 +122,5 @@ All 36 upgrades are implemented (`src/engine/upgrades.ts`). The sim was run twic
 
 ## Next tuning targets
 - **L12 and L16** are the steepest spikes outside the finale. Candidates: a slower resurrection rule for hollow enemies (L12), or splitting the L16 introductions across L16–17.
-- **Weak upgrade sets** (Shieldbearer, Rogue, Alchemist, Battlemage, Sentinel, Hunter) add almost nothing in simulation. Candidates: make Fortify +1 armor while holding, Smoke Step also grant +1 sight, Brace work on every loop.
+- **Archer and Monk upgrades** still add only about +2.
 - **A real playtest**: the bot can't tell us whether rules are *understandable*. Watch a few kids play L1–7 and note where they get stuck.

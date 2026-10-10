@@ -116,6 +116,9 @@ export function createState(levelId: number, heroId: string, seed: number, upgra
     for (let i = 0; i < count; i++) cards.push({ instanceId: `${cardId}#${i}`, cardId });
   }
   const s = hero.baseStats;
+  // Upgrades that raise base stats.
+  const hpBonus = upgrades.filter((u) => u === "U_ANTITOXIN" || u === "U_BLOOD_SENSE").length * 2;
+  const armorBonus = upgrades.includes("U_CURSE_MITIGATION") ? 1 : 0;
   return {
     levelId,
     heroId,
@@ -124,7 +127,7 @@ export function createState(levelId: number, heroId: string, seed: number, upgra
     loop: 0,
     lives: 3,
     hero: {
-      heroId, pos: board.heroStart, facing: board.heroFacing, hp: s.hp, maxHp: s.hp, armor: s.armor,
+      heroId, pos: board.heroStart, facing: board.heroFacing, hp: s.hp + hpBonus, maxHp: s.hp + hpBonus, armor: s.armor + armorBonus,
       speedTiles: s.speedTiles, sightRange: s.sightRange, statuses: {}, shardArmor: 0, runeSpeed: 0, movedThisLoop: false,
     },
     enemies: [],
@@ -194,7 +197,7 @@ export function inSmoke(state: GameState, p: Vec) {
 export function heroSight(state: GameState): number {
   const smoke = inSmoke(state, state.hero.pos) && !state.upgrades.includes("U_SMOKE_STEP") ? CONTENT.traps.T_SMOKE_VENTS!.visibilityPenalty ?? 1 : 0;
   const ashen = state.enemies.some((e) => e.modifier === "ashen" && manhattan(e.pos, state.hero.pos) <= 1) ? 1 : 0;
-  const bonus = state.upgrades.includes("U_SMOKE_STEP") || state.upgrades.includes("U_BLOOD_SENSE") ? 1 : 0;
+  const bonus = state.upgrades.includes("U_SMOKE_STEP") || state.upgrades.includes("U_ILLUMINATION") ? 1 : 0;
   return Math.max(1, state.hero.sightRange + bonus - smoke - ashen);
 }
 
