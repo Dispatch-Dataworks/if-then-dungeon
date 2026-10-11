@@ -80,11 +80,11 @@ All 36 upgrades are implemented (`src/engine/upgrades.ts`). The sim was run twic
 | Hero | Levels | Base | Upgraded | Gain |
 |---|---|---|---|---|
 | Swordsman | 1–24 | 83% | 90% | +6 |
-| Archer | 1–24 | 69% | 71% | +2 |
+| Archer | 1–24 | 67% | 83% | +16 (16 seeds) |
 | Shieldbearer | 1–24 | 70% | 78% | +8 |
 | Rogue | 1–24 | 85% | 89% | +4 |
 | Alchemist | 4–24 | 71% | 79% | +7 |
-| Monk | 7–24 | 78% | 80% | +2 |
+| Monk | 7–24 | 76% | 84% | +8 (16 seeds) |
 | Cleric | 10–24 | 86% | 91% | +5 |
 | Battlemage | 13–24 | 75% | 81% | +6 (16 seeds) |
 | Sentinel | 16–24 | 72% | 82% | +10 |
@@ -97,7 +97,7 @@ All 36 upgrades are implemented (`src/engine/upgrades.ts`). The sim was run twic
 - **Strengthened** those six with always-on effects: armor while holding (Fortify), trap damage −1 (Bulwark, Trap Sense), +1 damage (Bash Mastery, Backstab, Pierce, Wardbreaker), range and sight (Neutralizer, Illumination, Smoke Step), immunities and stats (Antitoxin +2 HP, Curse Mitigation +1 armor, Blood Sense +2 HP), heal on kill (Trophy Hunter).
 - **A sight bonus can hurt:** giving the Hunter +1 sight made its default ("move toward the nearest visible enemy") pick fights earlier and cost 8 points, so Blood Sense gives +2 max HP instead.
 - **Noise:** with 6 levels × 8 seeds, a hero's average can swing about ±7 points (the Hunter read 83% base at 8 seeds and 73% at 16). The Battlemage and Hunter rows use 16 seeds.
-- Still small: Archer and Monk (+2). Candidates if they should feel stronger: Evasion → +1 armor vs melee; Discipline → stun also on 2nd hit.
+- **Archer and Monk** were also +2, so they got the same treatment: Quickdraw +1 sight, Pinning Shot +1 damage, Evasion on every melee hit; Vent Mastery full vent immunity and +2 max HP, Push Plate Resist all pushes and +1 armor, Discipline +1 damage. The Archer's +16 is the largest gain, but it is also the weakest hero without upgrades; upgraded it matches a typical starter.
 
 ## What changed and why
 
@@ -122,5 +122,4 @@ All 36 upgrades are implemented (`src/engine/upgrades.ts`). The sim was run twic
 
 ## Next tuning targets
 - **L12 and L16** are the steepest spikes outside the finale. Candidates: a slower resurrection rule for hollow enemies (L12), or splitting the L16 introductions across L16–17.
-- **Archer and Monk upgrades** still add only about +2.
 - **A real playtest**: the bot can't tell us whether rules are *understandable*. Watch a few kids play L1–7 and note where they get stuck.
