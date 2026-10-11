@@ -52,6 +52,10 @@ This repository contains the complete written specification and JSON references 
 
 ## Play
 
+**Online demo:** https://dispatch-dataworks.github.io/if-then-dungeon/ (deployed from `main` by `.github/workflows/pages.yml`; add `?unlock=all` to open every level and hero).
+
+To run it locally:
+
 ```sh
 npm install
 npm run dev            # then open the printed URL
