@@ -1,6 +1,6 @@
 /** Title screen: hero picker, level select grouped by theme, and "Start new". */
 import { HERO_LIST, HEROES, getLevel } from "../engine/content";
-import { portraitEl } from "./cards";
+import { heroArtEl, portraitEl } from "./cards";
 import { glyph, h, replace } from "./dom";
 import { openModal } from "./modal";
 import { heroLevelsCleared, heroUnlocked, heroUpgrades, levelUnlocked, progress, resetProgress, update } from "./progress";
@@ -71,7 +71,9 @@ export function showTitle(root: HTMLElement, startLevel: (levelId: number) => vo
       h("section", { class: "panel" },
         h("h2", null, "Choose your hero"),
         heroes,
-        h("p", { class: "hero-detail" }, h("b", null, `${chosen.name}: `), `When no rule fires, ${chosen.defaultBehavior.text.charAt(0).toLowerCase()}${chosen.defaultBehavior.text.slice(1)} `, h("br"), h("b", null, "Hero Attack: "), cardText("A_HERO_ATTACK", chosen.id)),
+        h("div", { class: "hero-about" },
+          heroArtEl(chosen.id, chosen.name),
+          h("p", { class: "hero-detail" }, h("b", null, `${chosen.name}: `), `When no rule fires, ${chosen.defaultBehavior.text.charAt(0).toLowerCase()}${chosen.defaultBehavior.text.slice(1)} `, h("br"), h("b", null, "Hero Attack: "), cardText("A_HERO_ATTACK", chosen.id))),
         upgradeList(chosen.id)),
       h("section", { class: "panel" },
         h("div", { class: "levels-head" },

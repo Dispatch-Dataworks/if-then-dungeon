@@ -3,6 +3,7 @@ import { eq, type Dir, type Vec } from "../engine/board";
 import { key } from "../engine/content";
 import { boardOf, enemyName, isRevealed, trapAt, ventActive, type GameState } from "../engine/state";
 import { artUrl } from "./assets";
+import { faceImg } from "./cards";
 import { h } from "./dom";
 import { DIR_ARROW, DIR_WORD, modifierName, nameOf } from "./text";
 
@@ -176,14 +177,14 @@ export class BoardView {
     };
     const hero = state.hero;
     place("hero", hero.pos, () => h("div", { class: "unit unit--hero" },
-      h("span", { class: "unit__portrait" }, art(state.heroId, "unit__art")),
+      h("span", { class: "unit__portrait" }, faceImg(state.heroId, "unit__art") ?? art(state.heroId, "unit__art")),
       h("span", { class: "unit__facing" }, "▲")), (el) => {
       el.dataset.facing = hero.facing;
       el.classList.toggle("is-hurt", hero.hp <= Math.ceil(hero.maxHp / 3));
     });
     for (const e of state.enemies) {
       place(`e${e.uid}`, e.pos, () => h("div", { class: "unit unit--enemy" },
-        h("span", { class: "unit__portrait" }, art(e.typeId, "unit__art")),
+        h("span", { class: "unit__portrait" }, faceImg(e.typeId, "unit__art") ?? art(e.typeId, "unit__art")),
         h("span", { class: "unit__facing" }, "▲"),
         e.modifier ? h("span", { class: "unit__mod" }, modifierName(e.modifier)) : null,
         h("span", { class: "unit__hp" })), (el) => {
@@ -228,7 +229,7 @@ export class BoardView {
       parts.push(svg);
     }
 
-    for (const e of plan.enemies) parts.push(cell(e.pos, "ghost-enemy", h("span", { class: "ghost-enemy__art" }, art(e.typeId, "unit__art") ?? ""), h("span", { class: "ghost-enemy__tag" }, "?")));
+    for (const e of plan.enemies) parts.push(cell(e.pos, "ghost-enemy", h("span", { class: "ghost-enemy__art" }, faceImg(e.typeId, "unit__art") ?? art(e.typeId, "unit__art") ?? ""), h("span", { class: "ghost-enemy__tag" }, "?")));
 
     // Numbered loop markers, grouped per tile ("1→ 2↓"), with ✗ for a failed action and ♥ for damage.
     const byTile = new Map<string, GhostStep[]>();

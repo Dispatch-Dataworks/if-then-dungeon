@@ -80,3 +80,20 @@ describe("validateBoard", () => {
     );
   });
 });
+
+describe("final art", () => {
+  const folders = readdirSync("assets/art", { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
+  const faces = JSON.parse(readFileSync("assets/art/faces.json", "utf8")) as Record<string, unknown>;
+  const cardIds = new Set(cards.cards.map((c) => c.id));
+
+  it("is filed under real content IDs, each with a still", () => {
+    for (const id of folders) {
+      expect(sheetIds.has(id) || cardIds.has(id), id).toBe(true);
+      expect(existsSync(`assets/art/${id}/card.webp`), `${id}/card.webp`).toBe(true);
+    }
+  });
+
+  it("has face crops only for art that exists", () => {
+    for (const id of Object.keys(faces).filter((k) => !k.startsWith("_"))) expect(folders, id).toContain(id);
+  });
+});
