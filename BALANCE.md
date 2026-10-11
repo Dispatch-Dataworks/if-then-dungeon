@@ -99,6 +99,42 @@ All 36 upgrades are implemented (`src/engine/upgrades.ts`). The sim was run twic
 - **Noise:** with 6 levels × 8 seeds, a hero's average can swing about ±7 points (the Hunter read 83% base at 8 seeds and 73% at 16). The Battlemage and Hunter rows use 16 seeds.
 - **Archer and Monk** were also +2, so they got the same treatment: Quickdraw +1 sight, Pinning Shot +1 damage, Evasion on every melee hit; Vent Mastery full vent immunity and +2 max HP, Push Plate Resist all pushes and +1 armor, Discipline +1 damage. The Archer's +16 is the largest gain, but it is also the weakest hero without upgrades; upgraded it matches a typical starter.
 
+## Difficulty curve with upgrades
+
+Every hero available at each level (starters, plus advanced heroes once unlocked), 8 seeds each, without upgrades vs with every upgrade the hero could have earned by then. "With upgrades" is the upper bound: a player who sticks with one hero.
+
+| Level | No upgrades | With upgrades | Change | Heroes |
+|---|---|---|---|---|
+| 1 | 97% | 97% | 0 | 4 |
+| 2 | 100% | 100% | 0 | 4 |
+| 3 | 78% | 78% | 0 | 4 |
+| 4 | 85% | 85% | 0 | 5 |
+| 5 | 78% | 75% | −2 | 5 |
+| 6 | 92% | 88% | −5 | 5 |
+| 7 | 60% | 60% | 0 | 6 |
+| 8 | 56% | 65% | +8 | 6 |
+| 9 | 65% | 75% | +10 | 6 |
+| 10 | 70% | 86% | +16 | 7 |
+| 11 | 95% | 96% | +2 | 7 |
+| 12 | 55% | 68% | +13 | 7 |
+| 13 | 98% | 100% | +2 | 8 |
+| 14 | 92% | 91% | −2 | 8 |
+| 15 | 95% | 98% | +3 | 8 |
+| 16 | 44% | 65% | +21 | 10 |
+| 17 | 90% | 98% | +8 | 10 |
+| 18 | 70% | 86% | +16 | 10 |
+| 19 | 88% | 94% | +6 | 12 |
+| 20 | 97% | 99% | +2 | 12 |
+| 21 | 97% | 99% | +2 | 12 |
+| 22 | 59% | 69% | +9 | 12 |
+| 23 | 47% | 64% | +17 | 12 |
+| 24 | 69% | 80% | +11 | 12 |
+
+- **Spikes flatten:** upgrades lift the hardest levels the most (L16 +21, L23 +17, L10 and L18 +16, L12 +13), so the curve is smoother with them than without.
+- **Early game is unchanged:** nobody has upgrades before Level 3, and changes on L5–6 (−2/−5) are within noise.
+- **New hardest stretch: Ash Foundry (L7–8, 60–65%).** Starter heroes already have all three upgrades there, and the levels are navigation puzzles (conveyors, smoke) that upgrades don't help with.
+- **Late game gets easy for a one-hero player:** L13, L15, L17, L19–21 sit at 94–100%. Players who switch heroes will have fewer upgrades and see the "no upgrades" column instead.
+
 ## What changed and why
 
 | Change | Evidence |
@@ -121,5 +157,7 @@ All 36 upgrades are implemented (`src/engine/upgrades.ts`). The sim was run twic
 | Starting Pressure 4 on L19–21; Health Draughts on L12 and L16 safe routes | Smooths the curve (L19–21 were at 97–100%). |
 
 ## Next tuning targets
+- **Ash Foundry (L7–8)** is now the hardest stretch once upgrades are counted; consider a gentler L7 (fewer smoke tiles on the main route, or one less spawn per turn).
+- **Late levels with upgrades** (L13–21 outside L16 and L18) are near-certain for a one-hero player; starting Pressure or a higher spawn cap could keep them tense without hurting players who switch heroes much.
 - **L12 and L16** are the steepest spikes outside the finale. Candidates: a slower resurrection rule for hollow enemies (L12), or splitting the L16 introductions across L16–17.
 - **A real playtest**: the bot can't tell us whether rules are *understandable*. Watch a few kids play L1–7 and note where they get stuck.
