@@ -1,9 +1,13 @@
 /**
- * Art and character-sheet lookups by content ID. Placeholder images live in assets/placeholders/ and will be
- * replaced by final art with the same file names, so everything here is keyed by ID only.
+ * Art and character-sheet lookups by content ID. Placeholder images live in assets/placeholders/; final art lives in
+ * assets/art/<ID>/ (card.webp still, optional card.mp4 loop) and is used wherever it exists. Everything is keyed by ID.
  */
+import facesJson from "../../assets/art/faces.json";
+
 const cardFiles = import.meta.glob("../../assets/placeholders/cards/*.svg", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
 const charFiles = import.meta.glob("../../assets/placeholders/characters/*.svg", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
+const stillFiles = import.meta.glob("../../assets/art/*/card.webp", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
+const videoFiles = import.meta.glob("../../assets/art/*/card.mp4", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
 const sheetFiles = import.meta.glob("../../characters/*.md", { eager: true, query: "?raw", import: "default" }) as Record<string, string>;
 
 const byId = (files: Record<string, string>) =>
@@ -11,6 +15,26 @@ const byId = (files: Record<string, string>) =>
 
 const CARD_ART = byId(cardFiles);
 const CHAR_ART = byId(charFiles);
+
+const byFolder = (files: Record<string, string>) =>
+  new Map(Object.entries(files).map(([path, url]) => [path.split("/").at(-2)!, url]));
+const STILLS = byFolder(stillFiles);
+const VIDEOS = byFolder(videoFiles);
+const FACES = facesJson as unknown as Record<string, [number, number, number] | undefined>;
+
+/** Final art: a 5:4 still, an optional looping clip, and where the face sits for round portraits. */
+export interface RealArt {
+  still: string;
+  video?: string;
+  face: [x: number, y: number, size: number];
+}
+
+/** Final art for an ID from assets/art/<ID>/, or undefined while it still uses a placeholder. */
+export function realArt(id: string): RealArt | undefined {
+  const still = STILLS.get(id);
+  if (!still) return undefined;
+  return { still, video: VIDEOS.get(id), face: FACES[id] ?? [50, 35, 50] };
+}
 
 /** Image URL for a card, hero, enemy, trap, obstacle, pickup, mechanic or modifier (e.g. "iron" -> MOD_IRON). */
 export function artUrl(id: string): string | undefined {

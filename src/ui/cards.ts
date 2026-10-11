@@ -1,8 +1,8 @@
 /** Card elements: full cards for the hand and intro panels, compact chips for rule rows. */
 import { CARDS } from "../engine/content";
 import { threatOf } from "../engine/game";
-import { artUrl } from "./assets";
-import { glyph, h, type Child } from "./dom";
+import { artUrl, realArt } from "./assets";
+import { glyph, h, prefersReducedMotion, type Child } from "./dom";
 import { cardText, TYPE_LABEL } from "./text";
 
 export interface CardOpts {
@@ -64,8 +64,30 @@ export function chipEl(cardId: string, opts: { onClick?: () => void; heroId?: st
   }, content);
 }
 
-/** A cropped portrait of a character placeholder (shows the art window, not the whole card). */
+/** Final art cropped to the face, sized to fill a square container (see assets/art/faces.json). */
+export function faceImg(id: string, cls: string): HTMLImageElement | null {
+  const art = realArt(id);
+  if (!art) return null;
+  const [x, y, size] = art.face;
+  const height = 10000 / size;
+  const width = height * 1.25;
+  const style = `width:${width}%;height:${height}%;left:${50 - (x * width) / 100}%;top:${50 - (y * height) / 100}%`;
+  return h("img", { class: cls, src: art.still, alt: "", draggable: "false", style });
+}
+
+/** A cropped portrait: the face from final art, else the art window of the placeholder card. */
 export function portraitEl(id: string, cls: string): HTMLElement {
   const url = artUrl(id);
-  return h("span", { class: `portrait ${cls}`, "aria-hidden": "true" }, url ? h("img", { src: url, alt: "", draggable: "false" }) : null);
+  return h("span", { class: `portrait ${cls}`, "aria-hidden": "true" },
+    faceImg(id, "portrait__img") ?? (url ? h("img", { class: "portrait__img", src: url, alt: "", draggable: "false" }) : null));
+}
+
+/** The full 5:4 card art: the looping clip (still image when motion is reduced), or null without final art. */
+export function heroArtEl(id: string, label: string): HTMLElement | null {
+  const art = realArt(id);
+  if (!art) return null;
+  if (!art.video || prefersReducedMotion()) return h("figure", { class: "card-art" }, h("img", { src: art.still, alt: label }));
+  const video = h("video", { src: art.video, poster: art.still, autoplay: true, muted: true, loop: true, playsinline: true, "aria-label": label });
+  video.muted = true;
+  return h("figure", { class: "card-art" }, video);
 }
