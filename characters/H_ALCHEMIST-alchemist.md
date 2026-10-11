@@ -16,7 +16,7 @@ Area effects and hazard management; teaches splash logic and zone control.
 - **Speed** changes how many tiles a move action covers (does not add extra actions)
 
 ## Default behavior (when the active row does not trigger and no ELSE exists)
-Wait when safe; step aside when threatened; otherwise advance slowly.
+Step aside if an enemy is next to you; otherwise move forward (turn right, then left, if blocked).
 
 ## Hero Attack (effect of the `A_HERO_ATTACK` card)
 **Throw Vial (Hero Attack):** Ranged attack to a tile; creates a short-lived hazard or debuff zone (poison/burn/smoke depending on upgrade).

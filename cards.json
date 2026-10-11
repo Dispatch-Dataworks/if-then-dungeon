@@ -27,6 +27,11 @@
     { "id": "A_CAUTERIZE", "type": "action", "rarity": "uncommon", "name": "Cauterize", "engineKey": "cleanse", "params": { "cleanses": ["bleed"], "stacks": 99, "alsoGrants": { "buff": "blood_tile_resist", "durationLoops": 1 } } },
     { "id": "A_SHAKE_IT_OFF", "type": "action", "rarity": "uncommon", "name": "Shake It Off", "engineKey": "cleanse", "params": { "cleanses": ["bleed", "poison"], "stacks": 1 } },
 
+    { "id": "A_TURN_OPEN", "type": "action", "rarity": "common", "name": "Turn to Open Path", "engineKey": "turn_to_open", "params": {} },
+    { "id": "A_FOLLOW_WALL", "type": "action", "rarity": "common", "name": "Follow Right Wall", "engineKey": "follow_right_wall", "params": {} },
+    { "id": "A_FACE_ENEMY", "type": "action", "rarity": "common", "name": "Face Enemy", "engineKey": "face_enemy", "params": {} },
+    { "id": "A_FLEE", "type": "action", "rarity": "common", "name": "Flee", "engineKey": "flee", "params": {} },
+
     { "id": "A_HERO_ATTACK", "type": "hero_action", "rarity": "uncommon", "name": "Hero Attack", "engineKey": "hero_attack", "params": {} },
 
     { "id": "OP_ELSE", "type": "operator", "rarity": "common", "name": "ELSE", "engineKey": "else", "params": {} },

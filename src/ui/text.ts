@@ -148,9 +148,44 @@ export function cardText(cardId: string, heroId?: string): string {
     case "and": return "TRUE only when the parts on both sides are TRUE.";
     case "or": return "TRUE when at least one side is TRUE.";
     case "else": return "Adds an ELSE part to a row: when the IF is FALSE, the hero does the ELSE action.";
-    default: return "";
+    case "turn_to_open": return "Keep facing the same way if the tile ahead is open. If not, turn right (or left, or around) to face an open path. Only turns: the hero does not step.";
+    case "face_enemy": return "Turn to face the nearest enemy next to the hero, or else the nearest enemy it can see. Fails if no enemy is in sight.";
+    case "flee": return "Step 1 tile to the open, safe tile farthest from the nearest enemy, and face that way. Fails if there is no enemy or no better tile.";
+    case "follow_right_wall": return "Right-hand rule: if the right side is open, turn right and step; else step forward; else turn left and step; else turn around. Keeping one hand on the wall is a real maze-solving algorithm!";
+    default: return `${TYPE_LABEL[c.type] ?? "Card"}: ${c.name}.`;
   }
 }
+
+/** Short wording of each hero's default behavior, for the "Otherwise:" line under a row. */
+const DEFAULT_SHORT: Record<string, string> = {
+  forward_or_rotate_clockwise: "move forward 1 (if blocked: turn right, else left, else around, and move)",
+  scan_then_move_safest: "step toward the safest open tile ahead",
+  hold_if_enemy_adjacent_else_forward: "hold if an enemy is next to the hero, else move forward 1",
+  sidestep_hazard_else_forward: "sidestep a hazard ahead, else move forward",
+  wait_if_safe_else_step_aside: "step aside if an enemy is next to the hero, else move forward",
+  forward_fluid_turns: "move forward (if blocked: turn right, else left, else around, and move)",
+  cautious_avoid_cursed: "move forward, steering around curse sigils",
+  keep_distance: "step aside if an enemy is next to the hero, else move forward",
+  hold_if_enemy_visible_else_forward: "hold if an enemy is visible, else move forward",
+  charge_nearest_visible: "move toward the nearest visible enemy, else forward",
+  kite: "move away from enemies within 2 tiles, else forward",
+  track: "move toward the nearest visible enemy, else forward",
+};
+
+/** The hero's default behavior in a few words ("Move forward 1 (if blocked, …)"). */
+export function defaultShort(heroId: string): string {
+  const d = HEROES[heroId]?.defaultBehavior;
+  if (!d) return "Default behavior";
+  let text = DEFAULT_SHORT[d.key];
+  if (!text) {
+    text = d.text.split(/(?<=\.)\s/)[0]!.replace(/\.$/, "");
+    if (text.length > 70) text = `${text.slice(0, 67).replace(/\s+\S*$/, "")}…`;
+  }
+  return capital(text);
+}
+
+/** Levels can switch Pressure off (unused cards are then safe). A missing field means Pressure is on. */
+export const pressureOn = (levelId: number) => getLevel(levelId).pressureEnabled !== false;
 
 export const threatLine = (cardId: string) => `Threat ${threatOf(cardId)}: adds ${threatOf(cardId)} Pressure if left unplaced.`;
 

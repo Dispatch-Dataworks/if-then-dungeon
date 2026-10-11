@@ -1,5 +1,5 @@
 /** Level screen: HUD, board, exchange -> build -> execution playback -> outcome, and teaching panels. */
-import type { Vec } from "../engine/board";
+import { eq, type Vec } from "../engine/board";
 import { CARDS, HEROES, LEVELS, getLevel } from "../engine/content";
 import {
   EXCHANGE_MAX, exchange, newGame, playTurn, restartLevel,
@@ -8,15 +8,15 @@ import {
 import type { RowDraft } from "../engine/rules/rows";
 import { heroArmor, levelOf, type GameEvent, type GameState } from "../engine/state";
 import { artUrl } from "./assets";
-import { BoardView } from "./board";
-import { groupedPredicate, RowBuilder } from "./builder";
+import { BoardView, type GhostPlan } from "./board";
+import { groupedPredicate, otherwiseEl, RowBuilder } from "./builder";
 import { cardEl, chipEl, portraitEl } from "./cards";
 import { glyph, h, prefersReducedMotion, replace, type Child } from "./dom";
 import { describeTile, entryFor, type InfoEntry } from "./info";
 import { openModal } from "./modal";
 import { heroUpgrades, heroesUnlockedBy, markCleared, progress, update } from "./progress";
 import { upgradeName } from "../engine/upgrades";
-import { eventText, levelTitle, nameOf, statusLabel, themeOf } from "./text";
+import { DIR_WORD, eventText, levelTitle, nameOf, pressureOn, statusLabel, themeOf } from "./text";
 
 export interface Nav {
   toTitle(): void;
@@ -43,6 +43,9 @@ const SPEEDS: { value: number; label: string }[] = [
   { value: 0, label: "Instant" },
 ];
 
+/** Default "what if" roll for a test run: the middle of the die (d4 → 2, d6 → 3). */
+const middleRoll = (sides: number) => Math.max(1, Math.floor((sides + 1) / 2));
+
 /** A stable seed per level so a level always starts with the same deal (fair, repeatable puzzles). */
 const levelSeed = (levelId: number) => 1000 + levelId * 7919;
 
@@ -64,11 +67,14 @@ export class LevelScreen {
   private lastTurn: { threat: number; spawned: string[]; pressure: number; turn: number } | null = null;
   private retryNote = "";
   private keepRows = false;
+  private readonly pressure: boolean;
+  private previewWasOn = false;
 
   private readonly el: HTMLElement;
   private readonly hudEl = h("div", { class: "hud", role: "group", "aria-label": "Hero status" });
   private readonly boardHost = h("div", { class: "board-host" });
   private readonly sideEl = h("div", { class: "area-side" });
+  private readonly previewEl = h("section", { class: "panel preview", "aria-labelledby": "preview-title", hidden: true });
   private readonly infoEl = h("section", { class: "panel info", "aria-live": "polite", "aria-label": "Tile details" });
   private readonly logList = h("ol", { class: "log__list" });
   private readonly logEl = h("section", { class: "panel log", "aria-labelledby": "log-title" },
@@ -77,7 +83,11 @@ export class LevelScreen {
   constructor(private readonly root: HTMLElement, private readonly levelId: number, private readonly heroId: string, private readonly nav: Nav) {
     this.game = newGame(levelId, heroId, levelSeed(levelId), heroUpgrades(heroId));
     this.shown = this.game.state;
-    this.builder = new RowBuilder(() => this.game.state.hand, heroId, (d) => this.roll(d));
+    this.pressure = pressureOn(levelId);
+    this.builder = new RowBuilder(() => this.game.state.hand, heroId, (d) => this.roll(d), {
+      pressure: this.pressure,
+      onRender: () => this.refreshPreview(),
+    });
     const theme = themeOf(levelId);
     const level = getLevel(levelId);
     this.el = h("div", {
@@ -92,7 +102,7 @@ export class LevelScreen {
           h("button", { type: "button", class: "btn btn--ghost", onclick: () => this.showHelp() }, "How to play"))),
       this.hudEl,
       h("main", { class: "level-main" },
-        h("div", { class: "area-board" }, this.boardHost),
+        h("div", { class: "area-board" }, this.boardHost, this.previewEl),
         this.sideEl,
         this.infoEl,
         this.logEl),
@@ -142,7 +152,7 @@ export class LevelScreen {
           h("span", { style: `width:${hpPct}%` }))),
       stat("Armor", String(heroArmor(s)), "", "shield"),
       stat("Lives", h("span", { class: "lives" }, Array.from({ length: 3 }, (_, i) => h("span", { class: i < s.lives ? "life" : "life is-lost" }, i < s.lives ? "♥" : "♡")), ` ${s.lives}/3`)),
-      stat("Pressure", String(s.pressure), s.pressure > 0 ? "has-pressure" : "", "flame"),
+      this.pressure ? stat("Pressure", String(s.pressure), s.pressure > 0 ? "has-pressure" : "", "flame") : null,
       stat("Turn", String(s.turnIndex + 1)),
       stat("Dice", `d${level.diceSides}`),
       h("div", { class: "stat stat--status" }, h("span", { class: "stat__label" }, "Status"),
@@ -168,6 +178,144 @@ export class LevelScreen {
     if (this.mode === "exchange") replace(this.sideEl, this.exchangePanel());
     else if (this.mode === "build") replace(this.sideEl, this.builder.render());
     else replace(this.sideEl, this.playPanel());
+    if (this.mode !== "build") this.refreshPreview();
+  }
+
+  // ---------- test run (preview) ----------
+
+  /** Re-run the test run on a throwaway copy of the game, or clear it when it is off. Never touches the real game. */
+  private refreshPreview() {
+    const on = this.mode === "build" && this.builder.testRun;
+    const turnedOn = on && !this.previewWasOn;
+    this.previewWasOn = on;
+    if (!on) {
+      this.previewEl.hidden = true;
+      this.previewEl.replaceChildren();
+      this.board.showGhost(null);
+      return;
+    }
+    this.previewEl.hidden = false;
+    const sides = getLevel(this.levelId).diceSides;
+    const rows = this.builder.rows;
+    for (const r of rows) r.whatIf = Math.min(sides, Math.max(1, r.whatIf ?? middleRoll(sides)));
+    const loops = rows.map((r) => r.whatIf!);
+    const v = this.builder.validation();
+    let result: TurnResult | null = null;
+    let problem = "";
+    if (!v.ok) problem = v.errors[0] ?? "Finish your rows first.";
+    else {
+      try {
+        result = playTurn(structuredClone(this.game), this.builder.drafts(), { loops });
+      } catch (err) {
+        problem = err instanceof Error ? err.message : String(err);
+      }
+    }
+    const focused = document.activeElement instanceof HTMLElement && this.previewEl.contains(document.activeElement)
+      ? document.activeElement.dataset.focusKey : undefined;
+
+    const stepper = (i: number) => {
+      const r = rows[i]!;
+      const set = (n: number) => { r.whatIf = n; this.refreshPreview(); };
+      return h("div", { class: "whatif__row", role: "group", "aria-label": `Row ${i + 1} test roll` },
+        h("span", { class: "whatif__label" }, `Row ${i + 1}`),
+        h("button", { type: "button", class: "icon-btn", "data-focus-key": `dn${i}`, "aria-label": `Row ${i + 1}: roll one less`, disabled: r.whatIf! <= 1, onclick: () => set(r.whatIf! - 1) }, "−"),
+        h("span", { class: "die", role: "status", "aria-label": `Row ${i + 1} rolls ${r.whatIf} on a d${sides}` }, h("b", null, String(r.whatIf)), h("small", null, `d${sides}`)),
+        h("button", { type: "button", class: "icon-btn", "data-focus-key": `up${i}`, "aria-label": `Row ${i + 1}: roll one more`, disabled: r.whatIf! >= sides, onclick: () => set(r.whatIf! + 1) }, "+"));
+    };
+
+    replace(this.previewEl,
+      h("div", { class: "preview__head" },
+        h("h2", { id: "preview-title" }, glyph("sensor"), " Test run"),
+        h("button", { type: "button", class: "btn btn--ghost", "data-focus-key": "hide", onclick: () => this.builder.setTestRun(false, () => this.sideEl.querySelector<HTMLElement>(".test-run")?.focus()) }, "Hide")),
+      h("p", { class: "help" }, "A prediction, not the real thing: pick what each row's die might roll. Nothing is used up until you Roll & Lock."),
+      h("div", { class: "whatif" }, rows.map((_, i) => stepper(i))),
+      result ? this.previewSummary(result, loops) : h("p", { class: "preview__problem", role: "status" }, glyph("cross"), ` Can't test yet: ${problem}`));
+
+    if (focused) {
+      // A stepper at its limit is disabled: keep focus on the same row's other button.
+      const twin = focused.replace(/^(up|dn)/, (m) => (m === "up" ? "dn" : "up"));
+      const target = [focused, twin].map((k) => this.previewEl.querySelector<HTMLButtonElement>(`[data-focus-key="${k}"]`)).find((b) => b && !b.disabled);
+      target?.focus();
+    }
+    this.board.showGhost(result ? this.ghostPlan(result) : null);
+    if (turnedOn) {
+      const r = this.boardHost.getBoundingClientRect();
+      if (r.top < 0 || r.bottom > window.innerHeight) this.boardHost.scrollIntoView({ block: "start", behavior: prefersReducedMotion() ? "auto" : "smooth" });
+    }
+  }
+
+  /** Loop frames only (the turn-end frame, rowIndex -1, is not part of the hero's run). */
+  private static rowFrames(result: TurnResult) {
+    return result.frames.filter((f) => f.rowIndex >= 0);
+  }
+
+  private ghostPlan(result: TurnResult): GhostPlan {
+    const start = this.game.state;
+    const frames = LevelScreen.rowFrames(result);
+    const last = frames[frames.length - 1]?.state ?? start;
+    const moved = (uid: number, p: Vec) => { const was = start.enemies.find((e) => e.uid === uid); return !was || !eq(was.pos, p); };
+    return {
+      start: start.hero.pos,
+      steps: frames.map((f, i) => ({
+        n: i + 1,
+        pos: f.state.hero.pos,
+        facing: f.state.hero.facing,
+        fail: f.events.some((e) => e.kind === "fail"),
+        hurt: f.events.filter((e) => e.kind === "hero_hurt").reduce((sum, e) => sum + (e.amount ?? 0), 0),
+      })),
+      end: { pos: last.hero.pos, facing: last.hero.facing, fell: LevelScreen.heroFell(result), won: result.outcome === "won" },
+      enemies: last.enemies.filter((e) => moved(e.uid, e.pos)).map((e) => ({ typeId: e.typeId, pos: e.pos })),
+    };
+  }
+
+  /** A fall means the hero died; running out of turns ("lost" without a death) is not a fall. */
+  private static heroFell(result: TurnResult): boolean {
+    return result.frames.some((f) => f.events.some((e) => e.kind === "hero_dead"));
+  }
+
+  private previewSummary(result: TurnResult, loops: number[]): HTMLElement {
+    const start = this.game.state;
+    const frames = LevelScreen.rowFrames(result);
+    const last = frames[frames.length - 1]?.state ?? start;
+    const name = (id: string | undefined) => (id ? CARDS[id]?.name ?? id : "?");
+    const fell = LevelScreen.heroFell(result);
+    const won = result.outcome === "won";
+
+    const rowLines = result.rows.map((row, i) => {
+      const fs = frames.filter((f) => f.rowIndex === i);
+      const labels = fs.map((f) => f.fired === "then" ? `TRUE → ${name(row.thenCardId)}` : f.fired === "else" ? `FALSE → ${name(row.elseCardId)}` : "FALSE → default");
+      const runs: { label: string; n: number }[] = [];
+      for (const l of labels) {
+        const prev = runs[runs.length - 1];
+        if (prev?.label === l) prev.n++;
+        else runs.push({ label: l, n: 1 });
+      }
+      const head = `Row ${i + 1} (${loops[i]} loop${loops[i] === 1 ? "" : "s"}): `;
+      if (!fs.length) return h("li", { class: "is-skipped" }, head, won ? "not needed (exit reached)." : "never runs (the hero fell first).");
+      return h("li", null, head, runs.map((r, j) => [j ? ", " : "", h("span", { class: r.label.startsWith("TRUE") ? "pv-true" : "pv-false" }, r.label), r.n > 1 ? ` ×${r.n}` : ""]),
+        fs.length < loops[i]! ? (won ? " then the hero is out!" : " then stops.") : ".");
+    });
+
+    const hp0 = start.hero.hp;
+    const hp1 = Math.max(0, last.hero.hp);
+    let firstLoop = 0;
+    let firstProblem: GameEvent | undefined;
+    for (const [i, f] of frames.entries()) {
+      firstProblem = f.events.find((e) => e.kind === "fail" || e.kind === "hero_hurt" || e.kind === "hero_dead");
+      if (firstProblem) { firstLoop = i + 1; break; }
+    }
+    const where = won ? "Reaches the EXIT!"
+      : fell ? `The hero would fall on loop ${frames.length}.`
+      : `Ends at the END mark, facing ${DIR_WORD[last.hero.facing]}. Exit not reached this turn.`;
+    return h("div", { class: "preview__summary", role: "status", "aria-live": "polite" },
+      h("h3", null, `If the dice roll ${loops.join(" / ")}, your hero would…`),
+      h("ol", { class: "preview__rows" }, rowLines),
+      h("ul", { class: "preview__facts" },
+        h("li", { class: won ? "is-good" : fell ? "is-bad" : "" }, glyph(won ? "check" : fell ? "cross" : "step"), " ", where),
+        h("li", { class: hp1 < hp0 ? "is-bad" : "" }, glyph("heart"), ` HP ${hp0} → ${hp1}`, hp1 < hp0 ? ` (−${hp0 - hp1})` : hp1 > hp0 ? ` (+${hp1 - hp0})` : " (no damage)"),
+        h("li", { class: firstProblem ? "is-bad" : "is-good" }, glyph(firstProblem ? "cross" : "check"),
+          firstProblem ? [` First problem, loop ${firstLoop}: `, eventText(firstProblem.text)] : " No failed actions or damage.")),
+      h("p", { class: "muted preview__note" }, "Enemies move too, and other rolls can play out differently. Try a few numbers!"));
   }
 
   // ---------- exchange ----------
@@ -182,10 +330,11 @@ export class LevelScreen {
       this.retryNote ? h("p", { class: "note note--retry" }, this.retryNote) : null,
       summary ? h("div", { class: "note" },
         h("b", null, `End of turn ${summary.turn}: `),
-        summary.threat ? `unplaced cards added ${summary.threat} Pressure. ` : "no new Pressure. ",
+        this.pressure ? (summary.threat ? `unplaced cards added ${summary.threat} Pressure. ` : "no new Pressure. ") : "",
         summary.spawned.length ? `Spawned: ${summary.spawned.map(nameOf).join(", ")}. ` : "No enemies spawned. ",
-        `Pressure now ${summary.pressure}.`) : null,
-      h("p", { class: "help" }, `You drew ${s.hand.length} cards. Pick up to ${EXCHANGE_MAX} you don't want and swap them for new ones, or keep your hand. Swapped cards never add Pressure.`),
+        this.pressure ? `Pressure now ${summary.pressure}.` : "") : null,
+      h("p", { class: "help" }, `You drew ${s.hand.length} cards. Pick up to ${EXCHANGE_MAX} you don't want and swap them for new ones, or keep your hand.${this.pressure ? " Swapped cards never add Pressure." : ""}`),
+      this.pressure ? null : h("p", { class: "note note--calm" }, "No Pressure on this level: unused cards are safe."),
       h("div", { class: "hand", role: "group", "aria-label": "Your hand" },
         s.hand.map((c) => {
           const sel = this.exchangeSel.has(c.instanceId);
@@ -193,6 +342,7 @@ export class LevelScreen {
             heroId: this.heroId,
             instanceId: c.instanceId,
             selected: sel,
+            showThreat: this.pressure,
             disabled: !sel && full,
             hint: sel ? "Selected to swap." : "",
             onClick: () => {
@@ -238,6 +388,7 @@ export class LevelScreen {
     const truth = result.frames.map((f) => f.truth);
     this.pb = { result, before, index: -1, playing: speed !== 0, timer: undefined, done: false, truth };
     this.mode = "play";
+    this.builder.testRun = false;
     this.retryNote = "";
     this.addLogHeading(`Turn ${before.turnIndex + 1}: rolled ${result.loops.map((l, i) => `row ${i + 1} → ${l}`).join(", ")}`);
     this.renderSide();
@@ -358,11 +509,12 @@ export class LevelScreen {
             h("span", { class: `slot${fired === "else" ? " is-fired" : ""}` }, chips([row.draft.elseAction!])),
           ] : null,
           fired === "default" ? h("span", { class: "kw kw--default is-fired" }, "↻ default behavior") : null),
+        otherwiseEl(this.heroId, row.elseCardId, fired === "default" || fired === "else"),
         row.predicate.kind === "sensor" ? null : h("p", { class: "row__status ok" }, h("span", null, "Reads as: ", h("span", { class: "grouped" }, groupedPredicate(row.predicate)))));
     }));
     const caption = frame
       ? frame.rowIndex < 0
-        ? "End of turn: Pressure and spawns."
+        ? this.pressure ? "End of turn: Pressure and spawns." : "End of turn."
         : `Row ${frame.rowIndex + 1}, loop ${frame.loopInRow + 1}: ${pb.truth[pb.index] ? "TRUE → THEN" : frame.fired === "else" ? "FALSE → ELSE" : "FALSE → default behavior"}`
       : "Rolling the dice…";
     const speed = progress().speed;
@@ -386,7 +538,7 @@ export class LevelScreen {
     if (r.outcome === "continue") {
       return h("div", { class: "turn-summary" },
         h("p", null, h("b", null, "Turn complete. "),
-          r.threat ? `Unplaced cards added ${r.threat} Pressure. ` : "Every card was placed: no new Pressure. ",
+          !this.pressure ? "" : r.threat ? `Unplaced cards added ${r.threat} Pressure. ` : "Every card was placed: no new Pressure. ",
           r.spawned.length ? `Spawned: ${r.spawned.map(nameOf).join(", ")}.` : "Nothing spawned."),
         h("div", { class: "actions" }, h("button", { type: "button", class: "btn btn--primary", onclick: () => this.nextTurn() }, "Next turn →")));
     }
@@ -522,7 +674,9 @@ export class LevelScreen {
       dismissible: false,
       body: [
         h("p", null, tooLong
-          ? "The level took too many turns. Pressure keeps growing when cards go unused, so try to place more cards and head for the exit."
+          ? this.pressure
+            ? "The level took too many turns. Pressure keeps growing when cards go unused, so try to place more cards and head for the exit."
+            : "The level took too many turns. Try a Test run before you roll, and head for the exit."
           : "All 3 lives are gone. The level starts over with the same first hand, so you can use what you learned."),
         tooLong ? null : h("ol", { class: "recap" }, this.lastEvents(5).map((e) => h("li", null, eventText(e.text)))),
       ],
@@ -551,7 +705,7 @@ export class LevelScreen {
           h("li", null, `Turns: ${s.turnIndex + 1}`),
           h("li", null, `HP left: ${s.hero.hp}/${s.hero.maxHp}`),
           h("li", null, `Falls: ${this.game.deaths}${this.game.levelRestarts ? ` · Restarts: ${this.game.levelRestarts}` : ""}`),
-          h("li", null, `Pressure left: ${s.pressure}`)),
+          this.pressure ? h("li", null, `Pressure left: ${s.pressure}`) : null),
         next && firstClear ? h("p", { class: "unlock" }, glyph("check"), ` Unlocked: Level ${next.levelId} (${themeOf(next.levelId).name})`) : null,
         unlockedHeroes.map((hero) => h("p", { class: "unlock" }, glyph("hero_action"), ` New hero: ${hero.name}! Pick them on the level screen.`)),
         newUpgrades.map((id) => h("p", { class: "unlock" }, glyph("check"), ` Upgrade earned: ${upgradeName(id)}. ${HEROES[this.heroId]!.upgrades.find((u) => u.id === id)!.effect}`)),
@@ -573,7 +727,7 @@ export class LevelScreen {
       className: "modal--intro",
       body: [
         h("p", { class: "help" }, themeOf(this.levelId).summary),
-        h("div", { class: "intro-grid" }, level.introduces.map((id) => infoCard(entryFor(id, this.heroId), CARDS[id] ? "card" : "char"))),
+        h("div", { class: "intro-grid" }, level.introduces.map((id) => infoCard(entryFor(id, this.heroId, pressureOn(this.levelId)), CARDS[id] ? "card" : "char"))),
       ],
       actions: [{ label: "Let's go!", primary: true, onClick: () => {} }],
     });
@@ -590,7 +744,10 @@ export class LevelScreen {
           h("li", null, h("b", null, "Build rules: "), "make rows like ", h("code", null, "IF Wall Ahead THEN Turn Right"), ". Sensors check the world (TRUE or FALSE); actions are what the hero does."),
           h("li", null, h("b", null, "Roll & Lock: "), "each row rolls a die. That's how many loops the row runs. Rows run in order, top to bottom."),
           h("li", null, h("b", null, "Each loop: "), "if the IF is TRUE the hero does THEN. If FALSE it does ELSE, or its default behavior if there is no ELSE."),
-          h("li", null, h("b", null, "Pressure: "), "cards you leave unplaced add Pressure, and Pressure spawns enemies. Place as many cards as you can!"),
+          h("li", null, h("b", null, "Test run: "), "press Test run to see what your rows would do for the rolls you pick, before you lock them in."),
+          this.pressure
+            ? h("li", null, h("b", null, "Pressure: "), "cards you leave unplaced add Pressure, and Pressure spawns enemies. Place as many cards as you can!")
+            : h("li", null, h("b", null, "No Pressure here: "), "on this level unused cards are safe, so only place the cards that help."),
           h("li", null, h("b", null, "Goal: "), "reach the EXIT. If the hero falls, the turn rewinds with the same cards (3 lives).")),
         h("p", null, h("b", null, `Your ${hero.name}'s default behavior: `), hero.defaultBehavior.text),
         h("p", null, h("b", null, "Logic tip: "), "NOT is checked first, then AND, then OR. So ", h("code", null, "A OR B AND NOT C"), " means ", h("code", null, "A OR (B AND (NOT C))"), "."),

@@ -19,6 +19,11 @@ Example display for:
 `A OR B AND NOT C`
 - show as: `A OR (B AND (NOT C))`
 
+## Test run (preview before rolling)
+- Before Roll & Lock, **Test run** simulates the current rows for a chosen roll per row (default: the middle of the die) and draws the predicted path on the board: numbered steps, facing, failed actions and damage.
+- It never changes the game; it exists so players can debug a plan the way the balance bot does, which makes early levels learnable.
+- Each row also shows its **Otherwise** line: the ELSE action, or the hero's default behavior when the IF is FALSE.
+
 ## Explain mode (learning)
 Tap “Explain” on a row:
 - Show how the predicate is parsed

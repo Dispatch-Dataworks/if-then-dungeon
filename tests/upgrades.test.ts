@@ -197,3 +197,41 @@ describe("upgrade effects", () => {
     expect(dealt(["U_WARDBREAKER"])).toBe(dealt([]) + 2); // +1 damage and its 1 armor ignored
   });
 });
+
+describe("beginner cards", () => {
+  it("Turn to Open Path keeps facing when open, otherwise turns right, then left", () => {
+    // Level 1 (1,1) facing E: ahead (2,1) open, so no turn.
+    const h = setup("H_SWORDSMAN", [], { x: 3, y: 1, facing: "E" }); // wall at (4,1); right (S) is open
+    playTurnWith(h, "S_WALL_AHEAD", "A_TURN_OPEN", 1);
+    expect(h.state.hero.facing).toBe("S");
+    expect(h.state.hero.pos).toEqual({ x: 3, y: 1 });
+  });
+
+  it("Follow Right Wall turns right when it can, else goes straight", () => {
+    // Level 1 (1,1) facing E: right of E is S and (1,2) is open. "IF NOT Wall Ahead" is TRUE here.
+    const h = setup("H_SWORDSMAN", [], { x: 1, y: 1, facing: "E" });
+    h.state.hand.push({ instanceId: "t-n", cardId: "OP_NOT" }, { instanceId: "t-s", cardId: "S_WALL_AHEAD" }, { instanceId: "t-a", cardId: "A_FOLLOW_WALL" });
+    playTurn(h, [{ ifTokens: ["t-n", "t-s"], thenAction: "t-a" }], { loops: [1] });
+    expect(h.state.hero.pos).toEqual({ x: 1, y: 2 });
+    expect(h.state.hero.facing).toBe("S");
+  });
+
+  it("Face Enemy turns toward an adjacent enemy; Flee steps away", () => {
+    const g = setup("H_SWORDSMAN", [], { x: 3, y: 2, facing: "N" });
+    enemy(g, "E_GOBLIN_SCOUT", 3, 3, { hp: 9, maxHp: 9 }); // south
+    playTurnWith(g, "S_ENEMY_ADJACENT", "A_FACE_ENEMY", 1);
+    expect(g.state.hero.facing).toBe("S");
+    const f = setup("H_SWORDSMAN", [], { x: 3, y: 2, facing: "N" });
+    enemy(f, "E_GOBLIN_SCOUT", 3, 3, { hp: 9, maxHp: 9 });
+    playTurnWith(f, "S_ENEMY_ADJACENT", "A_FLEE", 1);
+    expect(f.state.hero.pos).toEqual({ x: 3, y: 1 });
+  });
+
+  it("Level 1 has no Pressure: unused cards add no Threat", () => {
+    const g = newGame(1, "H_SWORDSMAN", 3);
+    const sensor = g.state.hand.find((c) => c.cardId.startsWith("S_"))!;
+    const action = g.state.hand.find((c) => c.cardId.startsWith("A_"))!;
+    expect(playTurn(g, [{ ifTokens: [sensor.instanceId], thenAction: action.instanceId }]).threat).toBe(0);
+    expect(g.state.enemies).toHaveLength(0);
+  });
+});

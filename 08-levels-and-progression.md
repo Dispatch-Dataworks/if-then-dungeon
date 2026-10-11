@@ -34,9 +34,9 @@ Default: `6 + levelNumber`. Override per level allowed.
 ## Level-by-level introduction summary
 
 ### 1) Ruined Keep — basics
-- L1: Goblin Scout, core move/turn sensors/actions
-- L2: Spikes, Goblin Knight, spike sensors, Turn Around action
-- L3: Pit, Goblin Archer, Jump + ranged threat sensor
+- L1: walking only. Move/turn/wait, the beginner actions Turn to Open Path and Follow Right Wall, Wall Ahead and Blocked Ahead sensors. **No enemies and no Pressure** (`pressureEnabled: false`).
+- L2: Goblin Scout and combat (Hero Attack, Enemy Ahead/Adjacent/Visible sensors, beginner actions Face Enemy and Flee), Spikes + Spikes Ahead sensor
+- L3: Goblin Knight, Spikes Here sensor, Turn Around, Pit, Goblin Archer, Jump + ranged threat sensor
 
 ### 2) Sewer Vermin — hazards and speed
 - L4: Rat Swarm, Poison Fog, fog sensors, Retreat action
@@ -83,6 +83,9 @@ Each theme has its own obstacle set (see `07-traps-and-board-mechanics.md` → *
 - Blood Arena: chasm edges (jumpable), iron bars, rubble
 - Rotwood: thorn brambles, water channels, chasm edges
 - Mirror Halls: a remix of the above
+
+## Beginner ("training wheels") cards
+Turn to Open Path, Follow Right Wall, Face Enemy and Flee say what the player *means* rather than spelling out each turn, so they are predictable while learning. They are common in Levels 1–6, halved at Level 7 and removed from Level 10, when levels start to reward precise Turn Left / Turn Right control. (Simulation showed that keeping them later clogs mid-game hands: Level 12 fell from 39% to 25% first-try clears.)
 
 ## Pickups
 - L2: Health Draught · L5: Armor Shard · L8: Speed Rune

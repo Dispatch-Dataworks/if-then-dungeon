@@ -129,15 +129,13 @@
       "id": "baseDeck_L1",
       "cards": [
         {"id": "A_MOVE_FWD", "count": 10},
-        {"id": "A_TURN_L", "count": 8},
-        {"id": "A_TURN_R", "count": 8},
-        {"id": "A_WAIT", "count": 3},
-        {"id": "A_HERO_ATTACK", "count": 6},
-        {"id": "S_WALL_AHEAD", "count": 10},
-        {"id": "S_BLOCKED_AHEAD", "count": 8},
-        {"id": "S_ENEMY_AHEAD", "count": 6},
-        {"id": "S_ENEMY_ADJACENT", "count": 4},
-        {"id": "S_ENEMY_VISIBLE", "count": 6}
+        {"id": "A_TURN_L", "count": 6},
+        {"id": "A_TURN_R", "count": 6},
+        {"id": "A_WAIT", "count": 2},
+        {"id": "A_TURN_OPEN", "count": 8},
+        {"id": "A_FOLLOW_WALL", "count": 6},
+        {"id": "S_WALL_AHEAD", "count": 12},
+        {"id": "S_BLOCKED_AHEAD", "count": 10}
       ],
       "note": "Persistent finite deck. Shuffle once at level start."
     }
@@ -147,13 +145,14 @@
       "levelId": 1,
       "themeId": "ruined_keep",
       "diceSides": 4,
-      "introduces": ["E_GOBLIN_SCOUT", "A_MOVE_FWD", "A_TURN_L", "A_TURN_R", "A_WAIT", "A_HERO_ATTACK", "S_WALL_AHEAD", "S_BLOCKED_AHEAD", "S_ENEMY_AHEAD", "S_ENEMY_ADJACENT", "S_ENEMY_VISIBLE"],
+      "introduces": ["A_MOVE_FWD", "A_TURN_L", "A_TURN_R", "A_WAIT", "A_TURN_OPEN", "A_FOLLOW_WALL", "S_WALL_AHEAD", "S_BLOCKED_AHEAD"],
       "deck": {"baseDeckId": "baseDeck_L1", "adjustments": []},
       "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
-      "maxSpawnsPerTurn": 2,
-      "enemyPool": ["E_GOBLIN_SCOUT"],
-      "nuisancePool": ["E_GOBLIN_SCOUT"],
+      "pressureEnabled": false,
+      "maxSpawnsPerTurn": 0,
+      "enemyPool": [],
+      "nuisancePool": [],
       "modifiersAllowed": [],
       "traps": [],
       "mechanics": [],
@@ -176,12 +175,28 @@
       "levelId": 2,
       "themeId": "ruined_keep",
       "diceSides": 4,
-      "introduces": ["T_SPIKES", "E_GOBLIN_KNIGHT", "S_SPIKES_AHEAD", "S_SPIKES_HERE", "A_TURN_AROUND", "P_HEALTH_DRAUGHT"],
-      "deck": {"baseDeckId": "baseDeck_L1", "adjustments": [{"id": "S_SPIKES_AHEAD", "add": 4}, {"id": "S_SPIKES_HERE", "add": 2}, {"id": "A_TURN_AROUND", "add": 2}, {"id": "A_HERO_ATTACK", "add": 2, "topUp": true}]},
+      "introduces": ["E_GOBLIN_SCOUT", "A_HERO_ATTACK", "S_ENEMY_AHEAD", "S_ENEMY_ADJACENT", "S_ENEMY_VISIBLE", "A_FACE_ENEMY", "A_FLEE", "T_SPIKES", "S_SPIKES_AHEAD", "P_HEALTH_DRAUGHT"],
+      "deck": {
+        "baseDeckId": "baseDeck_L1",
+        "adjustments": [
+          {"id": "A_HERO_ATTACK", "add": 6},
+          {"id": "S_ENEMY_AHEAD", "add": 6},
+          {"id": "S_ENEMY_ADJACENT", "add": 4},
+          {"id": "S_ENEMY_VISIBLE", "add": 6},
+          {"id": "A_FACE_ENEMY", "add": 6},
+          {"id": "A_FLEE", "add": 4},
+          {"id": "S_SPIKES_AHEAD", "add": 4},
+          {"id": "A_HERO_ATTACK", "add": 5, "topUp": true},
+          {"id": "S_ENEMY_ADJACENT", "add": 2, "topUp": true},
+          {"id": "A_MOVE_FWD", "add": 1, "topUp": true},
+          {"id": "A_TURN_L", "add": 1, "topUp": true},
+          {"id": "A_TURN_R", "add": 1, "topUp": true}
+        ]
+      },
       "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 2,
-      "enemyPool": ["E_GOBLIN_SCOUT", "E_GOBLIN_KNIGHT"],
+      "enemyPool": ["E_GOBLIN_SCOUT"],
       "nuisancePool": ["E_GOBLIN_SCOUT"],
       "modifiersAllowed": [],
       "traps": ["T_SPIKES"],
@@ -205,17 +220,20 @@
       "levelId": 3,
       "themeId": "ruined_keep",
       "diceSides": 4,
-      "introduces": ["T_PIT", "E_GOBLIN_ARCHER", "S_PIT_AHEAD", "A_JUMP_FWD", "S_RANGED_THREAT_VISIBLE"],
+      "introduces": ["E_GOBLIN_KNIGHT", "S_SPIKES_HERE", "A_TURN_AROUND", "T_PIT", "E_GOBLIN_ARCHER", "S_PIT_AHEAD", "A_JUMP_FWD", "S_RANGED_THREAT_VISIBLE"],
       "deck": {
-        "baseDeckId": "baseDeck_L1",
+        "fromPrevLevel": 2,
         "adjustments": [
-          {"id": "S_SPIKES_AHEAD", "add": 4},
           {"id": "S_SPIKES_HERE", "add": 2},
           {"id": "A_TURN_AROUND", "add": 2},
           {"id": "S_PIT_AHEAD", "add": 4},
           {"id": "A_JUMP_FWD", "add": 4},
           {"id": "S_RANGED_THREAT_VISIBLE", "add": 2},
-          {"id": "A_HERO_ATTACK", "add": 4, "topUp": true},
+          {"id": "A_HERO_ATTACK", "add": 2, "topUp": true},
+          {"id": "A_MOVE_FWD", "add": 2, "topUp": true},
+          {"id": "A_TURN_L", "add": 1, "topUp": true},
+          {"id": "A_TURN_R", "add": 1, "topUp": true},
+          {"id": "S_ENEMY_AHEAD", "add": 1, "topUp": true},
           {"id": "S_ENEMY_ADJACENT", "add": 1, "topUp": true}
         ]
       },
@@ -248,19 +266,15 @@
       "diceSides": 6,
       "introduces": ["E_RAT_SWARM", "T_POISON_FOG", "S_FOG_AHEAD", "S_IN_FOG", "A_RETREAT"],
       "deck": {
-        "baseDeckId": "baseDeck_L1",
+        "fromPrevLevel": 3,
         "adjustments": [
-          {"id": "S_SPIKES_AHEAD", "add": 4},
-          {"id": "S_SPIKES_HERE", "add": 2},
-          {"id": "A_TURN_AROUND", "add": 2},
-          {"id": "S_PIT_AHEAD", "add": 4},
-          {"id": "A_JUMP_FWD", "add": 4},
-          {"id": "S_RANGED_THREAT_VISIBLE", "add": 2},
           {"id": "S_FOG_AHEAD", "add": 4},
           {"id": "S_IN_FOG", "add": 2},
           {"id": "A_RETREAT", "add": 2},
-          {"id": "A_HERO_ATTACK", "add": 4, "topUp": true},
-          {"id": "S_ENEMY_ADJACENT", "add": 1, "topUp": true}
+          {"id": "A_HERO_ATTACK", "add": 1, "topUp": true},
+          {"id": "A_MOVE_FWD", "add": 1, "topUp": true},
+          {"id": "A_TURN_L", "add": 1, "topUp": true},
+          {"id": "A_TURN_R", "add": 1, "topUp": true}
         ]
       },
       "pressureSpendCap": {"formula": "6 + levelNumber"},
@@ -294,24 +308,18 @@
       "diceSides": 6,
       "introduces": ["E_HOUND", "M_TIMED_VENTS", "S_VENT_ACTIVE_AHEAD", "S_VENT_ACTIVE_HERE", "S_ENEMY_NEAR_2", "S_CROWDED_AHEAD", "P_ARMOR_SHARD"],
       "deck": {
-        "baseDeckId": "baseDeck_L1",
+        "fromPrevLevel": 4,
         "adjustments": [
-          {"id": "S_SPIKES_AHEAD", "add": 4},
-          {"id": "S_SPIKES_HERE", "add": 2},
-          {"id": "A_TURN_AROUND", "add": 2},
-          {"id": "S_PIT_AHEAD", "add": 4},
-          {"id": "A_JUMP_FWD", "add": 4},
-          {"id": "S_RANGED_THREAT_VISIBLE", "add": 2},
-          {"id": "S_FOG_AHEAD", "add": 4},
-          {"id": "S_IN_FOG", "add": 2},
-          {"id": "A_RETREAT", "add": 2},
           {"id": "S_VENT_ACTIVE_AHEAD", "add": 4},
           {"id": "S_VENT_ACTIVE_HERE", "add": 2},
           {"id": "S_ENEMY_NEAR_2", "add": 2},
           {"id": "S_CROWDED_AHEAD", "add": 2},
-          {"id": "A_HERO_ATTACK", "add": 6, "topUp": true},
+          {"id": "A_HERO_ATTACK", "add": 2, "topUp": true},
           {"id": "A_MOVE_FWD", "add": 2, "topUp": true},
-          {"id": "S_ENEMY_ADJACENT", "add": 2, "topUp": true}
+          {"id": "S_ENEMY_AHEAD", "add": 1, "topUp": true},
+          {"id": "S_ENEMY_ADJACENT", "add": 1, "topUp": true},
+          {"id": "A_TURN_L", "add": 1, "topUp": true},
+          {"id": "A_TURN_R", "add": 1, "topUp": true}
         ]
       },
       "pressureSpendCap": {"formula": "6 + levelNumber"},
@@ -345,27 +353,16 @@
       "diceSides": 6,
       "introduces": ["plague", "E_GOBLIN_SHAMAN", "A_SHAKE_IT_OFF", "S_POISONED"],
       "deck": {
-        "baseDeckId": "baseDeck_L1",
+        "fromPrevLevel": 5,
         "adjustments": [
-          {"id": "S_SPIKES_AHEAD", "add": 4},
-          {"id": "S_SPIKES_HERE", "add": 2},
-          {"id": "A_TURN_AROUND", "add": 2},
-          {"id": "S_PIT_AHEAD", "add": 4},
-          {"id": "A_JUMP_FWD", "add": 4},
-          {"id": "S_RANGED_THREAT_VISIBLE", "add": 2},
-          {"id": "S_FOG_AHEAD", "add": 4},
-          {"id": "S_IN_FOG", "add": 2},
-          {"id": "A_RETREAT", "add": 2},
-          {"id": "S_VENT_ACTIVE_AHEAD", "add": 4},
-          {"id": "S_VENT_ACTIVE_HERE", "add": 2},
-          {"id": "S_ENEMY_NEAR_2", "add": 2},
-          {"id": "S_CROWDED_AHEAD", "add": 2},
           {"id": "A_SHAKE_IT_OFF", "add": 4},
           {"id": "S_POISONED", "add": 2},
-          {"id": "A_HERO_ATTACK", "add": 7, "topUp": true},
-          {"id": "A_MOVE_FWD", "add": 3, "topUp": true},
-          {"id": "S_ENEMY_ADJACENT", "add": 3, "topUp": true},
-          {"id": "S_ENEMY_AHEAD", "add": 1, "topUp": true}
+          {"id": "A_HERO_ATTACK", "add": 1, "topUp": true},
+          {"id": "A_MOVE_FWD", "add": 1, "topUp": true},
+          {"id": "S_ENEMY_AHEAD", "add": 1, "topUp": true},
+          {"id": "S_ENEMY_ADJACENT", "add": 1, "topUp": true},
+          {"id": "A_TURN_L", "add": 1, "topUp": true},
+          {"id": "A_TURN_R", "add": 1, "topUp": true}
         ]
       },
       "pressureSpendCap": {"formula": "6 + levelNumber"},
@@ -404,13 +401,17 @@
           {"id": "OP_ELSE", "add": 10},
           {"id": "S_HAZARD_AHEAD", "add": 6},
           {"id": "A_STEP_ASIDE", "add": 6},
-          {"id": "A_HERO_ATTACK", "add": 3, "topUp": true},
-          {"id": "A_MOVE_FWD", "add": 3, "topUp": true},
-          {"id": "A_TURN_L", "add": 2, "topUp": true},
-          {"id": "A_TURN_R", "add": 2, "topUp": true},
+          {"id": "A_TURN_OPEN", "remove": 4},
+          {"id": "A_FOLLOW_WALL", "remove": 3},
+          {"id": "A_FACE_ENEMY", "remove": 3},
+          {"id": "A_FLEE", "remove": 2},
+          {"id": "A_HERO_ATTACK", "add": 2, "topUp": true},
+          {"id": "A_MOVE_FWD", "add": 2, "topUp": true},
           {"id": "S_WALL_AHEAD", "add": 2, "topUp": true},
           {"id": "S_ENEMY_AHEAD", "add": 1, "topUp": true},
-          {"id": "S_ENEMY_ADJACENT", "add": 1, "topUp": true}
+          {"id": "S_ENEMY_ADJACENT", "add": 1, "topUp": true},
+          {"id": "A_TURN_L", "add": 1, "topUp": true},
+          {"id": "A_TURN_R", "add": 1, "topUp": true}
         ]
       },
       "pressureSpendCap": {"formula": "6 + levelNumber"},
@@ -451,11 +452,11 @@
           {"id": "A_HOLD", "add": 4},
           {"id": "A_HERO_ATTACK", "add": 3, "topUp": true},
           {"id": "A_MOVE_FWD", "add": 3, "topUp": true},
-          {"id": "A_TURN_L", "add": 2, "topUp": true},
-          {"id": "A_TURN_R", "add": 2, "topUp": true},
-          {"id": "S_WALL_AHEAD", "add": 2, "topUp": true},
-          {"id": "S_ENEMY_AHEAD", "add": 2, "topUp": true},
-          {"id": "S_ENEMY_ADJACENT", "add": 2, "topUp": true}
+          {"id": "A_TURN_L", "add": 1, "topUp": true},
+          {"id": "A_TURN_R", "add": 1, "topUp": true},
+          {"id": "S_WALL_AHEAD", "add": 1, "topUp": true},
+          {"id": "S_ENEMY_AHEAD", "add": 1, "topUp": true},
+          {"id": "S_ENEMY_ADJACENT", "add": 1, "topUp": true}
         ]
       },
       "pressureSpendCap": {"formula": "6 + levelNumber"},
@@ -489,7 +490,20 @@
       "themeId": "ash_foundry",
       "diceSides": 6,
       "introduces": ["ashen", "A_RAISE_SHIELD", "A_SPRINT"],
-      "deck": {"fromPrevLevel": 8, "adjustments": [{"id": "A_RAISE_SHIELD", "add": 4}, {"id": "A_SPRINT", "add": 4}, {"id": "A_HERO_ATTACK", "add": 1, "topUp": true}, {"id": "A_MOVE_FWD", "add": 1, "topUp": true}]},
+      "deck": {
+        "fromPrevLevel": 8,
+        "adjustments": [
+          {"id": "A_RAISE_SHIELD", "add": 4},
+          {"id": "A_SPRINT", "add": 4},
+          {"id": "A_HERO_ATTACK", "add": 1, "topUp": true},
+          {"id": "A_MOVE_FWD", "add": 1, "topUp": true},
+          {"id": "A_TURN_L", "add": 1, "topUp": true},
+          {"id": "A_TURN_R", "add": 1, "topUp": true},
+          {"id": "S_WALL_AHEAD", "add": 1, "topUp": true},
+          {"id": "S_ENEMY_AHEAD", "add": 1, "topUp": true},
+          {"id": "S_ENEMY_ADJACENT", "add": 1, "topUp": true}
+        ]
+      },
       "pressureSpendCap": {"formula": "6 + levelNumber"},
       "pressureSpendCapOverride": null,
       "maxSpawnsPerTurn": 2,
@@ -527,13 +541,17 @@
           {"id": "OP_NOT", "add": 10},
           {"id": "S_SAFE_AHEAD", "add": 6},
           {"id": "A_BACKSTEP", "add": 4},
-          {"id": "A_HERO_ATTACK", "add": 4, "topUp": true},
-          {"id": "A_MOVE_FWD", "add": 4, "topUp": true},
-          {"id": "A_TURN_L", "add": 3, "topUp": true},
-          {"id": "A_TURN_R", "add": 3, "topUp": true},
-          {"id": "S_WALL_AHEAD", "add": 3, "topUp": true},
-          {"id": "S_ENEMY_AHEAD", "add": 2, "topUp": true},
-          {"id": "S_ENEMY_ADJACENT", "add": 2, "topUp": true}
+          {"id": "A_TURN_OPEN", "remove": 4},
+          {"id": "A_FOLLOW_WALL", "remove": 3},
+          {"id": "A_FACE_ENEMY", "remove": 3},
+          {"id": "A_FLEE", "remove": 2},
+          {"id": "A_HERO_ATTACK", "add": 2, "topUp": true},
+          {"id": "A_MOVE_FWD", "add": 2, "topUp": true},
+          {"id": "A_TURN_L", "add": 1, "topUp": true},
+          {"id": "A_TURN_R", "add": 1, "topUp": true},
+          {"id": "S_WALL_AHEAD", "add": 2, "topUp": true},
+          {"id": "S_ENEMY_AHEAD", "add": 1, "topUp": true},
+          {"id": "S_ENEMY_ADJACENT", "add": 1, "topUp": true}
         ]
       },
       "pressureSpendCap": {"formula": "6 + levelNumber"},
@@ -574,11 +592,11 @@
           {"id": "A_STOMP", "add": 4},
           {"id": "A_HERO_ATTACK", "add": 2, "topUp": true},
           {"id": "A_MOVE_FWD", "add": 2, "topUp": true},
-          {"id": "S_WALL_AHEAD", "add": 2, "topUp": true},
-          {"id": "S_ENEMY_AHEAD", "add": 1, "topUp": true},
-          {"id": "S_ENEMY_ADJACENT", "add": 1, "topUp": true},
           {"id": "A_TURN_L", "add": 1, "topUp": true},
-          {"id": "A_TURN_R", "add": 1, "topUp": true}
+          {"id": "A_TURN_R", "add": 1, "topUp": true},
+          {"id": "S_WALL_AHEAD", "add": 1, "topUp": true},
+          {"id": "S_ENEMY_AHEAD", "add": 1, "topUp": true},
+          {"id": "S_ENEMY_ADJACENT", "add": 1, "topUp": true}
         ]
       },
       "pressureSpendCap": {"formula": "6 + levelNumber"},
@@ -617,10 +635,8 @@
           {"id": "S_RESURRECTION_PENDING", "add": 2},
           {"id": "S_ENEMY_COUNT_HIGH", "add": 2},
           {"id": "A_WARD", "add": 2},
-          {"id": "A_HERO_ATTACK", "add": 2, "topUp": true},
-          {"id": "A_MOVE_FWD", "add": 2, "topUp": true},
-          {"id": "S_ENEMY_AHEAD", "add": 1, "topUp": true},
-          {"id": "S_ENEMY_ADJACENT", "add": 1, "topUp": true},
+          {"id": "A_HERO_ATTACK", "add": 1, "topUp": true},
+          {"id": "A_MOVE_FWD", "add": 1, "topUp": true},
           {"id": "A_TURN_L", "add": 1, "topUp": true},
           {"id": "A_TURN_R", "add": 1, "topUp": true},
           {"id": "S_WALL_AHEAD", "add": 1, "topUp": true}
@@ -713,7 +729,7 @@
           {"id": "A_MOVE_FWD", "add": 1, "topUp": true},
           {"id": "A_TURN_L", "add": 1, "topUp": true},
           {"id": "A_TURN_R", "add": 1, "topUp": true},
-          {"id": "S_WALL_AHEAD", "add": 1, "topUp": true},
+          {"id": "S_WALL_AHEAD", "add": 2, "topUp": true},
           {"id": "S_ENEMY_AHEAD", "add": 1, "topUp": true},
           {"id": "S_ENEMY_ADJACENT", "add": 1, "topUp": true}
         ]
@@ -757,8 +773,7 @@
           {"id": "A_HERO_ATTACK", "add": 1, "topUp": true},
           {"id": "A_MOVE_FWD", "add": 1, "topUp": true},
           {"id": "A_TURN_L", "add": 1, "topUp": true},
-          {"id": "A_TURN_R", "add": 1, "topUp": true},
-          {"id": "S_WALL_AHEAD", "add": 1, "topUp": true}
+          {"id": "A_TURN_R", "add": 1, "topUp": true}
         ]
       },
       "pressureSpendCap": {"formula": "6 + levelNumber"},
@@ -800,13 +815,13 @@
           {"id": "S_ENEMY_RIGHT", "add": 2},
           {"id": "A_BRACE", "add": 2},
           {"id": "S_BLEEDING", "add": 2},
-          {"id": "A_HERO_ATTACK", "add": 4, "topUp": true},
-          {"id": "A_MOVE_FWD", "add": 4, "topUp": true},
+          {"id": "A_HERO_ATTACK", "add": 5, "topUp": true},
+          {"id": "A_MOVE_FWD", "add": 5, "topUp": true},
           {"id": "A_TURN_L", "add": 2, "topUp": true},
           {"id": "A_TURN_R", "add": 2, "topUp": true},
           {"id": "S_WALL_AHEAD", "add": 3, "topUp": true},
-          {"id": "S_ENEMY_AHEAD", "add": 2, "topUp": true},
-          {"id": "S_ENEMY_ADJACENT", "add": 2, "topUp": true}
+          {"id": "S_ENEMY_AHEAD", "add": 3, "topUp": true},
+          {"id": "S_ENEMY_ADJACENT", "add": 3, "topUp": true}
         ]
       },
       "pressureSpendCap": {"formula": "6 + levelNumber"},
@@ -845,13 +860,11 @@
         "adjustments": [
           {"id": "S_ENEMY_ENRAGED", "add": 3},
           {"id": "A_BAIT", "add": 2},
-          {"id": "A_HERO_ATTACK", "add": 2, "topUp": true},
-          {"id": "A_MOVE_FWD", "add": 2, "topUp": true},
           {"id": "A_TURN_L", "add": 1, "topUp": true},
           {"id": "A_TURN_R", "add": 1, "topUp": true},
-          {"id": "S_ENEMY_AHEAD", "add": 1, "topUp": true},
-          {"id": "S_ENEMY_ADJACENT", "add": 1, "topUp": true},
-          {"id": "S_WALL_AHEAD", "add": 1, "topUp": true}
+          {"id": "S_WALL_AHEAD", "add": 1, "topUp": true},
+          {"id": "A_HERO_ATTACK", "add": 1, "topUp": true},
+          {"id": "A_MOVE_FWD", "add": 1, "topUp": true}
         ]
       },
       "pressureSpendCap": {"formula": "6 + levelNumber"},
@@ -890,11 +903,11 @@
         "adjustments": [
           {"id": "S_ARMORED_ENEMY_VISIBLE", "add": 3},
           {"id": "A_PIERCE", "add": 3},
-          {"id": "S_WALL_AHEAD", "add": 1, "topUp": true},
           {"id": "A_HERO_ATTACK", "add": 1, "topUp": true},
           {"id": "A_MOVE_FWD", "add": 1, "topUp": true},
           {"id": "A_TURN_L", "add": 1, "topUp": true},
           {"id": "A_TURN_R", "add": 1, "topUp": true},
+          {"id": "S_WALL_AHEAD", "add": 1, "topUp": true},
           {"id": "S_ENEMY_AHEAD", "add": 1, "topUp": true},
           {"id": "S_ENEMY_ADJACENT", "add": 1, "topUp": true}
         ]
@@ -938,9 +951,9 @@
           {"id": "A_CUT_FREE", "add": 3},
           {"id": "A_HERO_ATTACK", "add": 2, "topUp": true},
           {"id": "A_MOVE_FWD", "add": 2, "topUp": true},
-          {"id": "S_WALL_AHEAD", "add": 1, "topUp": true},
           {"id": "A_TURN_L", "add": 1, "topUp": true},
           {"id": "A_TURN_R", "add": 1, "topUp": true},
+          {"id": "S_WALL_AHEAD", "add": 1, "topUp": true},
           {"id": "S_ENEMY_AHEAD", "add": 1, "topUp": true},
           {"id": "S_ENEMY_ADJACENT", "add": 1, "topUp": true}
         ]
@@ -983,9 +996,9 @@
           {"id": "A_PROBE", "add": 4},
           {"id": "A_HERO_ATTACK", "add": 1, "topUp": true},
           {"id": "A_MOVE_FWD", "add": 1, "topUp": true},
-          {"id": "S_WALL_AHEAD", "add": 1, "topUp": true},
           {"id": "A_TURN_L", "add": 1, "topUp": true},
-          {"id": "A_TURN_R", "add": 1, "topUp": true}
+          {"id": "A_TURN_R", "add": 1, "topUp": true},
+          {"id": "S_WALL_AHEAD", "add": 1, "topUp": true}
         ]
       },
       "pressureSpendCap": {"formula": "6 + levelNumber"},
