@@ -8,16 +8,23 @@
 A crooked headstone and disturbed soil. Adds eerie tone without gore.
 
 ## Core rule
-Blocks movement. Blocks LoS partially (tunable). In v0.1, treat as blocking LoS.
+Solid; gives cover from ranged enemies in catacombs and chapels.
+
+| Property | Value |
+|---|---|
+| Map symbol | `+` |
+| Blocks movement | Yes |
+| Blocks line of sight | Yes |
+| Can be jumped over (**A_JUMP_FWD**) | No |
+| Used in levels | 10, 11, 12, 13, 14, 15, 23 |
 
 ## Movement interaction
-- The hero and enemies **cannot enter** this tile in v0.1.
-- When movement is blocked:
-  - hero uses clockwise rotation to nearest open direction (per hero default / rules)
-  - enemies follow their own deterministic blocked handling
+- The hero and enemies **cannot enter** this tile.
+- A blocked move fails and still uses the loop. **S_WALL_AHEAD** and **S_BLOCKED_AHEAD** are true when this tile is directly ahead.
+- Hero default behaviors that rotate when blocked use clockwise preference (counter-clockwise while **cursed**).
 
 ## Line-of-sight interaction
-- Default: blocks LoS unless otherwise specified in the level’s tile rules.
+- Blocks line of sight: enemies behind it are not visible and ranged attacks cannot pass.
 
 ## Teaching notes
 Creates cover behavior for ranged enemies.
@@ -30,4 +37,4 @@ Creates cover behavior for ranged enemies.
 ## JSON knobs
 - blocksMovement (bool)
 - blocksLoS (bool)
-- hazardOnContact (optional; not used in v0.1)
+- jumpable (bool)

@@ -1,6 +1,7 @@
 # Plague (Modifier)
 
 **ID:** `MOD_PLAGUE`  
+**JSON key:** `plague` (used in `levels.json`)  
 **Category:** Enemy Modifier  
 **Theme:** disease / rot
 
@@ -14,7 +15,7 @@ A modifier is applied on top of a base enemy to create “named” variants (e.g
 - may change decision cadence or sensor interactions
 
 ## Cost impact
-- Adds **+1** skull(s) to the base enemy’s cost (campaign tuning).
+- Adds **+1** to the base enemy’s spawn cost in Pressure (`levels.json` → `enemies.modifierCostAdders`). Stat and behavior changes are in `enemies.json` → `modifiers`.
 
 ## Behavior and effects
 Attacks may apply light poison/bleed; rare lingering hazard tile.

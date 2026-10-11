@@ -16,7 +16,7 @@ Defensive tank that teaches holding/guarding behavior and trap management.
 - **Speed** changes how many tiles a move action covers (does not add extra actions)
 
 ## Default behavior (when the active row does not trigger and no ELSE exists)
-If an enemy is visible: **Hold Position**. Otherwise: **Move Forward (1 tile)** (clockwise rotate if blocked).
+If an enemy is **adjacent**: **Hold Position**. Otherwise: **Move Forward (1 tile)** (turn right, then left, if blocked).
 
 ## Hero Attack (effect of the `A_HERO_ATTACK` card)
 **Shield Bash (Hero Attack):** Melee hit + optional **pushback 1 tile** if the destination is open.
@@ -33,8 +33,8 @@ If an enemy is visible: **Hold Position**. Otherwise: **Move Forward (1 tile)** 
 - **Bash Mastery:** Improves push reliability; push fails less often when the tile behind is open.
 
 ## Typical card synergies
-- Sensors that matter: **ENEMY_ADJACENT**, **ENEMY_IN_LOS**, **TILE_IS_HAZARD_AHEAD**, **TILE_IS_TRAP_AHEAD**, **PATH_BLOCKED** (as those become available).
-- Actions that matter: **MOVE_FORWARD**, **TURN_LEFT/RIGHT**, **WAIT/HOLD**, **JUMP** (later), **HERO_ATTACK**.
+- Sensors that matter: **S_ENEMY_ADJACENT**, **S_ENEMY_VISIBLE**, **S_HAZARD_AHEAD** (L7+), **S_TRAP_AHEAD** (L16+), **S_BLOCKED_AHEAD**.
+- Actions that matter: **A_MOVE_FWD**, **A_TURN_L** / **A_TURN_R**, **A_WAIT** / **A_HOLD**, **A_JUMP_FWD** (L3+), **A_HERO_ATTACK**.
 
 ## Balance knobs (for JSON)
 - Base HP/Armor

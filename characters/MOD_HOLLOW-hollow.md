@@ -1,6 +1,7 @@
 # Hollow (Modifier)
 
 **ID:** `MOD_HOLLOW`  
+**JSON key:** `hollow` (used in `levels.json`)  
 **Category:** Enemy Modifier  
 **Theme:** undead
 
@@ -14,7 +15,7 @@ A modifier is applied on top of a base enemy to create “named” variants (e.g
 - may change decision cadence or sensor interactions
 
 ## Cost impact
-- Adds **+1** skull(s) to the base enemy’s cost (campaign tuning).
+- Adds **+1** to the base enemy’s spawn cost in Pressure (`levels.json` → `enemies.modifierCostAdders`). Stat and behavior changes are in `enemies.json` → `modifiers`.
 
 ## Behavior and effects
 Immune to fear; takes bonus from Smite-style effects later.

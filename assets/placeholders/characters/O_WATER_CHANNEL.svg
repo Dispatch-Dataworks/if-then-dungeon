@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="420" viewBox="0 0 300 420" role="img" aria-label="OBSTRUCTION / TERRAIN: Water Channel (placeholder)">
+  <rect width="300" height="420" rx="18" fill="#0A0A14"/>
+  <rect x="8" y="8" width="284" height="404" rx="14" fill="#1A1A2E" stroke="#CDB38B" stroke-width="4"/>
+  <rect x="24" y="56" width="252" height="200" rx="8" fill="#2C3146"/>
+  <text x="150" y="40" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="2" fill="#CDB38B">OBSTRUCTION / TERRAIN</text>
+  <rect x="100" y="116" width="100" height="80" fill="none" stroke="#CDB38B" stroke-width="6" stroke-linejoin="round"/><path d="M100,156 H200 M150,116 V156" fill="none" stroke="#CDB38B" stroke-width="6" stroke-linejoin="round"/>
+  <text x="150" y="300" text-anchor="middle" font-family="Cinzel, Georgia, serif" font-size="24" font-weight="700" fill="#F2E6CF">Water Channel</text>
+  <text x="150" y="330" text-anchor="middle" font-family="monospace" font-size="12" fill="#CDB38B">O_WATER_CHANNEL</text>
+  
+  <text x="150" y="402" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-size="10" letter-spacing="3" fill="#CDB38B">PLACEHOLDER</text>
+</svg>

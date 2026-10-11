@@ -2,6 +2,7 @@
 
 **ID:** `T_SPIKES`  
 **Category:** Trap  
+**Map symbol:** `s`  
 **Theme:** classic dungeon
 
 ## Visual description
@@ -11,7 +12,7 @@ A metal plate with retractable spikes; clearly visible when armed.
 - **Step onto tile**
 
 ## Effect
-- **3 damage**
+- **2 damage**
 - Traps are never “instant kill”, but can be lethal if they reduce HP to 0.
 
 ## Telegraphed state

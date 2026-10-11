@@ -2,6 +2,7 @@
 
 **ID:** `T_ILLUSION_WALL`  
 **Category:** Trap  
+**Map symbol:** `i`  
 **Theme:** arcane rooms
 
 ## Visual description

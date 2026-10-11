@@ -1,6 +1,7 @@
 # Iron (Modifier)
 
 **ID:** `MOD_IRON`  
+**JSON key:** `iron` (used in `levels.json`)  
 **Category:** Enemy Modifier  
 **Theme:** armor
 
@@ -14,7 +15,7 @@ A modifier is applied on top of a base enemy to create “named” variants (e.g
 - may change decision cadence or sensor interactions
 
 ## Cost impact
-- Adds **+2** skull(s) to the base enemy’s cost (campaign tuning).
+- Adds **+2** to the base enemy’s spawn cost in Pressure (`levels.json` → `enemies.modifierCostAdders`). Stat and behavior changes are in `enemies.json` → `modifiers`.
 
 ## Behavior and effects
 Reduces incoming damage unless pierced; slower but tougher.

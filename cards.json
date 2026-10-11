@@ -77,6 +77,9 @@
     { "id": "S_SNARE_AHEAD", "type": "sensor", "rarity": "common", "name": "Snare Ahead", "engineKey": "trap_ahead", "params": { "trapId": "T_SNARE_ROOTS" } },
     { "id": "S_IN_ROOTS", "type": "sensor", "rarity": "common", "name": "In Roots", "engineKey": "hero_has_status", "params": { "status": "snare_root" } },
     { "id": "S_ILLUSION_AHEAD", "type": "sensor", "rarity": "common", "name": "Illusion Ahead", "engineKey": "illusion_ahead", "params": {} },
-    { "id": "S_BLOOD_TRAIL_NEARBY", "type": "sensor", "rarity": "common", "name": "Blood Trail Nearby", "engineKey": "blood_tile_within", "params": { "distance": 2 } }
+    { "id": "S_BLOOD_TRAIL_NEARBY", "type": "sensor", "rarity": "common", "name": "Blood Trail Nearby", "engineKey": "blood_tile_within", "params": { "distance": 2 } },
+
+    { "id": "S_POISONED", "type": "sensor", "rarity": "common", "name": "Poisoned", "engineKey": "hero_has_status", "params": { "status": "poison" } },
+    { "id": "S_BLEEDING", "type": "sensor", "rarity": "common", "name": "Bleeding", "engineKey": "hero_has_status", "params": { "status": "bleed" } }
   ]
 }

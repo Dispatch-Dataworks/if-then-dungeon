@@ -1,0 +1,87 @@
+{
+  "file": "themes.json",
+  "version": "0.1.0",
+  "note": "Per-theme art and audio direction. Colors are accents layered on the base palette in Style-guide.md. artNotes guide AI art generation for tiles and card backgrounds.",
+  "themes": [
+    {
+      "id": "ruined_keep",
+      "name": "Ruined Keep",
+      "summary": "Crumbling castle halls where goblins have moved in. The tutorial theme: warm torchlight, readable shapes.",
+      "palette": {"floor": "#3A3A4A", "accent": "#FFD700", "glow": "#00F0FF"},
+      "artNotes": "Torch-lit grey stone, broken banners, moss in the cracks.",
+      "audioMood": "Brave, curious; light drums.",
+      "levels": [1, 2, 3],
+      "obstacles": ["O_IRON_BARS", "O_RUBBLE_PILE", "O_STONE_WALL"]
+    },
+    {
+      "id": "sewer_vermin",
+      "name": "Sewer Vermin",
+      "summary": "Flooded tunnels under the keep, thick with rats and green fog.",
+      "palette": {"floor": "#2A3A34", "accent": "#7CFF6B", "glow": "#00F0FF"},
+      "artNotes": "Dripping brick arches, murky water channels, sickly green fog pockets.",
+      "audioMood": "Echoing drips, scurrying.",
+      "levels": [4, 5, 6],
+      "obstacles": ["O_IRON_BARS", "O_RUBBLE_PILE", "O_STONE_WALL", "O_WATER_CHANNEL"]
+    },
+    {
+      "id": "ash_foundry",
+      "name": "Ash Foundry",
+      "summary": "An abandoned rune-forge where machines still run: conveyors, vents and lava channels.",
+      "palette": {"floor": "#3A2A24", "accent": "#FF8C00", "glow": "#FFD700"},
+      "artNotes": "Soot-black iron, glowing lava seams, brass gears and hissing vents.",
+      "audioMood": "Rhythmic hammering, steam.",
+      "levels": [7, 8, 9],
+      "obstacles": ["O_IRON_BARS", "O_LAVA_FLOW", "O_RUBBLE_PILE", "O_STONE_WALL"]
+    },
+    {
+      "id": "catacombs",
+      "name": "Catacombs",
+      "summary": "Bone-lined tunnels where the dead don't stay down.",
+      "palette": {"floor": "#2C2C38", "accent": "#CDB38B", "glow": "#9D00FF"},
+      "artNotes": "Skull niches, bone piles, pale violet rune light.",
+      "audioMood": "Low choir hum, rattling.",
+      "levels": [10, 11, 12],
+      "obstacles": ["O_BONE_PILE", "O_LOCKED_GATE", "O_STONE_WALL", "O_TOMBSTONE"]
+    },
+    {
+      "id": "cursed_chapel",
+      "name": "Cursed Chapel",
+      "summary": "A desecrated chapel where cultists chant and the floor whispers.",
+      "palette": {"floor": "#2A2238", "accent": "#C77DFF", "glow": "#9D00FF"},
+      "artNotes": "Cracked stained glass, purple sigils, toppled pews and tombstones.",
+      "audioMood": "Whispers, organ drones.",
+      "levels": [13, 14, 15],
+      "obstacles": ["O_IRON_BARS", "O_LOCKED_GATE", "O_STONE_WALL", "O_TOMBSTONE"]
+    },
+    {
+      "id": "blood_arena",
+      "name": "Blood Arena",
+      "summary": "A gladiator pit run by orcs, ringed by chasms and iron bars.",
+      "palette": {"floor": "#3A2426", "accent": "#FF3300", "glow": "#FF8C00"},
+      "artNotes": "Red sand, iron cages, crimson vines; stylized, never gory.",
+      "audioMood": "War drums, crowd roar.",
+      "levels": [16, 17, 18],
+      "obstacles": ["O_CHASM_EDGE", "O_IRON_BARS", "O_RUBBLE_PILE", "O_STONE_WALL"]
+    },
+    {
+      "id": "rotwood",
+      "name": "Rotwood",
+      "summary": "A sunken forest of roots, spiders and illusions.",
+      "palette": {"floor": "#24301F", "accent": "#7CFF6B", "glow": "#00F0FF"},
+      "artNotes": "Twisted roots, glowing fungus, webs, fog between thorn walls.",
+      "audioMood": "Creaking wood, insects.",
+      "levels": [19, 20, 21],
+      "obstacles": ["O_CHASM_EDGE", "O_STONE_WALL", "O_THORN_BRAMBLES", "O_WATER_CHANNEL"]
+    },
+    {
+      "id": "mirror_halls",
+      "name": "Mirror Halls",
+      "summary": "The final labyrinth: mirrored halls that remix every danger the hero has faced.",
+      "palette": {"floor": "#1E2436", "accent": "#00F0FF", "glow": "#9D00FF"},
+      "artNotes": "Polished obsidian, mirrors reflecting earlier themes, floating runes.",
+      "audioMood": "Shimmering, layered reprise of earlier themes.",
+      "levels": [22, 23, 24],
+      "obstacles": ["O_BONE_PILE", "O_CHASM_EDGE", "O_IRON_BARS", "O_STONE_WALL", "O_THORN_BRAMBLES", "O_TOMBSTONE"]
+    }
+  ]
+}

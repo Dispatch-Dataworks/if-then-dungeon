@@ -1,6 +1,7 @@
 # Blood (Modifier)
 
 **ID:** `MOD_BLOOD`  
+**JSON key:** `blood` (used in `levels.json`)  
 **Category:** Enemy Modifier  
 **Theme:** slaughter
 
@@ -14,7 +15,7 @@ A modifier is applied on top of a base enemy to create “named” variants (e.g
 - may change decision cadence or sensor interactions
 
 ## Cost impact
-- Adds **+2** skull(s) to the base enemy’s cost (campaign tuning).
+- Adds **+2** to the base enemy’s spawn cost in Pressure (`levels.json` → `enemies.modifierCostAdders`). Stat and behavior changes are in `enemies.json` → `modifiers`.
 
 ## Behavior and effects
 Becomes more aggressive; hazards punish careless movement.

@@ -19,7 +19,7 @@ Ranged control that teaches line-of-sight reasoning and defensive movement.
 **Scan 180° forward arc**, then **move 1** toward a safe open tile (prefers tiles **not adjacent** to an enemy). If no safe option, Wait.
 
 ## Hero Attack (effect of the `A_HERO_ATTACK` card)
-**Arrow (Hero Attack):** Ranged shot in **line-of-sight** up to **3 tiles**. Lower damage than melee heroes, but can strike before contact.
+**Arrow (Hero Attack):** Ranged shot in **line-of-sight** up to **3 tiles** (2 damage). Fragile (8 HP, no armor), but can strike before contact.
 
 ## Baseline stats (tunable)
 - HP: **8**
@@ -33,8 +33,8 @@ Ranged control that teaches line-of-sight reasoning and defensive movement.
 - **Evasion:** Reduce the first melee hit per turn (light mitigation; not full dodge).
 
 ## Typical card synergies
-- Sensors that matter: **ENEMY_ADJACENT**, **ENEMY_IN_LOS**, **TILE_IS_HAZARD_AHEAD**, **TILE_IS_TRAP_AHEAD**, **PATH_BLOCKED** (as those become available).
-- Actions that matter: **MOVE_FORWARD**, **TURN_LEFT/RIGHT**, **WAIT/HOLD**, **JUMP** (later), **HERO_ATTACK**.
+- Sensors that matter: **S_ENEMY_ADJACENT**, **S_ENEMY_VISIBLE**, **S_HAZARD_AHEAD** (L7+), **S_TRAP_AHEAD** (L16+), **S_BLOCKED_AHEAD**.
+- Actions that matter: **A_MOVE_FWD**, **A_TURN_L** / **A_TURN_R**, **A_WAIT** / **A_HOLD**, **A_JUMP_FWD** (L3+), **A_HERO_ATTACK**.
 
 ## Balance knobs (for JSON)
 - Base HP/Armor

@@ -26,7 +26,7 @@ Modifier introduction order:
 - Levels 16–21: d10
 - Levels 22–24: d12
 
-(Each level can override.)
+Stored per level as `diceSides` in `levels.json`.
 
 ## Pressure spend cap
 Default: `6 + levelNumber`. Override per level allowed.
@@ -41,7 +41,7 @@ Default: `6 + levelNumber`. Override per level allowed.
 ### 2) Sewer Vermin — hazards and speed
 - L4: Rat Swarm, Poison Fog, fog sensors, Retreat action
 - L5: Hound, Timed Vents, vent sensors, “nearby” sensors
-- L6: Plague modifier, Goblin Shaman, Shake It Off cleanse
+- L6: Plague modifier, Goblin Shaman, Shake It Off cleanse, Poisoned sensor
 
 ### 3) Ash Foundry — ELSE and conveyors
 - L7: ELSE operator, Hazard Ahead sensor, Step Aside action, Smoke Vents, Conveyor
@@ -54,12 +54,12 @@ Default: `6 + levelNumber`. Override per level allowed.
 - L12: Hollow modifier, resurrection sensor, enemy-count sensor, Ward action
 
 ### 5) Cursed Chapel — AND and fear
-- L13: AND operator, Low HP sensor, Cursed status sensor, Focus action, Cultist, Curse Sigil
+- L13: AND operator, Low HP sensor, Cursed status sensor, Focus action, Cultist, Curse Sigil, Curse Sigil Ahead sensor
 - L14: Wraith Stalker, Whisper tiles, phase threat sensors, Illuminate
 - L15: Cursed modifier, Fear sensor, Steel Nerves, Support enemy visibility sensor
 
 ### 6) Blood Arena — OR and armor
-- L16: OR operator, trap-ahead sensor, left/right enemy sensors, Push Plates, Bleed Vines, Brace
+- L16: OR operator, trap-ahead sensor, left/right enemy sensors, Push Plates, Bleed Vines, Brace, Bleeding sensor
 - L17: Enraged sensor, Bait action
 - L18: Iron modifier, armored sensor, Pierce action
 
@@ -73,6 +73,20 @@ Default: `6 + levelNumber`. Override per level allowed.
 - L23: remix undead + fog + timed vents
 - L24: remix elite + snares + bleed vines + push plates
 
+## Terrain per theme
+Each theme has its own obstacle set (see `07-traps-and-board-mechanics.md` → *Obstacles*):
+- Ruined Keep: stone walls, rubble, iron bars (L3: archers shoot through bars)
+- Sewer Vermin: water channels (jumpable, see-through), iron bars, rubble
+- Ash Foundry: lava flows (jumpable, see-through), iron bars, rubble
+- Catacombs: bone piles (jumpable), tombstones, locked gates
+- Cursed Chapel: tombstones, locked gates, iron bars
+- Blood Arena: chasm edges (jumpable), iron bars, rubble
+- Rotwood: thorn brambles, water channels, chasm edges
+- Mirror Halls: a remix of the above
+
+## Pickups
+- L2: Health Draught · L5: Armor Shard · L8: Speed Rune
+
 ## Level JSON responsibility
 Each level JSON must specify:
 - what it introduces (cards/enemies/traps/mechanics/modifiers)
@@ -81,3 +95,5 @@ Each level JSON must specify:
 - trap list and mechanic list
 - spawn points
 - deck recipe adjustments
+- dice size (`diceSides`) and obstacle list
+- the board (`board.map`, hero facing, push plate directions); see `10-json-reference.md` → *Level maps*

@@ -8,7 +8,8 @@
 A goblin in bone fetishes and ash paint, holding a rattling totem.
 
 ## Role on the board
-- **Spawn cost:** 3 skull(s) (base; modified by level tuning)
+- **Danger:** 3 skull(s) · **Spawn cost:** 7 Pressure (base, before modifiers)
+- **Stats:** HP 3, armor 0, damage 0, attack range 3, speed 1 (see `enemies.json`)
 - Intended role: pressure, zoning, damage, support, or disruption.
 
 ## Core behavior (readable “rule”)
@@ -33,7 +34,7 @@ Any “chance” is seeded and therefore repeatable on retries.
 
 ## Counterplay hints (for level tooltips / teach mode)
 - Prioritize hazard avoidance first, then threat response (attack/turn).
-- Use sensors like **ENEMY_ADJACENT**, **ENEMY_IN_LOS**, and **ENEMY_DISTANCE** when introduced.
+- Use sensors like **S_ENEMY_ADJACENT**, **S_ENEMY_VISIBLE**, and **S_ENEMY_NEAR_2** (L5+) when introduced.
 
 ## Drops / rewards (tunable)
 - Standard: small chance for HP, armor shard, or speed rune.

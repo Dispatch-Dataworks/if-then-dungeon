@@ -40,11 +40,12 @@ Repeat for `loops[i]` ticks:
 4) Else:
    - do hero default behavior (consume tick)
 5) Resolve pickups / proximity pickups (auto within 1 tile; no diagonal)
-6) Resolve trap damage/status
+6) Resolve region hazards (fog, smoke) and active vents under the hero
 7) Enemy tick:
    - each enemy updates based on its behavior rules
    - enemy randomness is deterministic per turn seed + enemyId + tick
 8) Update any timed mechanics (vents, conveyors, push plates)
+9) Resolve end-of-loop status effects for the hero and enemies (poison, bleed, durations; see *Status effects* in `07-traps-and-board-mechanics.md`). Buffs from cards therefore protect against the enemy tick of the loop they were played in.
 
 ### 7) Turn end: discard and Pressure
 - Determine which cards were *placed into valid rows* (count as “placed” even if they never triggered).
@@ -58,7 +59,7 @@ At level start:
 - `levelSeed`
 
 At turn start:
-- `turnSeed = hash(levelSeed, levelNumber)`
+- `turnSeed = hash(levelSeed, turnIndex)` (must include `turnIndex`, otherwise every turn would replay the same deal and dice)
 
 Derive sub-seeds:
 - `dealSeed`
@@ -85,7 +86,7 @@ On death retry:
 ## Movement rules (global)
 - No diagonal movement.
 - When a movement action cannot complete (blocked, landing blocked for jump), it fails and consumes the tick.
-- Turning is always possible (unless you later add fear/confusion mechanics).
+- Turning is always possible. (Fear blocks Move Forward toward a visible enemy, not turning.)
 - For “turn into blocked”: rotate to nearest open direction clockwise only when using Step Aside / special actions; normal turns just change facing.
 
 ## Pickup rules

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="420" viewBox="0 0 300 420" role="img" aria-label="ACTION: Hold Position (placeholder)">
+  <rect width="300" height="420" rx="18" fill="#0A0A14"/>
+  <rect x="8" y="8" width="284" height="404" rx="14" fill="#1A1A2E" stroke="#FFD700" stroke-width="4"/>
+  <rect x="24" y="56" width="252" height="200" rx="8" fill="#2C3146"/>
+  <text x="150" y="40" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="2" fill="#FFD700">ACTION</text>
+  <path d="M100,136 H160 V111 L210,156 L160,201 V176 H100Z" fill="none" stroke="#FFD700" stroke-width="6" stroke-linejoin="round"/>
+  <text x="150" y="300" text-anchor="middle" font-family="Cinzel, Georgia, serif" font-size="24" font-weight="700" fill="#F2E6CF">Hold Position</text>
+  <text x="150" y="330" text-anchor="middle" font-family="monospace" font-size="12" fill="#CDB38B">A_HOLD</text>
+  <circle cx="150" cy="372" r="5" fill="#FFD700"/>
+  <text x="150" y="402" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-size="10" letter-spacing="3" fill="#CDB38B">PLACEHOLDER</text>
+</svg>

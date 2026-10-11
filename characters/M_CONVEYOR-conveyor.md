@@ -2,6 +2,7 @@
 
 **ID:** `M_CONVEYOR`  
 **Category:** Board Mechanic  
+**Map symbol:** `>` `<` `^` `v`  
 **Theme:** factory / dungeon machinery
 
 ## Visual description

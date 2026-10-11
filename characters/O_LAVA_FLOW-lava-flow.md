@@ -8,16 +8,23 @@
 Glowing orange lava channel with heat shimmer. Clearly lethal-looking.
 
 ## Core rule
-In v0.1, treat as **impassable** (obstruction). Later can be passable with heavy damage or special boots.
+See-through and jumpable: **A_JUMP_FWD** clears a 1-tile flow. Walking in is never allowed, so it is never an instant kill.
+
+| Property | Value |
+|---|---|
+| Map symbol | `L` |
+| Blocks movement | Yes |
+| Blocks line of sight | No |
+| Can be jumped over (**A_JUMP_FWD**) | Yes, if the landing tile is open |
+| Used in levels | 7, 8, 9 |
 
 ## Movement interaction
-- The hero and enemies **cannot enter** this tile in v0.1.
-- When movement is blocked:
-  - hero uses clockwise rotation to nearest open direction (per hero default / rules)
-  - enemies follow their own deterministic blocked handling
+- The hero and enemies **cannot enter** this tile.
+- A blocked move fails and still uses the loop. **S_WALL_AHEAD** and **S_BLOCKED_AHEAD** are true when this tile is directly ahead.
+- Hero default behaviors that rotate when blocked use clockwise preference (counter-clockwise while **cursed**).
 
 ## Line-of-sight interaction
-- Default: blocks LoS unless otherwise specified in the level’s tile rules.
+- Does **not** block line of sight: units can see and shoot across it.
 
 ## Teaching notes
 Matches early teaching examples (lava hazards) while keeping rules simple.
@@ -30,4 +37,4 @@ Matches early teaching examples (lava hazards) while keeping rules simple.
 ## JSON knobs
 - blocksMovement (bool)
 - blocksLoS (bool)
-- hazardOnContact (optional; not used in v0.1)
+- jumpable (bool)

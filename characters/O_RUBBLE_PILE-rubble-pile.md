@@ -8,16 +8,23 @@
 A heap of broken stone and beams. Clearly impassable but visually distinct from walls.
 
 ## Core rule
-Blocks movement; may reduce safe tile options and create forced detours.
+Solid like a wall but visually distinct; used to break up corridors.
+
+| Property | Value |
+|---|---|
+| Map symbol | `%` |
+| Blocks movement | Yes |
+| Blocks line of sight | Yes |
+| Can be jumped over (**A_JUMP_FWD**) | No |
+| Used in levels | 2, 3, 6, 8, 9, 18 |
 
 ## Movement interaction
-- The hero and enemies **cannot enter** this tile in v0.1.
-- When movement is blocked:
-  - hero uses clockwise rotation to nearest open direction (per hero default / rules)
-  - enemies follow their own deterministic blocked handling
+- The hero and enemies **cannot enter** this tile.
+- A blocked move fails and still uses the loop. **S_WALL_AHEAD** and **S_BLOCKED_AHEAD** are true when this tile is directly ahead.
+- Hero default behaviors that rotate when blocked use clockwise preference (counter-clockwise while **cursed**).
 
 ## Line-of-sight interaction
-- Default: blocks LoS unless otherwise specified in the level’s tile rules.
+- Blocks line of sight: enemies behind it are not visible and ranged attacks cannot pass.
 
 ## Teaching notes
 Pairs well with hazards placed on the only alternate route.
@@ -30,4 +37,4 @@ Pairs well with hazards placed on the only alternate route.
 ## JSON knobs
 - blocksMovement (bool)
 - blocksLoS (bool)
-- hazardOnContact (optional; not used in v0.1)
+- jumpable (bool)

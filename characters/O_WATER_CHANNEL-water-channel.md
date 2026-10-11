@@ -8,16 +8,23 @@
 A shallow dark channel with ripples and slime along the edges.
 
 ## Core rule
-In v0.1, treat as impassable. Later could be slow terrain instead of a wall.
+See-through and jumpable: **A_JUMP_FWD** clears a 1-tile channel.
+
+| Property | Value |
+|---|---|
+| Map symbol | `~` |
+| Blocks movement | Yes |
+| Blocks line of sight | No |
+| Can be jumped over (**A_JUMP_FWD**) | Yes, if the landing tile is open |
+| Used in levels | 4, 5, 6, 19, 20, 21 |
 
 ## Movement interaction
-- The hero and enemies **cannot enter** this tile in v0.1.
-- When movement is blocked:
-  - hero uses clockwise rotation to nearest open direction (per hero default / rules)
-  - enemies follow their own deterministic blocked handling
+- The hero and enemies **cannot enter** this tile.
+- A blocked move fails and still uses the loop. **S_WALL_AHEAD** and **S_BLOCKED_AHEAD** are true when this tile is directly ahead.
+- Hero default behaviors that rotate when blocked use clockwise preference (counter-clockwise while **cursed**).
 
 ## Line-of-sight interaction
-- Default: blocks LoS unless otherwise specified in the level’s tile rules.
+- Does **not** block line of sight: units can see and shoot across it.
 
 ## Teaching notes
 Helps teach that not all boundaries are 'walls' visually.
@@ -30,4 +37,4 @@ Helps teach that not all boundaries are 'walls' visually.
 ## JSON knobs
 - blocksMovement (bool)
 - blocksLoS (bool)
-- hazardOnContact (optional; not used in v0.1)
+- jumpable (bool)

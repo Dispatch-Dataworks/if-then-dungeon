@@ -2,6 +2,7 @@
 
 **ID:** `T_CURSE_SIGIL`  
 **Category:** Trap  
+**Map symbol:** `c`  
 **Theme:** ritual chamber
 
 ## Visual description
@@ -11,7 +12,7 @@ A carved rune circle that glows faintly; whispers in audio layer.
 - **Step onto tile**
 
 ## Effect
-- **2 damage + cursed status**
+- **1 damage + cursed status**
 - Traps are never “instant kill”, but can be lethal if they reduce HP to 0.
 
 ## Telegraphed state

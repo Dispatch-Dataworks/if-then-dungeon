@@ -8,12 +8,28 @@ Heroes differ in:
 
 Rules:
 - No diagonal movement.
+- **When blocked**, defaults turn right first, then left, and turn around only if both sides are blocked (left first while cursed).
+- **Melee attacks** strike the tile ahead; if it is empty but an enemy is adjacent, the hero turns to face that enemy and strikes in the same action. Ranged attacks turn toward the nearest visible enemy in a straight line.
 - One action per tick (even with speed upgrades; speed affects tiles moved, not number of actions).
 - No multiple attacks in one tick. Damage can increase via upgrades.
 
 ## Unlock strategy
 - Start with **4 heroes**.
 - Advanced heroes unlock as the player clears higher levels.
+- Each advanced hero unlocks just **before the theme it is best at**, so a new hero arrives with a reason to try it:
+
+| Unlocks after clearing | Hero | Why then |
+|---|---|---|
+| Level 3 | Alchemist | Sewer Vermin brings poison fog |
+| Level 6 | Monk | Ash Foundry brings vents and conveyors |
+| Level 9 | Cleric | Catacombs bring the undead |
+| Level 12 | Battlemage | Cursed Chapel brings curses and fear |
+| Level 15 | Sentinel, Berserker | Blood Arena brings armor and bleed |
+| Level 18 | Ranger, Hunter | Rotwood brings snares and blood trails |
+
+- Each hero has 3 upgrades that unlock after clearing 2, 4 and 6 different levels **with that hero**, which rewards switching heroes. Upgrades are always on once earned (no choosing), and the hero picker shows progress toward the next one.
+- Upgrade effects are listed in `heroes.json` and implemented in `src/engine/upgrades.ts` plus the rules they change. Many are "once per turn" (Parry, Bulwark, Heavy Boots, Vent Mastery, Unstoppable, Cleanse, Trap Interaction, Evasion, Illumination's free impact).
+- All numbers (stats, attack damage and range, upgrade effects) are in `heroes.json`.
 - No hero has exclusive card types; some cards change effect per hero (Hero Attack, some utility cards).
 
 ---
@@ -22,9 +38,9 @@ Rules:
 
 ### 1) H_SWORDSMAN — Swordsman
 **Fantasy**: balanced frontline.
-- Default behavior: **move forward 1** (if blocked, rotate clockwise to nearest open and move if possible; otherwise wait)
+- Default behavior: **move forward 1** (if blocked, turn right and move; if that is blocked too, turn left; turn around only as a last resort)
 - Hero Attack: **Slash**
-  - attacks the tile in front (melee)
+  - attacks the tile in front (melee); if that tile is empty but an enemy is adjacent, the hero turns to face it and strikes
   - medium damage; bonus damage vs “swarm” tagged enemies
 - Base stats:
   - HP: 10
@@ -41,7 +57,7 @@ Rules:
 - Default behavior: **scan 180° forward arc**, then **move 1** toward safest open tile (prefer away from adjacent enemy)
 - Hero Attack: **Arrow**
   - ranged attack in line-of-sight up to 3 tiles
-  - lower damage than swordsman, but can hit before contact
+  - same damage as Slash (2), but fragile (8 HP, no armor); hits before contact
 - Base stats:
   - HP: 8
   - Speed: 1
@@ -54,7 +70,7 @@ Rules:
 
 ### 3) H_SHIELDBEARER — Shieldbearer
 **Fantasy**: defensive tank.
-- Default behavior: **hold position** if enemy visible; else move forward 1
+- Default behavior: **hold position** if an enemy is adjacent; else move forward 1
 - Hero Attack: **Shield Bash**
   - melee hit + optional pushback 1 tile (if open)
 - Base stats:
