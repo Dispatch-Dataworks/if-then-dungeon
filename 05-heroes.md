@@ -123,7 +123,7 @@ Rules:
 - Upgrades: cleanse bonuses, ward duration improvements
 
 ### 9) H_ALCHEMIST — Alchemist
-- Default behavior: wait when safe; step aside when threatened
+- Default behavior: step aside if an enemy is adjacent; otherwise move forward
 - Hero Attack: throw vial (ranged; splash on a tile)
 - Upgrades: poison/fog resistance, burn cleanse
 

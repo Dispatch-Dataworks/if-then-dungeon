@@ -226,7 +226,7 @@ export class LevelScreen {
     replace(this.previewEl,
       h("div", { class: "preview__head" },
         h("h2", { id: "preview-title" }, glyph("sensor"), " Test run"),
-        h("button", { type: "button", class: "btn btn--ghost", "data-focus-key": "hide", onclick: () => this.builder.setTestRun(false) }, "Hide")),
+        h("button", { type: "button", class: "btn btn--ghost", "data-focus-key": "hide", onclick: () => this.builder.setTestRun(false, () => this.sideEl.querySelector<HTMLElement>(".test-run")?.focus()) }, "Hide")),
       h("p", { class: "help" }, "A prediction, not the real thing: pick what each row's die might roll. Nothing is used up until you Roll & Lock."),
       h("div", { class: "whatif" }, rows.map((_, i) => stepper(i))),
       result ? this.previewSummary(result, loops) : h("p", { class: "preview__problem", role: "status" }, glyph("cross"), ` Can't test yet: ${problem}`));
@@ -263,9 +263,14 @@ export class LevelScreen {
         fail: f.events.some((e) => e.kind === "fail"),
         hurt: f.events.filter((e) => e.kind === "hero_hurt").reduce((sum, e) => sum + (e.amount ?? 0), 0),
       })),
-      end: { pos: last.hero.pos, facing: last.hero.facing, fell: result.outcome === "died" || result.outcome === "lost", won: result.outcome === "won" },
+      end: { pos: last.hero.pos, facing: last.hero.facing, fell: LevelScreen.heroFell(result), won: result.outcome === "won" },
       enemies: last.enemies.filter((e) => moved(e.uid, e.pos)).map((e) => ({ typeId: e.typeId, pos: e.pos })),
     };
+  }
+
+  /** A fall means the hero died; running out of turns ("lost" without a death) is not a fall. */
+  private static heroFell(result: TurnResult): boolean {
+    return result.frames.some((f) => f.events.some((e) => e.kind === "hero_dead"));
   }
 
   private previewSummary(result: TurnResult, loops: number[]): HTMLElement {
@@ -273,7 +278,7 @@ export class LevelScreen {
     const frames = LevelScreen.rowFrames(result);
     const last = frames[frames.length - 1]?.state ?? start;
     const name = (id: string | undefined) => (id ? CARDS[id]?.name ?? id : "?");
-    const fell = result.outcome === "died" || result.outcome === "lost";
+    const fell = LevelScreen.heroFell(result);
     const won = result.outcome === "won";
 
     const rowLines = result.rows.map((row, i) => {

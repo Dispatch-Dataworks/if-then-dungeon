@@ -83,11 +83,9 @@ describe("game rules", () => {
     const g = newGame(1, "H_SWORDSMAN", 1);
     g.state.hero.pos = { x: 3, y: 3 };
     g.state.hero.facing = "S";
-    g.state.hand = g.state.hand.slice();
-    const sensor = g.state.hand.find((c) => c.cardId === "S_ENEMY_ADJACENT" || c.cardId === "S_ENEMY_AHEAD" || c.cardId === "S_ENEMY_VISIBLE");
-    if (!sensor) return; // hand without an enemy sensor on this seed: nothing to assert
-    const action = g.state.hand.find((c) => c.cardId.startsWith("A_"))!;
-    playTurn(g, [{ ifTokens: [sensor.instanceId], thenAction: action.instanceId }], { loops: [1] });
+    // No enemies on Level 1, so "IF Enemy Adjacent" is FALSE and the default behavior runs.
+    g.state.hand.push({ instanceId: "t-s", cardId: "S_ENEMY_ADJACENT" }, { instanceId: "t-a", cardId: "A_WAIT" });
+    playTurn(g, [{ ifTokens: ["t-s"], thenAction: "t-a" }], { loops: [1] });
     expect(g.state.hero.pos).toEqual({ x: 4, y: 3 });
   });
 });

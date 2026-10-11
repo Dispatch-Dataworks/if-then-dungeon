@@ -158,12 +158,12 @@ export function cardText(cardId: string, heroId?: string): string {
 
 /** Short wording of each hero's default behavior, for the "Otherwise:" line under a row. */
 const DEFAULT_SHORT: Record<string, string> = {
-  forward_or_rotate_clockwise: "move forward 1 (if blocked, turn right, else left, and move)",
+  forward_or_rotate_clockwise: "move forward 1 (if blocked: turn right, else left, else around, and move)",
   scan_then_move_safest: "step toward the safest open tile ahead",
   hold_if_enemy_adjacent_else_forward: "hold if an enemy is next to the hero, else move forward 1",
   sidestep_hazard_else_forward: "sidestep a hazard ahead, else move forward",
-  wait_if_safe_else_step_aside: "wait when safe, step aside when threatened",
-  forward_fluid_turns: "move forward (if blocked, turn right, else left, and move)",
+  wait_if_safe_else_step_aside: "step aside if an enemy is next to the hero, else move forward",
+  forward_fluid_turns: "move forward (if blocked: turn right, else left, else around, and move)",
   cautious_avoid_cursed: "move forward, steering around curse sigils",
   keep_distance: "step aside if an enemy is next to the hero, else move forward",
   hold_if_enemy_visible_else_forward: "hold if an enemy is visible, else move forward",
