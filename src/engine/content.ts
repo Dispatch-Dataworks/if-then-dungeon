@@ -80,6 +80,8 @@ export interface LevelDef {
   pressureSpendCap: { formula: string };
   pressureSpendCapOverride: number | null;
   startingPressure?: number;
+  /** false = unused cards create no Pressure on this level (tutorial levels). Defaults to true. */
+  pressureEnabled?: boolean;
   maxSpawnsPerTurn: number;
   enemyPool: string[];
   nuisancePool: string[];

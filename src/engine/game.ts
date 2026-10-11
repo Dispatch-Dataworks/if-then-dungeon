@@ -151,7 +151,7 @@ export function playTurn(game: Game, drafts: RowDraft[], opts: { loops?: number[
   // Turn end: unplaced cards become Threat, then Pressure spawns enemies.
   const placed = new Set(drafts.flatMap(rowCardIds));
   const unplaced = s.hand.filter((c) => !placed.has(c.instanceId));
-  result.threat = unplaced.reduce((sum, c) => sum + threatOf(c.cardId), 0);
+  result.threat = levelOf(s).pressureEnabled === false ? 0 : unplaced.reduce((sum, c) => sum + threatOf(c.cardId), 0);
   s.pressure += result.threat;
   s.log = [];
   if (simulate) {
@@ -287,7 +287,7 @@ export function spawnFromPressure(s: GameState): string[] {
     spawned.push(typeId);
   }
   // Pressure always manifests: a nuisance spawn if nothing was affordable.
-  if (!spawned.length && s.pressure > 0 && s.pressure < cheapest && s.enemies.length < boardCap) {
+  if (!spawned.length && s.pressure > 0 && s.pressure < cheapest && s.enemies.length < boardCap && level.nuisancePool.length) {
     const points = freePoints();
     if (points.length) {
       const typeId = level.nuisancePool[Math.floor(salt("nuisance") * level.nuisancePool.length)]!;

@@ -130,6 +130,14 @@ function stepToward(state: GameState, target: Vec): boolean {
   return moveForward(state, 1);
 }
 
+/** The enemy that matters most right now: an adjacent one, otherwise the nearest visible one. */
+function nearestThreat(state: GameState): EnemyState | undefined {
+  const h = state.hero;
+  const byDistance = (a: EnemyState, b: EnemyState) => manhattan(a.pos, h.pos) - manhattan(b.pos, h.pos);
+  const adjacent = state.enemies.filter((e) => manhattan(e.pos, h.pos) === 1).sort(byDistance)[0];
+  return adjacent ?? visibleEnemies(state).sort(byDistance)[0];
+}
+
 function stepAwayFrom(state: GameState, threat: Vec): boolean {
   const options = DIRS.map((d) => ({ d, p: add(state.hero.pos, d) }))
     .filter(({ p }) => open(state, p) && !hazardous(state, p))
@@ -349,6 +357,43 @@ export function performAction(state: GameState, cardId: string) {
       return void enterTile(state, to);
     }
     case "step_aside_nearest_open": return void stepAside(state);
+    case "turn_to_open": {
+      // Goal-directed turning for beginners: keep facing if the way is open, else right, left, around.
+      if (open(state, forwardOf(state))) return emit(state, "info", "The way ahead is open: keep facing.", h.pos);
+      const d = rotationOrder(state).find((dir) => open(state, add(h.pos, dir)));
+      if (!d) return fail(state, "No open path in any direction.");
+      h.facing = d;
+      return emit(state, "turn", `Turned toward the open path (${d}).`, h.pos);
+    }
+    case "follow_right_wall": {
+      // The right-hand rule, a classic maze-solving algorithm (left-hand while cursed).
+      const [side, other] = cursed(state) ? [left(h.facing), right(h.facing)] : [right(h.facing), left(h.facing)];
+      const step = [side, h.facing, other].find((dir) => open(state, add(h.pos, dir)));
+      if (!step) {
+        h.facing = back(h.facing);
+        return emit(state, "turn", "Dead end: the hero turns around.", h.pos);
+      }
+      h.facing = step;
+      return void moveForward(state, 1);
+    }
+    case "face_enemy": {
+      const target = nearestThreat(state);
+      if (!target) return fail(state, "No enemy in sight to face.");
+      const dx = target.pos.x - h.pos.x, dy = target.pos.y - h.pos.y;
+      h.facing = Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? "E" : "W") : dy > 0 ? "S" : "N";
+      return emit(state, "turn", `The hero faces ${enemyName(target)}.`, h.pos);
+    }
+    case "flee": {
+      const target = nearestThreat(state);
+      if (!target) return fail(state, "Nothing to flee from.");
+      const options = DIRS.map((d) => ({ d, p: add(h.pos, d) }))
+        .filter(({ p }) => open(state, p) && !hazardous(state, p))
+        .sort((a, b) => manhattan(b.p, target.pos) - manhattan(a.p, target.pos));
+      const best = options[0];
+      if (!best || manhattan(best.p, target.pos) <= manhattan(h.pos, target.pos)) return fail(state, "Nowhere safer to run.");
+      h.facing = best.d;
+      return void moveForward(state, 1);
+    }
     case "buff":
       applyStatus(h.statuses, p.buff, (p.durationLoops ?? 1) + 1);
       return;

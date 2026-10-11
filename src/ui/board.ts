@@ -1,10 +1,29 @@
 /** Board renderer: a static tile grid plus an animated unit layer driven by GameState snapshots. */
-import { eq, type Vec } from "../engine/board";
+import { eq, type Dir, type Vec } from "../engine/board";
 import { key } from "../engine/content";
 import { boardOf, enemyName, isRevealed, trapAt, ventActive, type GameState } from "../engine/state";
 import { artUrl } from "./assets";
 import { h } from "./dom";
-import { DIR_WORD, modifierName, nameOf } from "./text";
+import { DIR_ARROW, DIR_WORD, modifierName, nameOf } from "./text";
+
+/** One predicted loop of a test run: where the hero ends up and what went wrong. */
+export interface GhostStep {
+  n: number;
+  pos: Vec;
+  facing: Dir;
+  fail: boolean;
+  hurt: number;
+}
+
+/** A test-run prediction drawn over the board. Never touches the real units. */
+export interface GhostPlan {
+  start: Vec;
+  steps: GhostStep[];
+  end: { pos: Vec; facing: Dir; fell: boolean; won: boolean };
+  enemies: { typeId: string; pos: Vec }[];
+}
+
+const SVG_NS = "http://www.w3.org/2000/svg";
 
 const art = (id: string, cls = "tile__art") => {
   const url = artUrl(id);
@@ -20,6 +39,7 @@ export class BoardView {
   private readonly dyn: HTMLElement[] = [];
   private readonly units: HTMLElement;
   private readonly fx: HTMLElement;
+  private readonly ghost: HTMLElement;
   private readonly cursorEl: HTMLElement;
   private readonly unitEls = new Map<string, HTMLElement>();
   private readonly width: number;
@@ -46,6 +66,7 @@ export class BoardView {
     }
     this.units = h("div", { class: "board__units", "aria-hidden": "true" });
     this.fx = h("div", { class: "board__fx", "aria-hidden": "true" });
+    this.ghost = h("div", { class: "board__ghost", "aria-hidden": "true", hidden: true });
     this.cursorEl = h("div", { class: "board__cursor", hidden: true });
     this.el = h("div", {
       class: "board",
@@ -55,7 +76,7 @@ export class BoardView {
       style: `--cols:${board.width};--rows:${board.height}`,
       onkeydown: (ev: KeyboardEvent) => this.onKey(ev),
       onfocus: () => { if (!this.cursor) this.select(this.state.hero.pos, true); },
-    }, this.grid, this.units, this.fx, this.cursorEl);
+    }, this.grid, this.units, this.ghost, this.fx, this.cursorEl);
     this.render(state, 0);
   }
 
@@ -180,6 +201,58 @@ export class BoardView {
       el.classList.add("is-gone");
       setTimeout(() => el.remove(), 400);
     }
+  }
+
+  /** Draw (or clear, with null) the test-run prediction: path, numbered loop markers, problems and the end spot. */
+  showGhost(plan: GhostPlan | null) {
+    this.el.classList.toggle("has-ghost", !!plan);
+    this.ghost.hidden = !plan;
+    if (!plan) {
+      this.ghost.replaceChildren();
+      return;
+    }
+    const cell = (p: Vec, cls: string, ...kids: (HTMLElement | string)[]) =>
+      h("div", { class: `ghost ${cls}`, style: `left:${(p.x / this.width) * 100}%;top:${(p.y / this.height) * 100}%` }, ...kids);
+    const parts: Element[] = [];
+
+    // The path: a dashed line through every tile the hero visits.
+    const pts = [plan.start, ...plan.steps.map((s) => s.pos)].filter((p, i, a) => i === 0 || !eq(p, a[i - 1]!));
+    if (pts.length > 1) {
+      const svg = document.createElementNS(SVG_NS, "svg");
+      svg.setAttribute("class", "ghost-path");
+      svg.setAttribute("viewBox", `0 0 ${this.width} ${this.height}`);
+      svg.setAttribute("preserveAspectRatio", "none");
+      const line = document.createElementNS(SVG_NS, "polyline");
+      line.setAttribute("points", pts.map((p) => `${p.x + 0.5},${p.y + 0.5}`).join(" "));
+      svg.appendChild(line);
+      parts.push(svg);
+    }
+
+    for (const e of plan.enemies) parts.push(cell(e.pos, "ghost-enemy", h("span", { class: "ghost-enemy__art" }, art(e.typeId, "unit__art") ?? ""), h("span", { class: "ghost-enemy__tag" }, "?")));
+
+    // Numbered loop markers, grouped per tile ("1→ 2↓"), with ✗ for a failed action and ♥ for damage.
+    const byTile = new Map<string, GhostStep[]>();
+    for (const st of plan.steps) {
+      const k = key(st.pos);
+      byTile.set(k, [...(byTile.get(k) ?? []), st]);
+    }
+    for (const steps of byTile.values()) {
+      const shown = steps.length > 3 ? [steps[0]!, null, ...steps.slice(-2)] : steps;
+      const label = shown.map((st) => (st ? `${st.n}${DIR_ARROW[st.facing]}` : "…")).join(" ");
+      const fail = steps.some((st) => st.fail);
+      const hurt = steps.reduce((sum, st) => sum + st.hurt, 0);
+      parts.push(cell(steps[0]!.pos, `ghost-step${fail ? " is-fail" : ""}${hurt ? " is-hurt" : ""}`,
+        h("span", { class: "ghost-step__num" }, label),
+        fail ? h("span", { class: "ghost-step__bad ghost-step__bad--fail" }, "✗") : "",
+        hurt ? h("span", { class: "ghost-step__bad ghost-step__bad--hurt" }, `♥−${hurt}`) : ""));
+    }
+
+    const end = plan.end;
+    parts.push(cell(end.pos, `ghost-end${end.fell ? " is-fell" : ""}${end.won ? " is-won" : ""}`,
+      h("span", { class: "ghost-end__ring" }),
+      h("span", { class: "ghost-end__arrow", "data-facing": end.facing }, "▲"),
+      h("span", { class: "ghost-end__tag" }, end.fell ? "✗ falls" : end.won ? "EXIT!" : "END")));
+    this.ghost.replaceChildren(...parts);
   }
 
   /** A floating number or word over a tile (damage, heal, blocked). */

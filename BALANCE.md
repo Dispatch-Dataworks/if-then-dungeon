@@ -53,6 +53,16 @@ Metrics: **1st try** = cleared with the first 3 lives; **cleared** = cleared wit
 
 By hero (all levels): Swordsman 84% / Rogue 85% / Shieldbearer 72% / Archer 69% first try. The Archer is meant to be the fragile, skill-heavy pick.
 
+## Beginner-friendly early game
+
+Playtesting showed Level 1 was hard for a person even though the bot cleared it 97% of the time: the bot previews its plans, people can't. Changes:
+- **Test run** in the UI predicts the path for chosen dice rolls before committing (the same kind of preview the bot uses).
+- **Every row shows its "Otherwise"** (ELSE action or the hero's default).
+- **Level 1 is walking only**, with no enemies and no Pressure (`pressureEnabled: false`); combat moves to Level 2, the Knight and Turn Around to Level 3.
+- **Beginner cards** (Turn to Open Path, Follow Right Wall, Face Enemy, Flee) are common in Levels 1–6, halved at Level 7 and gone from Level 10. Keeping them later clogged mid-game hands: with them, Level 12 fell from 39% to 25% first-try clears (16 seeds).
+
+Starter heroes, first try, after the change (8 seeds): L1 100%, L2 100%, L3 97%, L4 97%, L5 72%, L6 84%. Levels 7–24 average 72% (73% before), so the rest of the curve is unchanged within noise.
+
 ## Advanced heroes
 
 Each advanced hero was run (8 seeds) on every level after it unlocks, and compared with the starter heroes on the same levels (`scripts/sim-advanced.sh`). Hero upgrades are not simulated yet; these are base heroes.

@@ -380,16 +380,17 @@ button.chip:hover { box-shadow: 0 0 8px color-mix(in srgb, var(--card-color) 60%
 .row {
   display: grid; gap: 6px 10px; align-items: center;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  grid-template-areas: "head sentence ctl" "status status status";
+  grid-template-areas: "head sentence ctl" "other other other" "status status status";
 }
 .row__head { grid-area: head; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 64px; }
 .rows--locked .row__head { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 6px; }
 .row .sentence { grid-area: sentence; }
 .row__ctl { grid-area: ctl; }
 .row__status { grid-area: status; }
-.rows--locked .row { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "sentence" "status"; }
+.row__otherwise { grid-area: other; }
+.rows--locked .row { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "sentence" "other" "status"; }
 @media (max-width: 600px) {
-  .row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "head ctl" "sentence sentence" "status status"; }
+  .row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "head ctl" "sentence sentence" "other other" "status status"; }
   .row__head { flex-direction: row; align-items: center; gap: 8px; }
 }
 .row__num { font-weight: 800; font-family: var(--font-head); }
@@ -407,6 +408,11 @@ button.chip:hover { box-shadow: 0 0 8px color-mix(in srgb, var(--card-color) 60%
 .slot { display: inline-flex; flex-wrap: wrap; gap: 4px; align-items: center; border-radius: 10px; }
 .slot.is-fired { outline: 3px solid var(--torch); outline-offset: 2px; }
 .slot--empty { min-height: 44px; min-width: 84px; padding: 4px 10px; border: 2px dashed var(--stone-mid); color: var(--text-muted); font-style: italic; font-size: 0.875rem; justify-content: center; }
+.row__otherwise { margin: 0; padding-left: 10px; border-left: 3px dotted var(--stone-mid); font-size: 0.85rem; color: var(--text-muted); }
+.row__otherwise-label { font-family: var(--font-mono); font-weight: 700; }
+.row__otherwise-tag { font-style: italic; }
+.row__otherwise.is-fired { color: var(--text); border-left: 3px solid var(--torch); }
+.row__otherwise.is-fired .row__otherwise-label::before { content: "▶ "; color: var(--torch); }
 .row__status { display: flex; align-items: flex-start; gap: 6px; margin: 0; font-size: 0.875rem; }
 .row__status.ok .glyph { color: var(--true); }
 .row__status.bad { color: var(--text); }
@@ -421,8 +427,75 @@ button.chip:hover { box-shadow: 0 0 8px color-mix(in srgb, var(--card-color) 60%
 .threat-note { display: flex; gap: 6px; align-items: center; margin: 0; font-size: 0.9rem; }
 .threat-note .glyph { color: var(--true); }
 .threat-note.has-threat .glyph { color: var(--torch-deep); }
+.threat-note--off .glyph { color: var(--true); }
+.note--calm { border-left-color: var(--true); }
+.roll-bar__btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.roll-bar__btns .roll { flex: 1 1 auto; }
+.test-run.is-on { border-color: var(--rune-cyan); background: var(--stone-mid); }
 .roll { font-size: 1.1rem; }
 .roll-why { font-size: 0.85rem; color: var(--text-muted); margin: 0; }
+
+/* ---------- test run (preview) ---------- */
+.preview { margin-top: 12px; border-color: var(--rune-cyan); border-style: dashed; }
+.preview__head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.preview__head h2 { display: inline-flex; align-items: center; gap: 6px; margin: 0; color: var(--rune-cyan); }
+.whatif { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 4px 0 12px; }
+.whatif__row { display: inline-flex; align-items: center; gap: 6px; }
+.whatif__label { font-weight: 800; font-family: var(--font-head); min-width: 3.6em; }
+.whatif .icon-btn { font: 800 1.2rem/1 var(--font-body); }
+.preview__summary h3 { color: var(--text); }
+.preview__rows { margin: 0 0 8px; padding-left: 0; list-style: none; display: grid; gap: 4px; font-size: 0.9rem; }
+.preview__rows li.is-skipped { color: var(--text-muted); font-style: italic; }
+.pv-true, .pv-false { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; white-space: nowrap; }
+.pv-true { color: var(--true); }
+.pv-false { color: var(--false); }
+.preview__facts { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 4px; }
+.preview__facts li { display: flex; gap: 6px; align-items: baseline; }
+.preview__facts .glyph { color: var(--parchment-light); }
+.preview__facts .is-good .glyph { color: var(--true); }
+.preview__facts .is-bad .glyph { color: var(--false); }
+.preview__facts .is-bad { font-weight: 600; }
+.preview__problem { display: flex; gap: 6px; align-items: baseline; }
+.preview__problem .glyph { color: var(--false); }
+.preview__note { font-size: 0.85rem; margin: 0; }
+
+.board__ghost { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.board.has-ghost .unit--hero { opacity: 0.85; }
+.ghost-path { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.ghost-path polyline { fill: none; stroke: var(--rune-cyan); stroke-width: 3px; stroke-dasharray: 6 5; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; opacity: 0.8; }
+.ghost { position: absolute; width: calc(100% / var(--cols)); height: calc(100% / var(--rows)); }
+.ghost-step__num {
+  position: absolute; left: 1px; bottom: 1px; max-width: calc(100% - 2px); overflow: hidden; white-space: nowrap;
+  padding: 0 3px; border-radius: 4px; border: 1px solid var(--rune-cyan);
+  background: color-mix(in srgb, var(--stone-deep) 85%, transparent); color: var(--rune-cyan);
+  font: 800 clamp(9px, 2.3cqi, 15px)/1.25 var(--font-mono);
+}
+.ghost-step.is-fail .ghost-step__num, .ghost-step.is-hurt .ghost-step__num { border-color: var(--false); border-style: dashed; }
+.ghost-step__bad {
+  position: absolute; right: 1px; top: 1px; padding: 0 3px; border-radius: 4px;
+  background: var(--stone-deep); color: var(--false); border: 1px solid var(--false);
+  font: 800 clamp(9px, 2.2cqi, 15px)/1.2 var(--font-body);
+}
+.ghost-step__bad--hurt { top: auto; bottom: calc(1px + clamp(9px, 2.3cqi, 15px) * 1.25 + 4px); }
+.ghost-step.is-fail.is-hurt .ghost-step__bad--hurt { right: auto; left: 1px; top: 1px; bottom: auto; }
+.ghost-end__ring { position: absolute; inset: 6%; border-radius: 50%; border: 3px dashed var(--rune-cyan); box-shadow: 0 0 10px var(--rune-cyan); }
+.ghost-end.is-fell .ghost-end__ring { border-color: var(--false); box-shadow: 0 0 10px var(--false); }
+.ghost-end.is-won .ghost-end__ring { border-color: var(--true); border-style: double; box-shadow: 0 0 10px var(--true); }
+.ghost-end__arrow { position: absolute; inset: 0; display: grid; place-items: center; color: var(--rune-cyan); font-size: clamp(12px, 3.6cqi, 30px); text-shadow: 0 0 3px var(--stone-deep), 0 0 3px var(--stone-deep); opacity: 0.9; }
+.ghost-end__arrow[data-facing="E"] { transform: rotate(90deg); }
+.ghost-end__arrow[data-facing="S"] { transform: rotate(180deg); }
+.ghost-end__arrow[data-facing="W"] { transform: rotate(270deg); }
+.ghost-end.is-fell .ghost-end__arrow { color: var(--false); }
+.ghost-end__tag {
+  position: absolute; left: 50%; top: -2px; transform: translate(-50%, 0); white-space: nowrap;
+  padding: 0 4px; border-radius: 4px; background: var(--rune-cyan); color: var(--stone-deep);
+  font: 800 clamp(7px, 1.5cqi, 11px)/1.3 var(--font-body);
+}
+.ghost-end.is-fell .ghost-end__tag { background: var(--false); }
+.ghost-end.is-won .ghost-end__tag { background: var(--true); }
+.ghost-enemy { opacity: 0.45; }
+.ghost-enemy__art { position: absolute; inset: 14%; overflow: hidden; border-radius: 4px; border: 2px dashed var(--false); }
+.ghost-enemy__tag { position: absolute; right: 2px; top: 2px; color: var(--false); font: 800 clamp(8px, 1.6cqi, 12px)/1 var(--font-body); }
 
 /* ---------- playback ---------- */
 .caption { font-weight: 700; min-height: 1.5em; }
@@ -470,6 +543,8 @@ button.chip:hover { box-shadow: 0 0 8px color-mix(in srgb, var(--card-color) 60%
   .roll-bar { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 4px 8px; padding-top: 6px; }
   .roll-bar .threat-note { font-size: 0.8rem; }
   .roll-bar .roll-why { grid-column: 1 / -1; font-size: 0.75rem; }
+  .roll-bar .threat-note, .roll-bar__btns { grid-column: 1 / -1; }
+  .whatif { gap: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

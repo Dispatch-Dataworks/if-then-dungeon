@@ -21,6 +21,15 @@
 - Precedence: NOT > AND > OR
 - No parentheses (v0.1)
 
+## Beginner actions (goal-directed)
+These act on the player's intent, so they behave predictably without mental rotation:
+- **Turn to Open Path** (`A_TURN_OPEN`): keep facing if the way ahead is open; otherwise turn right, else left, else around. Turns only.
+- **Follow Right Wall** (`A_FOLLOW_WALL`): the right-hand rule, a real maze-solving algorithm. Right open: turn right and step; else forward; else turn left and step; else turn around.
+- **Face Enemy** (`A_FACE_ENEMY`): turn toward the nearest adjacent enemy, else the nearest visible one.
+- **Flee** (`A_FLEE`): step to the open, safe neighbouring tile farthest from the nearest enemy.
+
+They are plentiful early, halved at Level 7 and gone from Level 10 (see `08-levels-and-progression.md`).
+
 ## Validity (UI enforced)
 A row is valid if:
 - it has a parseable predicate

@@ -9,7 +9,7 @@
       "tier": "starter",
       "unlockAfterLevel": 0,
       "baseStats": {"hp": 10, "armor": 1, "speedTiles": 1, "sightRange": 3},
-      "defaultBehavior": {"key": "forward_or_rotate_clockwise", "text": "Move forward 1. If blocked, rotate clockwise to the nearest open tile and move; otherwise wait."},
+      "defaultBehavior": {"key": "forward_or_rotate_clockwise", "text": "Move forward 1. If blocked, turn right (or left, or around) toward the open way and move."},
       "heroAttack": {"name": "Slash", "key": "melee", "damage": 2, "range": 1, "bonus": {"vsTag": "swarm", "damageAdd": 1}},
       "upgrades": [
         {"id": "U_CLEAVE", "name": "Cleave", "unlockAfterLevelsClearedWithHero": 2, "effect": "Slash also hits an enemy standing directly behind the target."},
@@ -51,7 +51,7 @@
       "tier": "starter",
       "unlockAfterLevel": 0,
       "baseStats": {"hp": 7, "armor": 0, "speedTiles": 2, "sightRange": 4},
-      "defaultBehavior": {"key": "sidestep_hazard_else_forward", "text": "If a hazard is ahead, sidestep to the first safe open tile (clockwise); else move forward."},
+      "defaultBehavior": {"key": "sidestep_hazard_else_forward", "text": "If a hazard is ahead, sidestep to a safe tile (right first); else move forward."},
       "heroAttack": {"name": "Stab", "key": "melee", "damage": 2, "range": 1, "bonus": {"vsStatus": ["slowed", "snare_root", "stun"], "vsUnaware": true, "damageAdd": 2}},
       "upgrades": [
         {"id": "U_SMOKE_STEP", "name": "Smoke Step", "unlockAfterLevelsClearedWithHero": 2, "effect": "+1 sight, and smoke doesn't reduce it."},
@@ -79,7 +79,7 @@
       "tier": "advanced",
       "unlockAfterLevel": 6,
       "baseStats": {"hp": 9, "armor": 1, "speedTiles": 1, "sightRange": 3},
-      "defaultBehavior": {"key": "forward_fluid_turns", "text": "Move forward; if blocked, turn toward the first open direction clockwise and move in the same loop."},
+      "defaultBehavior": {"key": "forward_fluid_turns", "text": "Move forward; if blocked, turn right (or left, or around) and move in the same loop."},
       "heroAttack": {"name": "Focused Strike", "key": "melee", "damage": 2, "range": 1, "statusOnHit": {"status": "stun", "chancePercent": 25}},
       "upgrades": [
         {"id": "U_VENT_MASTERY", "name": "Vent Mastery", "unlockAfterLevelsClearedWithHero": 2, "effect": "Vents never hurt you, and +2 max HP."},

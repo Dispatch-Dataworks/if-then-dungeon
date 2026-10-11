@@ -34,7 +34,7 @@ export function cardEl(cardId: string, opts: CardOpts = {}): HTMLElement {
     h("span", { class: "card__name" }, glyph(c.type), h("span", null, c.name)),
     opts.showThreat !== false ? threatPips(threatOf(cardId)) : null,
   ];
-  const label = `${c.name}, ${TYPE_LABEL[c.type]}. ${cardText(cardId, opts.heroId)} Threat ${threatOf(cardId)}.${opts.hint ? ` ${opts.hint}` : ""}`;
+  const label = `${c.name}, ${TYPE_LABEL[c.type]}. ${cardText(cardId, opts.heroId)} ${opts.showThreat !== false ? `Threat ${threatOf(cardId)}.` : ""}${opts.hint ? ` ${opts.hint}` : ""}`;
   const cls = `card ${typeClass(cardId)}${opts.selected ? " is-selected" : ""}`;
   if (!opts.onClick) return h("div", { class: cls, title: cardText(cardId, opts.heroId) }, body);
   return h("button", {

@@ -141,9 +141,11 @@ export function describeTile(state: GameState, p: Vec): InfoEntry[] {
 }
 
 /** Description of any content ID for the "What's new" panel. */
-export function entryFor(id: string, heroId: string): InfoEntry {
+export function entryFor(id: string, heroId: string, pressure = true): InfoEntry {
   const card = CARDS[id];
-  if (card) return { artId: id, title: card.name, kind: `${TYPE_LABEL[card.type]} card`, lines: [cardText(id, heroId), threatLine(id)] };
+  if (card) {
+    return { artId: id, title: card.name, kind: `${TYPE_LABEL[card.type]} card`, lines: pressure ? [cardText(id, heroId), threatLine(id)] : [cardText(id, heroId)] };
+  }
   const enemy = ENEMIES[id];
   if (enemy) {
     return {

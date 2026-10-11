@@ -51,7 +51,7 @@ describe("game rules", () => {
   });
 
   it("unplaced cards become Threat; placed cards do not", () => {
-    const g = newGame(1, "H_SWORDSMAN", 3);
+    const g = newGame(2, "H_SWORDSMAN", 3);
     const row = simpleRow(g);
     const expected = g.state.hand
       .filter((c) => c.instanceId !== row.thenAction && !row.ifTokens.includes(c.instanceId))
@@ -69,7 +69,9 @@ describe("game rules", () => {
       uid: 99, typeId: "E_ORC_BRUTE", modifier: null, pos: { x: 2, y: 1 }, facing: "W", hp: 6, maxHp: 6,
       statuses: {}, ai: {}, movedThisLoop: false,
     });
-    const r = playTurn(g, [{ ifTokens: [find(g, "S_WALL_AHEAD") ?? simpleRow(g).ifTokens[0]!], thenAction: simpleRow(g).thenAction }]);
+    // Stand still next to the brute: inject the cards so the row is the same on every seed.
+    g.state.hand.push({ instanceId: "t-s", cardId: "S_ENEMY_ADJACENT" }, { instanceId: "t-a", cardId: "A_WAIT" });
+    const r = playTurn(g, [{ ifTokens: ["t-s"], thenAction: "t-a" }]);
     expect(r.outcome).toBe("died");
     expect(g.state.lives).toBe(2);
     expect(g.state.hand.map((c) => c.instanceId)).toEqual(hand);

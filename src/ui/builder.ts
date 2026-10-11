@@ -6,12 +6,22 @@ import type { Predicate } from "../engine/rules/parse";
 import { parseRow, validateRows, type RowDraft } from "../engine/rules/rows";
 import { cardEl, chipEl } from "./cards";
 import { glyph, h, type Child } from "./dom";
+import { defaultShort } from "./text";
 
 export interface UiRow {
   ifTokens: string[];
   then?: string;
   elseCard?: string;
   elseAction?: string;
+  /** Test run only: the "what if the die rolls this" value for this row. */
+  whatIf?: number;
+}
+
+export interface BuilderOpts {
+  /** False on levels without Pressure: unused cards are safe, so no Threat messaging. */
+  pressure: boolean;
+  /** Called after every render, so the level can refresh the test-run preview. */
+  onRender?: () => void;
 }
 
 const emptyRow = (): UiRow => ({ ifTokens: [] });
@@ -21,6 +31,20 @@ const toDraft = (r: UiRow): RowDraft => ({
   ...(r.elseCard || r.elseAction ? { elseCard: r.elseCard, elseAction: r.elseAction } : {}),
 });
 const idsOf = (r: UiRow) => [...r.ifTokens, r.then, r.elseCard, r.elseAction].filter((x): x is string => !!x);
+
+/**
+ * The muted "Otherwise: …" line under a row: what happens when the IF is FALSE.
+ * `elseCardId` undefined = no ELSE (hero default); "" = ELSE placed but its action is still missing.
+ */
+export function otherwiseEl(heroId: string, elseCardId: string | undefined, fired = false): HTMLElement {
+  const full = "When the IF is FALSE";
+  if (elseCardId === undefined) {
+    return h("p", { class: `row__otherwise${fired ? " is-fired" : ""}`, title: `${full} and there is no ELSE, the hero does its default behavior.` },
+      h("span", { class: "row__otherwise-label" }, "Otherwise: "), defaultShort(heroId), h("span", { class: "row__otherwise-tag" }, " (default)"));
+  }
+  return h("p", { class: `row__otherwise${fired ? " is-fired" : ""}`, title: `${full}, the hero does the ELSE action.` },
+    h("span", { class: "row__otherwise-label" }, "Otherwise: "), elseCardId ? CARDS[elseCardId]?.name ?? elseCardId : "the ELSE action (add one)");
+}
 
 /** Shows how the predicate is grouped: NOT > AND > OR. `A OR B AND NOT C` reads `A OR (B AND (NOT C))`. */
 export function groupedPredicate(p: Predicate, nested = false): HTMLElement {
@@ -42,6 +66,8 @@ export class RowBuilder {
   rows: UiRow[] = [emptyRow()];
   active = 0;
   message = "";
+  /** Test run (preview) is showing. */
+  testRun = false;
   private focusAfter: (() => void) | null = null;
   readonly el = h("section", { class: "panel builder", "aria-labelledby": "build-title" });
 
@@ -49,12 +75,14 @@ export class RowBuilder {
     private readonly hand: () => CardInstance[],
     private readonly heroId: string,
     private readonly onRoll: (drafts: RowDraft[]) => void,
+    private readonly opts: BuilderOpts = { pressure: true },
   ) {}
 
   reset() {
     this.rows = [emptyRow()];
     this.active = 0;
     this.message = "";
+    this.testRun = false;
   }
 
   /** After a retry the hand may differ (exchanges): drop cards that are no longer held, keep the rest. */
@@ -65,6 +93,7 @@ export class RowBuilder {
       then: r.then && held.has(r.then) ? r.then : undefined,
       elseCard: r.elseCard && held.has(r.elseCard) ? r.elseCard : undefined,
       elseAction: r.elseAction && held.has(r.elseAction) ? r.elseAction : undefined,
+      whatIf: r.whatIf,
     })).filter((r) => idsOf(r).length > 0);
     if (!this.rows.length) this.rows = [emptyRow()];
     this.active = Math.min(this.active, this.rows.length - 1);
@@ -129,6 +158,11 @@ export class RowBuilder {
     this.message = "";
   }
 
+  setTestRun(on: boolean, focus?: () => void) {
+    this.testRun = on;
+    this.change(focus);
+  }
+
   private change(focus?: () => void) {
     this.focusAfter = focus ?? null;
     this.render();
@@ -137,20 +171,22 @@ export class RowBuilder {
   render(): HTMLElement {
     const v = this.validation();
     const hand = this.unplaced();
-    const threat = this.unplacedThreat();
+    const pressure = this.opts.pressure;
+    const threat = pressure ? this.unplacedThreat() : 0;
     const rowsEl = h("ol", { class: "rows" }, this.rows.map((r, i) => this.rowEl(r, i, v.perRow[i]!)));
     const handEl = h("div", { class: "hand", role: "group", "aria-label": "Cards in your hand" },
       hand.length
         ? hand.map((c, idx) => cardEl(c.cardId, {
             heroId: this.heroId,
             instanceId: c.instanceId,
+            showThreat: pressure,
             hint: `Places it into row ${this.active + 1}.`,
             onClick: () => {
               this.place(c.instanceId);
               this.change(() => (this.el.querySelectorAll<HTMLElement>(".hand .card")[idx] ?? this.el.querySelectorAll<HTMLElement>(".hand .card")[idx - 1] ?? this.el.querySelector<HTMLElement>(".row.is-active"))?.focus());
             },
           }))
-        : h("p", { class: "muted" }, "Every card is placed. No Pressure this turn!"));
+        : h("p", { class: "muted" }, pressure ? "Every card is placed. No Pressure this turn!" : "Every card is placed."));
 
     const blocker = v.ok ? "" : v.errors[0] ?? "";
     this.el.replaceChildren(
@@ -166,20 +202,32 @@ export class RowBuilder {
       h("h3", null, `Your hand (${hand.length} unplaced)`),
       handEl,
       h("div", { class: "roll-bar" },
-        h("p", { class: `threat-note${threat ? " has-threat" : ""}` }, glyph("flame"),
-          threat ? ` Unplaced cards will add ${threat} Pressure at the end of the turn.` : " All cards placed: no new Pressure."),
-        h("button", {
-          type: "button",
-          class: "btn btn--primary roll",
-          disabled: !v.ok,
-          "aria-describedby": "roll-why",
-          onclick: () => v.ok && this.onRoll(this.drafts()),
-        }, "Roll & Lock"),
+        pressure
+          ? h("p", { class: `threat-note${threat ? " has-threat" : ""}` }, glyph("flame"),
+              threat ? ` Unplaced cards will add ${threat} Pressure at the end of the turn.` : " All cards placed: no new Pressure.")
+          : h("p", { class: "threat-note threat-note--off" }, glyph("check"), " No Pressure on this level: unused cards are safe."),
+        h("div", { class: "roll-bar__btns" },
+          h("button", {
+            type: "button",
+            class: `btn test-run${this.testRun ? " is-on" : ""}`,
+            "aria-pressed": String(this.testRun),
+            disabled: !v.ok && !this.testRun,
+            title: "See what your rows would do for the rolls you choose. Nothing is used up.",
+            onclick: () => this.setTestRun(!this.testRun, () => this.el.querySelector<HTMLElement>(".test-run")?.focus()),
+          }, glyph(this.testRun ? "close" : "sensor"), this.testRun ? " Hide test run" : " Test run"),
+          h("button", {
+            type: "button",
+            class: "btn btn--primary roll",
+            disabled: !v.ok,
+            "aria-describedby": "roll-why",
+            onclick: () => v.ok && this.onRoll(this.drafts()),
+          }, "Roll & Lock")),
         h("p", { id: "roll-why", class: "roll-why" }, v.ok ? "All rows are valid. Ready to roll!" : `Can't roll yet: ${blocker}`)),
     );
     const f = this.focusAfter;
     this.focusAfter = null;
     if (f) f();
+    this.opts.onRender?.();
     return this.el;
   }
 
@@ -223,6 +271,7 @@ export class RowBuilder {
         h("span", { class: "kw kw--then" }, "THEN"),
         slot(r.then ? chip(r.then) : null, "action…"),
         r.elseCard ? [chip(r.elseCard), slot(r.elseAction ? chip(r.elseAction) : null, "action…")] : null),
+      otherwiseEl(this.heroId, r.elseCard ? (r.elseAction ? this.cardOf(r.elseAction) : "") : undefined),
       h("p", { class: `row__status ${ok ? "ok" : "bad"}` },
         glyph(ok ? "check" : "cross"),
         ok ? h("span", null, "Valid.", check.predicate && check.predicate.kind !== "sensor" ? [" Reads as: ", h("span", { class: "grouped" }, groupedPredicate(check.predicate))] : null) : h("span", null, errorText)),
