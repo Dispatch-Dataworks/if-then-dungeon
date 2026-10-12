@@ -28,6 +28,9 @@ scene) that still needs cropping before it can go on a card.
 | H_RANGER | `heroes/H_RANGER.webp` | + attack, hide, track |
 | H_HUNTER | `heroes/H_HUNTER.webp` (+ alt-stone-cover) | + attack, aim, hide |
 
+Girl looks: `heroes/<ID>--f.webp` for all 12 heroes (single front pose, the
+Flow input used for that hero's girl card loop).
+
 ## Enemies — all 13 covered
 
 | ID | File |
