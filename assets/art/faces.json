@@ -1,4 +1,5 @@
 {
   "_doc": "Face crop for small round portraits: [centre x %, centre y %, square size as % of image height] within card.webp.",
-  "H_SWORDSMAN": [47.5, 33, 44]
+  "H_SWORDSMAN": [47.5, 33, 44],
+  "H_ARCHER": [49.5, 32, 44]
 }
