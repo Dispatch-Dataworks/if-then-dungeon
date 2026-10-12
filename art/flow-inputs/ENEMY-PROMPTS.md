@@ -9,9 +9,8 @@ Enemies get the same calm idle loop as heroes, but a touch more menace: they loo
 toward the viewer, and each background hints at where that enemy lives. Kept
 PG for ages 10–15: no blood, no gore, nothing jump-scary.
 
-Not covered yet: **Rat Swarm** and **Orc Brute** have no concept art. The
-`unassigned-bugbear-thug` sheet has a prompt at the end in case you want it to
-stand in for the Orc Brute.
+All 13 enemies are covered. The `unassigned-bugbear-thug` prompt at the end is
+optional and no longer needed for the Orc Brute.
 
 ---
 
@@ -83,10 +82,24 @@ Animate the character from the reference image as a seamlessly looping idle anim
 
 ---
 
-### (Optional) unassigned-bugbear-thug — stand-in for Orc Brute
+### E_RAT_SWARM — Rat Swarm
 
-Only if you want the bugbear to be the Orc Brute. Otherwise skip it and we
-generate a proper grey-green orc with a cleaver later.
+```
+Animate the character from the reference image as a seamlessly looping idle animation for a fantasy game card. Keep the exact design, colors, proportions and cute chibi style. A rat swarm: a tight heap of six to eight grey rats with pink ears, long pink tails and beady red eyes, piled together as one group, facing the camera. The swarm is centered in the frame, the whole pile visible with clear space above the tails and below the paws. Idle motion: the pile constantly wriggles, rats shuffle and swap places, noses sniff and whiskers twitch, tails curl and flick, one rat pops its head up and ducks back down. Background: a flooded sewer tunnel with dripping brick arches and murky water, softly out of focus, sickly green glow and dim torchlight. Static camera, no zoom, no pan, no cuts. Subtle motion only; the final frame matches the first frame. Cheeky, not gross; no gore. No text, no UI, no extra characters.
+```
+
+### E_ORC_BRUTE — Orc Brute
+
+```
+Animate the character from the reference image as a seamlessly looping idle animation for a fantasy game card. Keep the character's exact design, colors, proportions and cute chibi style. A huge bulky grey-green orc brute with a black topknot, small tusks and a scowl, oversized spiked iron shoulder plates over a bare chest with a leather harness and round iron buckle, wrapped forearms, a ragged brown loincloth and heavy boots, holding a big chipped iron cleaver low in one hand. The orc stands centered in the frame, facing the camera, full body visible with clear space above the topknot and below the boots. Idle motion: heavy slow breathing with the chest and shoulders rising, shifts weight from one foot to the other with a small thud and a puff of dust, grips the cleaver tighter, a low grunt, the topknot sways. Background: an orc arena pit ringed by iron bars and red banners, softly out of focus, warm torchlight with a red tint. Static camera, no zoom, no pan, no cuts. Subtle motion only; the final frame matches the first frame. No text, no UI, no extra characters.
+```
+
+---
+
+### (Optional) unassigned-bugbear-thug — spare
+
+No longer needed now that the Orc Brute has its own sheet. Kept in case the
+bugbear becomes a new enemy later.
 
 ```
 Animate the character from the reference image as a seamlessly looping idle animation for a fantasy game card. Keep the character's exact design, colors, proportions and cute chibi style. A big shaggy brown bugbear thug with a lion-like mane, a leather harness with one steel pauldron, holding a heavy spiked wooden club. The brute stands centered in the frame, facing the camera, full body visible with clear space above the head and below the feet. Idle motion: heavy breathing, slaps the club into the open palm once, rolls the shoulders, a low growl, the mane ruffles. Background: an orc arena pit ringed by iron bars and red banners, softly out of focus, warm torchlight with a red tint. Static camera, no zoom, no pan, no cuts. Subtle motion only; the final frame matches the first frame. No text, no UI, no extra characters.
