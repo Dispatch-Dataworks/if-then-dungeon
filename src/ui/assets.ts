@@ -1,6 +1,7 @@
 /**
  * Art and character-sheet lookups by content ID. Placeholder images live in assets/placeholders/; final art lives in
- * assets/art/<ID>/ (card.webp still, optional card.mp4 loop) and is used wherever it exists. Everything is keyed by ID.
+ * assets/art/<ID>/ (card.webp still and optional card.mp4 loop for characters; tile.webp, plus tile-<state>.webp, for
+ * board tiles) and is used wherever it exists. Everything is keyed by ID.
  */
 import facesJson from "../../assets/art/faces.json";
 
@@ -8,6 +9,8 @@ const cardFiles = import.meta.glob("../../assets/placeholders/cards/*.svg", { ea
 const charFiles = import.meta.glob("../../assets/placeholders/characters/*.svg", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
 const stillFiles = import.meta.glob("../../assets/art/*/card.webp", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
 const videoFiles = import.meta.glob("../../assets/art/*/card.mp4", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
+const tileFiles = import.meta.glob("../../assets/art/*/tile*.webp", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
+const themeFiles = import.meta.glob("../../assets/themes/*.webp", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
 const sheetFiles = import.meta.glob("../../characters/*.md", { eager: true, query: "?raw", import: "default" }) as Record<string, string>;
 
 const byId = (files: Record<string, string>) =>
@@ -27,6 +30,25 @@ export interface RealArt {
   still: string;
   video?: string;
   face: [x: number, y: number, size: number];
+}
+
+const TILES = new Map(Object.entries(tileFiles).map(([path, url]) => {
+  const parts = path.split("/");
+  const state = parts.at(-1)!.replace(/^tile-?|\.webp$/g, "");
+  return [`${parts.at(-2)}${state ? `:${state}` : ""}`, url] as [string, string];
+}));
+
+const THEME_ART = new Map(Object.entries(themeFiles).map(([path, url]) => [path.split("/").pop()!.replace(/\.webp$/, ""), url]));
+
+/** CSS custom property carrying a theme's scene image (assets/themes/<theme id>.webp), or "" when it has none. */
+export const themeArtStyle = (themeId: string) => {
+  const url = THEME_ART.get(themeId);
+  return url ? `--theme-art:url("${url}");` : "";
+};
+
+/** Board-tile art for a trap, obstacle or mechanic (assets/art/<ID>/tile.webp; `state` picks tile-<state>.webp). */
+export function tileUrl(id: string, state?: string): string | undefined {
+  return (state && TILES.get(`${id}:${state}`)) || TILES.get(id);
 }
 
 /** Final art for an ID (or look key such as "H_ARCHER--f") from assets/art/<key>/, or undefined while it still uses a placeholder. */

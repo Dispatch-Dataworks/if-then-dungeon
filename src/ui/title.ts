@@ -5,6 +5,7 @@ import { hasSecondLook, heroArtKey, heroLook, toggleHeroLook } from "./looks";
 import { glyph, h, replace } from "./dom";
 import { openModal } from "./modal";
 import { heroLevelsCleared, heroUnlocked, heroUpgrades, levelUnlocked, progress, resetProgress, update } from "./progress";
+import { themeArtStyle } from "./assets";
 import { cardText, levelBlurb, THEMES } from "./text";
 
 /** The chosen hero's three upgrades: earned ones checked, the rest showing how many clears they need. */
@@ -59,9 +60,10 @@ export function showTitle(root: HTMLElement, startLevel: (levelId: number) => vo
       }));
     const chosen = HEROES[heroId]!;
     const cleared = new Set(p.cleared);
-    const levels = THEMES.map((t) => h("section", { class: "theme", style: `--theme-accent:${t.palette.accent};--theme-floor:${t.palette.floor}` },
-      h("h3", null, t.name),
-      h("p", { class: "theme__summary" }, t.summary),
+    const levels = THEMES.map((t) => h("section", { class: `theme${themeArtStyle(t.id) ? " has-art" : ""}`, style: `--theme-accent:${t.palette.accent};--theme-floor:${t.palette.floor};${themeArtStyle(t.id)}` },
+      h("div", { class: "theme__banner" },
+        h("h3", null, t.name),
+        h("p", { class: "theme__summary" }, t.summary)),
       h("ol", { class: "level-list" }, t.levels.map((id) => {
         const open = levelUnlocked(id);
         const done = cleared.has(id);

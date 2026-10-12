@@ -7,7 +7,7 @@ import {
 } from "../engine/game";
 import type { RowDraft } from "../engine/rules/rows";
 import { heroArmor, levelOf, type GameEvent, type GameState } from "../engine/state";
-import { artUrl } from "./assets";
+import { artUrl, themeArtStyle, tileUrl } from "./assets";
 import { BoardView, type GhostPlan } from "./board";
 import { groupedPredicate, otherwiseEl, RowBuilder } from "./builder";
 import { cardArtEl, cardEl, chipEl, portraitEl } from "./cards";
@@ -92,8 +92,8 @@ export class LevelScreen {
     const theme = themeOf(levelId);
     const level = getLevel(levelId);
     this.el = h("div", {
-      class: "screen level-screen",
-      style: `--theme-accent:${theme.palette.accent};--theme-floor:${theme.palette.floor};--theme-glow:${theme.palette.glow}`,
+      class: `screen level-screen${themeArtStyle(theme.id) ? " has-art" : ""}`,
+      style: `--theme-accent:${theme.palette.accent};--theme-floor:${theme.palette.floor};--theme-glow:${theme.palette.glow};${themeArtStyle(theme.id)}`,
     },
       h("header", { class: "topbar" },
         h("button", { type: "button", class: "btn btn--ghost", onclick: () => this.leave() }, "← Levels"),
@@ -727,6 +727,7 @@ export class LevelScreen {
       title: `What's new in Level ${this.levelId}`,
       className: "modal--intro",
       body: [
+        themeArtStyle(themeOf(this.levelId).id) ? h("div", { class: "intro-scene", style: themeArtStyle(themeOf(this.levelId).id), "aria-hidden": "true" }) : null,
         h("p", { class: "help" }, themeOf(this.levelId).summary),
         h("div", { class: "intro-grid" }, level.introduces.map((id) => infoCard(entryFor(id, this.heroId, pressureOn(this.levelId)), CARDS[id] ? "card" : "char"))),
       ],
@@ -759,11 +760,12 @@ export class LevelScreen {
 }
 
 function infoCard(e: InfoEntry, artKind: "card" | "char" = "char"): HTMLElement {
-  const url = e.artId ? artUrl(e.artId) : undefined;
+  const url = e.artId ? tileUrl(e.artId) ?? artUrl(e.artId) : undefined;
+  const fitted = !!(e.artId && tileUrl(e.artId));
   const enemy = e.kind?.startsWith("Enemy") ?? false;
   const real = e.artId && artKind === "char" ? cardArtEl(e.artId, "", `info-card__art${enemy ? " card-art--enemy" : ""}`) : null;
   return h("article", { class: "info-card" },
-    real ?? (url ? h("img", { class: `info-card__art info-card__art--${artKind}`, src: url, alt: "" }) : h("div", { class: "info-card__art info-card__art--none", "aria-hidden": "true" }, e.title.charAt(0))),
+    real ?? (url ? h("img", { class: `info-card__art info-card__art--${fitted ? "tile" : artKind}`, src: url, alt: "" }) : h("div", { class: "info-card__art info-card__art--none", "aria-hidden": "true" }, e.title.charAt(0))),
     h("div", { class: "info-card__body" },
       h("h3", null, e.title),
       e.kind ? h("p", { class: "info-card__kind" }, e.kind) : null,
