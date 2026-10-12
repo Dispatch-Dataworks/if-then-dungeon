@@ -4,6 +4,7 @@
 #
 #   scripts/encode-card.sh raw.mp4 H_SWORDSMAN [x-shift]
 #   PINGPONG=57 scripts/encode-card.sh raw.mp4 H_ARCHER
+#   FADE=1 scripts/encode-card.sh raw.mp4 H_ALCHEMIST     (longer crossfade for a clip that drifts further)
 #
 # By default the loop crossfades the clip's last FADE seconds into its start, so the cut is invisible. That needs
 # the clip to end near its starting pose. When it doesn't (or the end has glitches), PINGPONG=N plays source frames
@@ -11,7 +12,7 @@
 # x-shift moves the 5:4 crop window right (+) or left (-) in source pixels when the subject is off-centre.
 set -euo pipefail
 src=$1 id=$2 shift_x=${3:-0}
-FADE=0.5 CRF=24 PINGPONG=${PINGPONG:-}
+FADE=${FADE:-0.5} CRF=24 PINGPONG=${PINGPONG:-}
 out=assets/art/$id
 mkdir -p "$out"
 
