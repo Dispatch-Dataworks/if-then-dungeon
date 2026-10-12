@@ -7,7 +7,7 @@ import {
 } from "../engine/game";
 import type { RowDraft } from "../engine/rules/rows";
 import { heroArmor, levelOf, type GameEvent, type GameState } from "../engine/state";
-import { artUrl, tileUrl } from "./assets";
+import { artUrl, themeArtStyle, tileUrl } from "./assets";
 import { BoardView, type GhostPlan } from "./board";
 import { groupedPredicate, otherwiseEl, RowBuilder } from "./builder";
 import { cardArtEl, cardEl, chipEl, portraitEl } from "./cards";
@@ -92,8 +92,8 @@ export class LevelScreen {
     const theme = themeOf(levelId);
     const level = getLevel(levelId);
     this.el = h("div", {
-      class: "screen level-screen",
-      style: `--theme-accent:${theme.palette.accent};--theme-floor:${theme.palette.floor};--theme-glow:${theme.palette.glow}`,
+      class: `screen level-screen${themeArtStyle(theme.id) ? " has-art" : ""}`,
+      style: `--theme-accent:${theme.palette.accent};--theme-floor:${theme.palette.floor};--theme-glow:${theme.palette.glow};${themeArtStyle(theme.id)}`,
     },
       h("header", { class: "topbar" },
         h("button", { type: "button", class: "btn btn--ghost", onclick: () => this.leave() }, "← Levels"),
@@ -727,6 +727,7 @@ export class LevelScreen {
       title: `What's new in Level ${this.levelId}`,
       className: "modal--intro",
       body: [
+        themeArtStyle(themeOf(this.levelId).id) ? h("div", { class: "intro-scene", style: themeArtStyle(themeOf(this.levelId).id), "aria-hidden": "true" }) : null,
         h("p", { class: "help" }, themeOf(this.levelId).summary),
         h("div", { class: "intro-grid" }, level.introduces.map((id) => infoCard(entryFor(id, this.heroId, pressureOn(this.levelId)), CARDS[id] ? "card" : "char"))),
       ],

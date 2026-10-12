@@ -10,6 +10,7 @@ const charFiles = import.meta.glob("../../assets/placeholders/characters/*.svg",
 const stillFiles = import.meta.glob("../../assets/art/*/card.webp", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
 const videoFiles = import.meta.glob("../../assets/art/*/card.mp4", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
 const tileFiles = import.meta.glob("../../assets/art/*/tile*.webp", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
+const themeFiles = import.meta.glob("../../assets/themes/*.webp", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
 const sheetFiles = import.meta.glob("../../characters/*.md", { eager: true, query: "?raw", import: "default" }) as Record<string, string>;
 
 const byId = (files: Record<string, string>) =>
@@ -36,6 +37,14 @@ const TILES = new Map(Object.entries(tileFiles).map(([path, url]) => {
   const state = parts.at(-1)!.replace(/^tile-?|\.webp$/g, "");
   return [`${parts.at(-2)}${state ? `:${state}` : ""}`, url] as [string, string];
 }));
+
+const THEME_ART = new Map(Object.entries(themeFiles).map(([path, url]) => [path.split("/").pop()!.replace(/\.webp$/, ""), url]));
+
+/** CSS custom property carrying a theme's scene image (assets/themes/<theme id>.webp), or "" when it has none. */
+export const themeArtStyle = (themeId: string) => {
+  const url = THEME_ART.get(themeId);
+  return url ? `--theme-art:url("${url}");` : "";
+};
 
 /** Board-tile art for a trap, obstacle or mechanic (assets/art/<ID>/tile.webp; `state` picks tile-<state>.webp). */
 export function tileUrl(id: string, state?: string): string | undefined {
