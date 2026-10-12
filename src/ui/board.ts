@@ -4,6 +4,7 @@ import { key } from "../engine/content";
 import { boardOf, enemyName, isRevealed, trapAt, ventActive, type GameState } from "../engine/state";
 import { artUrl } from "./assets";
 import { faceImg } from "./cards";
+import { enemyArtKey, heroArtKey } from "./looks";
 import { h } from "./dom";
 import { DIR_ARROW, DIR_WORD, modifierName, nameOf } from "./text";
 
@@ -21,7 +22,7 @@ export interface GhostPlan {
   start: Vec;
   steps: GhostStep[];
   end: { pos: Vec; facing: Dir; fell: boolean; won: boolean };
-  enemies: { typeId: string; pos: Vec }[];
+  enemies: { typeId: string; uid: number; pos: Vec }[];
 }
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -177,14 +178,14 @@ export class BoardView {
     };
     const hero = state.hero;
     place("hero", hero.pos, () => h("div", { class: "unit unit--hero" },
-      h("span", { class: "unit__portrait" }, faceImg(state.heroId, "unit__art") ?? art(state.heroId, "unit__art")),
+      h("span", { class: "unit__portrait" }, faceImg(heroArtKey(state.heroId), "unit__art") ?? art(state.heroId, "unit__art")),
       h("span", { class: "unit__facing" }, "▲")), (el) => {
       el.dataset.facing = hero.facing;
       el.classList.toggle("is-hurt", hero.hp <= Math.ceil(hero.maxHp / 3));
     });
     for (const e of state.enemies) {
       place(`e${e.uid}`, e.pos, () => h("div", { class: "unit unit--enemy" },
-        h("span", { class: "unit__portrait" }, faceImg(e.typeId, "unit__art") ?? art(e.typeId, "unit__art")),
+        h("span", { class: "unit__portrait" }, faceImg(enemyArtKey(e.typeId, e.uid), "unit__art") ?? art(e.typeId, "unit__art")),
         h("span", { class: "unit__facing" }, "▲"),
         e.modifier ? h("span", { class: "unit__mod" }, modifierName(e.modifier)) : null,
         h("span", { class: "unit__hp" })), (el) => {
@@ -229,7 +230,7 @@ export class BoardView {
       parts.push(svg);
     }
 
-    for (const e of plan.enemies) parts.push(cell(e.pos, "ghost-enemy", h("span", { class: "ghost-enemy__art" }, faceImg(e.typeId, "unit__art") ?? art(e.typeId, "unit__art") ?? ""), h("span", { class: "ghost-enemy__tag" }, "?")));
+    for (const e of plan.enemies) parts.push(cell(e.pos, "ghost-enemy", h("span", { class: "ghost-enemy__art" }, faceImg(enemyArtKey(e.typeId, e.uid), "unit__art") ?? art(e.typeId, "unit__art") ?? ""), h("span", { class: "ghost-enemy__tag" }, "?")));
 
     // Numbered loop markers, grouped per tile ("1→ 2↓"), with ✗ for a failed action and ♥ for damage.
     const byTile = new Map<string, GhostStep[]>();

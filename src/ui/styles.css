@@ -143,6 +143,10 @@ img { max-width: 100%; }
 .hero-detail { font-size: 0.95rem; }
 .hero-about { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; margin: 12px 0; }
 .hero-about .hero-detail { flex: 1 1 220px; margin: 0; }
+.hero-look { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: none; width: min(220px, 100%); }
+.look-switch { display: inline-flex; border: 1px solid var(--stone-mid); border-radius: 999px; overflow: hidden; }
+.look-switch button { font: inherit; font-size: 0.85rem; padding: 4px 14px; border: 0; background: transparent; color: var(--text-muted); cursor: pointer; }
+.look-switch button.is-on { background: var(--rune-cyan); color: var(--stone-dark); font-weight: 700; }
 .card-art { margin: 0; flex: none; width: min(220px, 100%); aspect-ratio: 5 / 4; overflow: hidden; border-radius: 10px; border: 2px solid var(--rune-cyan); box-shadow: 0 0 10px color-mix(in srgb, var(--rune-cyan) 35%, transparent); background: var(--stone-dark); }
 .card-art video, .card-art img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .upgrades h3 { font-size: 1rem; margin: 12px 0 6px; }

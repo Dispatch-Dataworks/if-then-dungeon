@@ -1,6 +1,7 @@
 /** Title screen: hero picker, level select grouped by theme, and "Start new". */
 import { HERO_LIST, HEROES, getLevel } from "../engine/content";
 import { heroArtEl, portraitEl } from "./cards";
+import { hasSecondLook, heroArtKey, heroLook, toggleHeroLook } from "./looks";
 import { glyph, h, replace } from "./dom";
 import { openModal } from "./modal";
 import { heroLevelsCleared, heroUnlocked, heroUpgrades, levelUnlocked, progress, resetProgress, update } from "./progress";
@@ -20,6 +21,19 @@ function upgradeList(heroId: string) {
     })));
 }
 
+/** Girl / Boy picker for a hero's look. Art only: the hero plays the same either way. */
+function lookSwitch(heroId: string, rerender: () => void) {
+  const current = heroLook(heroId);
+  const option = (look: "f" | "m", label: string) => h("button", {
+    type: "button",
+    role: "radio",
+    "aria-checked": String(current === look),
+    class: current === look ? "is-on" : "",
+    onclick: () => { if (current !== look) { toggleHeroLook(heroId); rerender(); } },
+  }, label);
+  return h("div", { class: "look-switch", role: "radiogroup", "aria-label": "Hero look" }, option("f", "Girl"), option("m", "Boy"));
+}
+
 export function showTitle(root: HTMLElement, startLevel: (levelId: number) => void) {
   const render = () => {
     const p = progress();
@@ -37,7 +51,7 @@ export function showTitle(root: HTMLElement, startLevel: (levelId: number) => vo
           disabled: !unlocked,
           onclick: () => { update((x) => { x.heroId = hero.id; }); render(); root.querySelector<HTMLElement>(".hero-pick.is-chosen")?.focus(); },
         },
-          portraitEl(hero.id, "hero-pick__art"),
+          portraitEl(heroArtKey(hero.id), "hero-pick__art"),
           h("span", { class: "hero-pick__name" }, chosen ? glyph("check") : null, hero.name),
           h("span", { class: "hero-pick__stats" }, unlocked
             ? `HP ${hero.baseStats.hp} · Armor ${hero.baseStats.armor} · ${hero.heroAttack.name}`
@@ -72,7 +86,9 @@ export function showTitle(root: HTMLElement, startLevel: (levelId: number) => vo
         h("h2", null, "Choose your hero"),
         heroes,
         h("div", { class: "hero-about" },
-          heroArtEl(chosen.id, chosen.name),
+          h("div", { class: "hero-look" },
+            heroArtEl(heroArtKey(chosen.id), chosen.name),
+            hasSecondLook(chosen.id) ? lookSwitch(chosen.id, () => { render(); root.querySelector<HTMLElement>(".look-switch .is-on")?.focus(); }) : null),
           h("p", { class: "hero-detail" }, h("b", null, `${chosen.name}: `), `When no rule fires, ${chosen.defaultBehavior.text.charAt(0).toLowerCase()}${chosen.defaultBehavior.text.slice(1)} `, h("br"), h("b", null, "Hero Attack: "), cardText("A_HERO_ATTACK", chosen.id))),
         upgradeList(chosen.id)),
       h("section", { class: "panel" },

@@ -29,7 +29,7 @@ export interface RealArt {
   face: [x: number, y: number, size: number];
 }
 
-/** Final art for an ID from assets/art/<ID>/, or undefined while it still uses a placeholder. */
+/** Final art for an ID (or look key such as "H_ARCHER--f") from assets/art/<key>/, or undefined while it still uses a placeholder. */
 export function realArt(id: string): RealArt | undefined {
   const still = STILLS.get(id);
   if (!still) return undefined;

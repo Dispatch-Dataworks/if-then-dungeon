@@ -14,10 +14,12 @@ export interface Progress {
   heroId: string;
   /** Playback speed multiplier (0 = instant). */
   speed: number;
+  /** Hero id -> chosen look ("m" or "f"); heroes without an entry use the mixed default (see looks.ts). */
+  heroLooks: Record<string, "m" | "f">;
 }
 
 const KEY = "if-then-dungeon.progress.v1";
-const fresh = (): Progress => ({ version: 1, cleared: [], heroClears: {}, seenIntro: [], heroId: "H_SWORDSMAN", speed: prefersReducedMotion() ? 0 : 1 });
+const fresh = (): Progress => ({ version: 1, cleared: [], heroClears: {}, seenIntro: [], heroId: "H_SWORDSMAN", speed: prefersReducedMotion() ? 0 : 1, heroLooks: {} });
 
 let memory: Progress = load();
 
@@ -36,6 +38,9 @@ function load(): Progress {
         Object.entries(p.heroClears && typeof p.heroClears === "object" ? p.heroClears : {})
           .filter(([, v]) => Array.isArray(v))
           .map(([k, v]) => [k, (v as unknown[]).filter((n): n is number => typeof n === "number")]),
+      ),
+      heroLooks: Object.fromEntries(
+        Object.entries(p.heroLooks && typeof p.heroLooks === "object" ? p.heroLooks : {}).filter(([, v]) => v === "m" || v === "f"),
       ),
     };
   } catch {

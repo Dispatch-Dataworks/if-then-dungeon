@@ -11,6 +11,7 @@ import { artUrl } from "./assets";
 import { BoardView, type GhostPlan } from "./board";
 import { groupedPredicate, otherwiseEl, RowBuilder } from "./builder";
 import { cardEl, chipEl, portraitEl } from "./cards";
+import { heroArtKey } from "./looks";
 import { glyph, h, prefersReducedMotion, replace, type Child } from "./dom";
 import { describeTile, entryFor, type InfoEntry } from "./info";
 import { openModal } from "./modal";
@@ -143,7 +144,7 @@ export class LevelScreen {
       h("div", { class: `stat ${cls}` }, icon ? glyph(icon) : null, h("span", { class: "stat__label" }, label), h("span", { class: "stat__value" }, value));
     replace(this.hudEl,
       h("div", { class: "stat stat--hero" },
-        portraitEl(s.heroId, "stat__portrait"),
+        portraitEl(heroArtKey(s.heroId), "stat__portrait"),
         h("span", { class: "stat__value" }, hero.name)),
       h("div", { class: `stat stat--hp${s.hero.hp <= 3 ? " is-low" : ""}` },
         glyph("heart"), h("span", { class: "stat__label" }, "HP"),
@@ -264,7 +265,7 @@ export class LevelScreen {
         hurt: f.events.filter((e) => e.kind === "hero_hurt").reduce((sum, e) => sum + (e.amount ?? 0), 0),
       })),
       end: { pos: last.hero.pos, facing: last.hero.facing, fell: LevelScreen.heroFell(result), won: result.outcome === "won" },
-      enemies: last.enemies.filter((e) => moved(e.uid, e.pos)).map((e) => ({ typeId: e.typeId, pos: e.pos })),
+      enemies: last.enemies.filter((e) => moved(e.uid, e.pos)).map((e) => ({ typeId: e.typeId, uid: e.uid, pos: e.pos })),
     };
   }
 

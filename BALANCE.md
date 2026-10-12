@@ -51,7 +51,7 @@ Metrics: **1st try** = cleared with the first 3 lives; **cleared** = cleared wit
 | 23 | 44% | 72% | 12.9 | finale remix |
 | 24 | 59% | 78% | 11.6 | finale remix |
 
-By hero (all levels): Swordsman 84% / Rogue 85% / Shieldbearer 72% / Archer 69% first try. The Archer is meant to be the fragile, skill-heavy pick.
+By hero (all levels): Blademaster 84% / Rogue 85% / Shieldbearer 72% / Archer 69% first try. The Archer is meant to be the fragile, skill-heavy pick.
 
 ## Beginner-friendly early game
 
@@ -89,7 +89,7 @@ All 36 upgrades are implemented (`src/engine/upgrades.ts`). The sim was run twic
 
 | Hero | Levels | Base | Upgraded | Gain |
 |---|---|---|---|---|
-| Swordsman | 1–24 | 83% | 90% | +6 |
+| Blademaster | 1–24 | 83% | 90% | +6 |
 | Archer | 1–24 | 67% | 83% | +16 (16 seeds) |
 | Shieldbearer | 1–24 | 70% | 78% | +8 |
 | Rogue | 1–24 | 85% | 89% | +4 |

@@ -20,7 +20,7 @@ card crops the 16:9 clip down to 5:4.
 
 ---
 
-### H_SWORDSMAN — Swordsman
+### H_SWORDSMAN — Blademaster
 
 ```
 Animate the character from the reference image as a calm, seamlessly looping idle animation for a fantasy game card. Keep the character's exact design, colors, proportions and cute chibi style. A young swordsman in a rounded steel helmet, steel pauldrons and breastplate over brown leather, a blue scarf and short blue cape, holding a short steel sword low in the right hand. The swordsman stands centered in the frame, facing the camera, full body visible with clear space above the helmet and below the boots. Idle motion: slow steady breathing, a small shift of weight from foot to foot, the sword tip dips slightly then rises back to guard, the blue cape sways gently. Background: a dark torch-lit stone dungeon hall, softly out of focus, warm firelight flickering across the armor. Static camera, no zoom, no pan, no cuts. Subtle motion only; the final frame matches the first frame. No text, no UI, no extra characters.
