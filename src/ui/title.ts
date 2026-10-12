@@ -1,6 +1,6 @@
 /** Title screen: hero picker, level select grouped by theme, and "Start new". */
 import { HERO_LIST, HEROES, getLevel } from "../engine/content";
-import { heroArtEl, portraitEl } from "./cards";
+import { cardArtEl, portraitEl } from "./cards";
 import { hasSecondLook, heroArtKey, heroLook, toggleHeroLook } from "./looks";
 import { glyph, h, replace } from "./dom";
 import { openModal } from "./modal";
@@ -87,7 +87,7 @@ export function showTitle(root: HTMLElement, startLevel: (levelId: number) => vo
         heroes,
         h("div", { class: "hero-about" },
           h("div", { class: "hero-look" },
-            heroArtEl(heroArtKey(chosen.id), chosen.name),
+            cardArtEl(heroArtKey(chosen.id), chosen.name),
             hasSecondLook(chosen.id) ? lookSwitch(chosen.id, () => { render(); root.querySelector<HTMLElement>(".look-switch .is-on")?.focus(); }) : null),
           h("p", { class: "hero-detail" }, h("b", null, `${chosen.name}: `), `When no rule fires, ${chosen.defaultBehavior.text.charAt(0).toLowerCase()}${chosen.defaultBehavior.text.slice(1)} `, h("br"), h("b", null, "Hero Attack: "), cardText("A_HERO_ATTACK", chosen.id))),
         upgradeList(chosen.id)),

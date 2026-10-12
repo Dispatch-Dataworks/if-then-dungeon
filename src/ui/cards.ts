@@ -83,11 +83,12 @@ export function portraitEl(id: string, cls: string): HTMLElement {
 }
 
 /** The full 5:4 card art: the looping clip (still image when motion is reduced), or null without final art. */
-export function heroArtEl(id: string, label: string): HTMLElement | null {
+export function cardArtEl(id: string, label: string, cls = ""): HTMLElement | null {
   const art = realArt(id);
   if (!art) return null;
-  if (!art.video || prefersReducedMotion()) return h("figure", { class: "card-art" }, h("img", { src: art.still, alt: label }));
+  const figure = (media: HTMLElement) => h("figure", { class: `card-art ${cls}`.trim() }, media);
+  if (!art.video || prefersReducedMotion()) return figure(h("img", { src: art.still, alt: label }));
   const video = h("video", { src: art.video, poster: art.still, autoplay: true, muted: true, loop: true, playsinline: true, "aria-label": label });
   video.muted = true;
-  return h("figure", { class: "card-art" }, video);
+  return figure(video);
 }
