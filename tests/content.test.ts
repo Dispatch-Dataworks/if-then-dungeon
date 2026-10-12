@@ -101,3 +101,21 @@ describe("final art", () => {
     for (const id of Object.keys(faces).filter((k) => !k.startsWith("_"))) expect(folders, id).toContain(id);
   });
 });
+
+describe("art/MISSING-ART.md", () => {
+  const open = readFileSync("art/MISSING-ART.md", "utf8").split("\n").filter((l) => l.trimStart().startsWith("- [ ]")).join("\n");
+  const listed = new Set([...open.matchAll(/`([A-Za-z][A-Za-z0-9_]+)`/g)].map((m) => m[1]!));
+  const hasArt = (id: string) => ["card.webp", "tile.webp"].some((f) => existsSync(`assets/art/${id}/${f}`));
+  const byDesign = new Set(["O_STONE_WALL"]); // drawn as plain stone on purpose
+  const needing = readdirSync("assets/placeholders/characters").map((f) => f.replace(/\.svg$/, "")).filter((id) => !byDesign.has(id) && !hasArt(id));
+  const themesNeeding = themes.themes.map((t) => t.id).filter((id) => !existsSync(`assets/themes/${id}.webp`));
+
+  it("lists every character, tile, pickup, modifier and level scene that still has no final art", () => {
+    for (const id of [...needing, ...themesNeeding]) expect(listed, `${id} has no art but is not in art/MISSING-ART.md`).toContain(id);
+  });
+
+  it("has no open item for art that now exists", () => {
+    const known = new Set([...needing, ...themesNeeding]);
+    for (const id of listed) expect(known, `${id} has art now: tick it off in art/MISSING-ART.md`).toContain(id);
+  });
+});
