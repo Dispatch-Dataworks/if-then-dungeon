@@ -3,12 +3,15 @@
 # plus card.webp (first frame, used as poster and still).
 #
 #   scripts/encode-card.sh raw.mp4 H_SWORDSMAN [x-shift]
+#   PINGPONG=57 scripts/encode-card.sh raw.mp4 H_ARCHER
 #
-# The loop crossfades the clip's last FADE seconds into its start, so the cut is invisible.
+# By default the loop crossfades the clip's last FADE seconds into its start, so the cut is invisible. That needs
+# the clip to end near its starting pose. When it doesn't (or the end has glitches), PINGPONG=N plays source frames
+# 0..N-1 forward then back, which always loops cleanly.
 # x-shift moves the 5:4 crop window right (+) or left (-) in source pixels when the subject is off-centre.
 set -euo pipefail
 src=$1 id=$2 shift_x=${3:-0}
-FADE=0.5 CRF=24
+FADE=0.5 CRF=24 PINGPONG=${PINGPONG:-}
 out=assets/art/$id
 mkdir -p "$out"
 
@@ -20,8 +23,12 @@ crop="crop=$cw:$h:$cx:0,scale=640:512:flags=lanczos,fps=24"
 body=$(echo "$dur - $FADE" | bc -l)
 offset=$(echo "$body - $FADE" | bc -l)
 
-ffmpeg -v error -y -i "$src" -i "$src" -filter_complex \
-  "[0:v]trim=$FADE:$dur,setpts=PTS-STARTPTS,$crop[a];[1:v]trim=0:$FADE,setpts=PTS-STARTPTS,$crop[b];[a][b]xfade=transition=fade:duration=$FADE:offset=$offset,format=yuv420p[v]" \
+if [ -n "$PINGPONG" ]; then
+  graph="[0:v]trim=start_frame=0:end_frame=$PINGPONG,setpts=PTS-STARTPTS,crop=$cw:$h:$cx:0,scale=640:512:flags=lanczos,split[f][r0];[r0]trim=start_frame=1:end_frame=$((PINGPONG - 1)),setpts=PTS-STARTPTS,reverse[r];[f][r]concat=n=2:v=1,fps=24,format=yuv420p[v]"
+else
+  graph="[0:v]trim=$FADE:$dur,setpts=PTS-STARTPTS,$crop[a];[1:v]trim=0:$FADE,setpts=PTS-STARTPTS,$crop[b];[a][b]xfade=transition=fade:duration=$FADE:offset=$offset,format=yuv420p[v]"
+fi
+ffmpeg -v error -y -i "$src" -i "$src" -filter_complex "$graph" \
   -map "[v]" -an -c:v libx264 -profile:v main -crf $CRF -preset slow -movflags +faststart "$out/card.mp4"
 ffmpeg -v error -y -i "$out/card.mp4" -frames:v 1 -c:v libwebp -quality 82 "$out/card.webp"
 
