@@ -49,6 +49,9 @@ This repository contains the complete written specification and JSON references 
 - `characters/` — one sheet per hero, enemy, modifier, trap, mechanic and obstacle (see `characters/readme.md`)
 - `assets/placeholders/` — generated placeholder images for every card and character (temporary until final art)
 - `branding/` — logo and key-art concepts (see `branding/README.md`)
+- `assets/art/` — final in-game art: `<ID>/card.mp4` loop + `card.webp` still, `<ID>--f/` for a character's second (girl) look, `faces.json` portrait crops
+- `art/` — concept reference sheets (`art/references/`) and Flow inputs and prompts for making card art (`art/flow-inputs/`)
+- `IDEAS.md` — parked ideas (e.g. a separate adult art build)
 
 ## Play
 
