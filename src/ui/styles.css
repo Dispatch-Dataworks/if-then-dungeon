@@ -254,6 +254,9 @@ img { max-width: 100%; }
   background: var(--stone-deep); color: var(--torch);
   font: 700 clamp(8px, 1.6cqi, 12px)/1.2 var(--font-body); text-align: center;
 }
+.tile__img { position: absolute; inset: 4%; width: 92%; height: 92%; object-fit: contain; pointer-events: none; }
+.fx-steam { inset: 0; background: var(--theme-floor); }
+.info-card__art--tile { width: 72px; aspect-ratio: 1; object-fit: contain; background: var(--stone-dark); padding: 4px; }
 .tile__arrow { position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(10px, 3.5cqi, 28px); color: var(--torch); opacity: 0.85; }
 .tile__arrow.dir-N { transform: rotate(-90deg); }
 .tile__arrow.dir-S { transform: rotate(90deg); }

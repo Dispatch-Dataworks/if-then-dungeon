@@ -2,7 +2,7 @@
 import { eq, type Dir, type Vec } from "../engine/board";
 import { key } from "../engine/content";
 import { boardOf, enemyName, isRevealed, trapAt, ventActive, type GameState } from "../engine/state";
-import { artUrl } from "./assets";
+import { artUrl, tileUrl } from "./assets";
 import { faceImg } from "./cards";
 import { enemyArtKey, heroArtKey } from "./looks";
 import { h } from "./dom";
@@ -30,6 +30,12 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 const art = (id: string, cls = "tile__art") => {
   const url = artUrl(id);
   return url ? h("img", { class: cls, src: url, alt: "", draggable: "false" }) : null;
+};
+
+/** Final tile art when it exists (whole image, fitted to the tile), else the placeholder card's art window. */
+const tileArt = (id: string, state?: string) => {
+  const url = tileUrl(id, state);
+  return url ? h("img", { class: "tile__img", src: url, alt: "", draggable: "false" }) : art(id);
 };
 
 /** Obstacles drawn as plain stone instead of art, so the walkable shape of the level reads at a glance. */
@@ -90,17 +96,17 @@ export class BoardView {
     const tile = h("div", { class: "tile" });
     if (obstacle) {
       tile.classList.add("tile--obstacle", PLAIN_WALLS.has(obstacle) ? "tile--wall" : "tile--terrain");
-      if (!PLAIN_WALLS.has(obstacle)) tile.append(art(obstacle) ?? "");
+      if (!PLAIN_WALLS.has(obstacle)) tile.append(tileArt(obstacle) ?? "");
       tile.title = nameOf(obstacle);
     } else if (trap && trap !== "T_ILLUSION_WALL") {
       tile.classList.add("tile--trap");
-      tile.append(art(trap) ?? "", h("span", { class: "tile__tag" }, "!"));
+      tile.append(tileArt(trap) ?? "", h("span", { class: "tile__tag" }, "!"));
       tile.title = nameOf(trap);
     } else if (mech) {
       tile.classList.add("tile--mech");
       if (mech.id === "M_CONVEYOR" || mech.id === "M_PUSH_PLATES") {
-        tile.append(h("span", { class: `tile__arrow dir-${mech.dir ?? "E"}` }, "➜"));
-      } else tile.append(art(mech.id) ?? "");
+        tile.append(tileUrl(mech.id) ? tileArt(mech.id)! : "", h("span", { class: `tile__arrow dir-${mech.dir ?? "E"}` }, "➜"));
+      } else tile.append(tileArt(mech.id) ?? "");
       tile.title = `${nameOf(mech.id)}${mech.dir ? ` (${DIR_WORD[mech.dir]})` : ""}`;
     } else tile.classList.add("tile--floor");
     if (eq(board.exit, p)) {
@@ -141,7 +147,7 @@ export class BoardView {
         const trap = trapAt(state, p);
         if (trap === "T_ILLUSION_WALL") {
           parts.push(isRevealed(state, p)
-            ? h("div", { class: "fx-illusion is-revealed", title: "Illusion wall (revealed)" }, art(trap), h("span", { class: "tile__tag" }, "?"))
+            ? h("div", { class: "fx-illusion is-revealed", title: "Illusion wall (revealed)" }, tileArt(trap), h("span", { class: "tile__tag" }, "?"))
             : h("div", { class: "fx-illusion", title: "Shimmering floor?" }));
         }
         if (state.bloodTiles.some((b) => eq(b.pos, p))) parts.push(h("div", { class: "fx-blood", title: "Blood tile" }, h("span", null, "≈")));
@@ -149,6 +155,7 @@ export class BoardView {
         if (mech?.id === "M_TIMED_VENTS") {
           const on = ventActive(state, p);
           const soon = !on && ventActive(state, p, state.loop + 1);
+          if (on && tileUrl(mech.id, "on") !== tileUrl(mech.id)) parts.push(h("div", { class: "fx-steam" }, tileArt(mech.id, "on")));
           parts.push(h("div", { class: `fx-vent ${on ? "is-on" : soon ? "is-soon" : "is-off"}` }, on ? "ON" : soon ? "SOON" : "OFF"));
         }
         if (state.corpses.some((c) => eq(c.pos, p))) parts.push(h("div", { class: "fx-corpse", title: "Corpse" }, "✝"));
