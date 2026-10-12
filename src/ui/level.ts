@@ -10,7 +10,8 @@ import { heroArmor, levelOf, type GameEvent, type GameState } from "../engine/st
 import { artUrl } from "./assets";
 import { BoardView, type GhostPlan } from "./board";
 import { groupedPredicate, otherwiseEl, RowBuilder } from "./builder";
-import { cardEl, chipEl, portraitEl } from "./cards";
+import { cardArtEl, cardEl, chipEl, portraitEl } from "./cards";
+import { heroArtKey } from "./looks";
 import { glyph, h, prefersReducedMotion, replace, type Child } from "./dom";
 import { describeTile, entryFor, type InfoEntry } from "./info";
 import { openModal } from "./modal";
@@ -143,7 +144,7 @@ export class LevelScreen {
       h("div", { class: `stat ${cls}` }, icon ? glyph(icon) : null, h("span", { class: "stat__label" }, label), h("span", { class: "stat__value" }, value));
     replace(this.hudEl,
       h("div", { class: "stat stat--hero" },
-        portraitEl(s.heroId, "stat__portrait"),
+        portraitEl(heroArtKey(s.heroId), "stat__portrait"),
         h("span", { class: "stat__value" }, hero.name)),
       h("div", { class: `stat stat--hp${s.hero.hp <= 3 ? " is-low" : ""}` },
         glyph("heart"), h("span", { class: "stat__label" }, "HP"),
@@ -264,7 +265,7 @@ export class LevelScreen {
         hurt: f.events.filter((e) => e.kind === "hero_hurt").reduce((sum, e) => sum + (e.amount ?? 0), 0),
       })),
       end: { pos: last.hero.pos, facing: last.hero.facing, fell: LevelScreen.heroFell(result), won: result.outcome === "won" },
-      enemies: last.enemies.filter((e) => moved(e.uid, e.pos)).map((e) => ({ typeId: e.typeId, pos: e.pos })),
+      enemies: last.enemies.filter((e) => moved(e.uid, e.pos)).map((e) => ({ typeId: e.typeId, uid: e.uid, pos: e.pos })),
     };
   }
 
@@ -759,8 +760,10 @@ export class LevelScreen {
 
 function infoCard(e: InfoEntry, artKind: "card" | "char" = "char"): HTMLElement {
   const url = e.artId ? artUrl(e.artId) : undefined;
+  const enemy = e.kind?.startsWith("Enemy") ?? false;
+  const real = e.artId && artKind === "char" ? cardArtEl(e.artId, "", `info-card__art${enemy ? " card-art--enemy" : ""}`) : null;
   return h("article", { class: "info-card" },
-    url ? h("img", { class: `info-card__art info-card__art--${artKind}`, src: url, alt: "" }) : h("div", { class: "info-card__art info-card__art--none", "aria-hidden": "true" }, e.title.charAt(0)),
+    real ?? (url ? h("img", { class: `info-card__art info-card__art--${artKind}`, src: url, alt: "" }) : h("div", { class: "info-card__art info-card__art--none", "aria-hidden": "true" }, e.title.charAt(0))),
     h("div", { class: "info-card__body" },
       h("h3", null, e.title),
       e.kind ? h("p", { class: "info-card__kind" }, e.kind) : null,

@@ -5,7 +5,7 @@
   "heroes": [
     {
       "id": "H_SWORDSMAN",
-      "name": "Swordsman",
+      "name": "Blademaster",
       "tier": "starter",
       "unlockAfterLevel": 0,
       "baseStats": {"hp": 10, "armor": 1, "speedTiles": 1, "sightRange": 3},

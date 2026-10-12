@@ -86,10 +86,13 @@ describe("final art", () => {
   const faces = JSON.parse(readFileSync("assets/art/faces.json", "utf8")) as Record<string, unknown>;
   const cardIds = new Set(cards.cards.map((c) => c.id));
 
-  it("is filed under real content IDs, each with a still", () => {
-    for (const id of folders) {
-      expect(sheetIds.has(id) || cardIds.has(id), id).toBe(true);
-      expect(existsSync(`assets/art/${id}/card.webp`), `${id}/card.webp`).toBe(true);
+  it("is filed under real content IDs (optionally with a --f look), each with a still", () => {
+    for (const folder of folders) {
+      const [id, look, ...rest] = folder.split("--");
+      expect(rest, folder).toEqual([]);
+      if (look !== undefined) expect(look, folder).toBe("f");
+      expect(sheetIds.has(id!) || cardIds.has(id!), folder).toBe(true);
+      expect(existsSync(`assets/art/${folder}/card.webp`), `${folder}/card.webp`).toBe(true);
     }
   });
 

@@ -36,7 +36,7 @@ Rules:
 
 ## Starter heroes (available from the start)
 
-### 1) H_SWORDSMAN — Swordsman
+### 1) H_SWORDSMAN — Blademaster
 **Fantasy**: balanced frontline.
 - Default behavior: **move forward 1** (if blocked, turn right and move; if that is blocked too, turn left; turn around only as a last resort)
 - Hero Attack: **Slash**

@@ -1,4 +1,4 @@
-# Swordsman
+# Blademaster
 
 **ID:** `H_SWORDSMAN`  
 **Category:** Hero  

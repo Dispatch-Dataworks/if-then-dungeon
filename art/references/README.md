@@ -9,7 +9,7 @@ scene) that still needs cropping before it can go on a card.
 - **Naming:** `<GAME_ID>.webp` is the main reference. `<GAME_ID>--alt-*.webp` are
   earlier drafts or variants kept for comparison. Theme files use the theme id
   from `themes.json`.
-- Nothing here is loaded by the game yet; cards still use `assets/placeholders/`.
+- Nothing here is loaded by the game. Finished in-game art lives in `assets/art/<ID>/`.
 
 ## Heroes — all 12 covered
 
@@ -28,7 +28,7 @@ scene) that still needs cropping before it can go on a card.
 | H_RANGER | `heroes/H_RANGER.webp` | + attack, hide, track |
 | H_HUNTER | `heroes/H_HUNTER.webp` (+ alt-stone-cover) | + attack, aim, hide |
 
-## Enemies — 11 of 13 covered
+## Enemies — all 13 covered
 
 | ID | File |
 |---|---|
@@ -43,8 +43,9 @@ scene) that still needs cropping before it can go on a card.
 | E_GHOUL | `enemies/E_GHOUL.webp` |
 | E_ORC_WARDEN | `enemies/E_ORC_WARDEN.webp` (+ alt-1) |
 | E_WRAITH_STALKER | `enemies/E_WRAITH_STALKER.webp` (+ 2 teleport drafts) |
-| E_ORC_BRUTE | **missing** — `enemies/unassigned-bugbear-thug.webp` (club, rage, smash) could stand in |
-| E_RAT_SWARM | **missing** |
+| E_ORC_BRUTE | `enemies/E_ORC_BRUTE.webp` |
+| E_RAT_SWARM | `enemies/E_RAT_SWARM.webp` |
+| (spare) | `enemies/unassigned-bugbear-thug.webp`: bugbear thug, not in the game |
 
 ## Traps, obstacles, mechanics
 

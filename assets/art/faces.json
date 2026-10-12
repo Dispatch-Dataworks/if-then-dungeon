@@ -11,5 +11,17 @@
   "H_SENTINEL": [48, 32, 44],
   "H_BERSERKER": [48, 36, 48],
   "H_RANGER": [48.5, 31, 40],
-  "H_HUNTER": [49, 31, 40]
+  "H_HUNTER": [49, 31, 40],
+  "E_HOUND": [47, 39, 45],
+  "E_CULTIST": [47, 39, 40],
+  "E_GHOUL": [47, 25, 38],
+  "E_GOBLIN_ARCHER": [50, 31, 42],
+  "E_GOBLIN_KNIGHT": [48, 28, 46],
+  "E_GOBLIN_SHAMAN": [49, 33, 44],
+  "E_ORC_BRUTE": [47, 28, 46],
+  "E_RAT_SWARM": [48, 48, 60],
+  "E_ORC_WARDEN": [48, 24, 44],
+  "E_SKELETON_GUARD": [49, 25, 40],
+  "E_WRAITH_STALKER": [49, 24, 38],
+  "E_SPIDER": [50, 58, 55]
 }

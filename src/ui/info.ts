@@ -6,6 +6,7 @@ import {
   type GameState,
 } from "../engine/state";
 import { sheetParagraph } from "./assets";
+import { enemyArtKey, heroArtKey } from "./looks";
 import { CARDS } from "../engine/content";
 import { cardText, DIR_WORD, modifierName, nameOf, statusLabel, threatLine, TYPE_LABEL } from "./text";
 
@@ -34,7 +35,7 @@ export function heroEntry(state: GameState): InfoEntry {
   const h = state.hero;
   const statuses = statusList(h.statuses);
   return {
-    artId: state.heroId,
+    artId: heroArtKey(state.heroId),
     title: `${def.name} (your hero)`,
     kind: "Hero",
     lines: [
@@ -53,7 +54,7 @@ export function enemyEntry(state: GameState, uid: number): InfoEntry | undefined
   const statuses = statusList(e.statuses);
   const mod = e.modifier ? MODIFIERS[e.modifier] : undefined;
   return {
-    artId: e.typeId,
+    artId: enemyArtKey(e.typeId, e.uid),
     title: enemyName(e),
     kind: `Enemy · ${"☠".repeat(def.dangerSkulls)} danger`,
     lines: [
